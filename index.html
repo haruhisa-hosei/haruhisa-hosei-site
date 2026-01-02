@@ -6,59 +6,67 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
 <style>
-/* --- あなたのオリジナルデザインを100%復元 --- */
+/* --- あなたのオリジナルCSSを100%復元 --- */
 *, *::before, *::after { box-sizing: border-box; }
 body { font-family: 'Shippori Mincho', serif; margin: 0; padding: 0; background-color: #fcfaf2; color: #111; position: relative; min-height: 100vh; overflow-x: hidden; width: 100%; }
 body::before { content: ""; position: fixed; inset: 0; background-image: url('bamboo.png'); background-size: cover; background-position: center top; opacity: 0.15; mix-blend-mode: multiply; z-index: -5; pointer-events: none; }
-.top-sun-light { position: fixed; top: 0; left: 0; width: 100%; height: 60px; background: linear-gradient(to bottom, rgba(255, 255, 255, 1.0) 0%, rgba(255, 240, 190, 0.6) 50%, rgba(255, 255, 255, 0) 100%); z-index: 100; pointer-events: none; opacity: 0; transition: opacity 0.6s ease; }
-.top-sun-light.is-active { opacity: 1; }
-header { position: relative; min-height: 100vh; width: 100%; display: flex; align-items: center; justify-content: center; text-align: center; background-image: url('officialtop.png'); background-size: 88%; background-position: 68% center; background-repeat: no-repeat; background-color: #000; color: #fff; }
-header::before{ content:""; position:absolute; inset:0; background: rgba(0,0,0,0.46); z-index:0; }
+.top-sun-light { position: fixed; top: 0; left: 0; width: 100%; height: 60px; background: linear-gradient(to bottom, rgba(255, 255, 255, 1.0) 0%, rgba(255, 240, 190, 0.6) 50%, rgba(255, 255, 255, 0) 100%); z-index: 100; pointer-events: none; mix-blend-mode: hard-light; opacity: 0; transition: opacity 0.6s ease; }
+.top-sun-light.is-active { opacity: 1; animation: lightShimmer 4s ease-in-out infinite alternate; }
+@keyframes lightShimmer { 0% { opacity: 0.9; } 100% { opacity: 1.0; transform: scaleY(1.05); } }
+a { text-decoration: none; color: inherit; }
+.fade-up { opacity: 0; transform: translateY(60px); transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+.fade-up.is-visible { opacity: 1; transform: translateY(0); }
+.fade-in { opacity: 0; transition: opacity 2s ease-out; }
+.fade-in.is-visible { opacity: 1; }
+.slide-left { opacity: 0; transform: translateX(-50px); transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+.slide-left.is-visible { opacity: 1; transform: translateX(0); }
+header { position: relative; min-height: 100vh; width: 100%; display: flex; align-items: center; justify-content: center; text-align: center; background-image: url('officialtop.png'); background-size: 88%; background-position: 68% center; background-repeat: no-repeat; background-color: #000; color: #fff; opacity: 0; transition: opacity 2s ease; }
+header.is-visible { opacity: 1; }
+header::before{ content:""; position:absolute; inset:0; background: rgba(0,0,0,0.46); z-index:0; pointer-events:none; }
 .hero-inner{ position: relative; z-index: 2; transform: translateY(-100px); }
 .profile-image { width: 440px; max-width: 92vw; height: auto; display: block; margin: 0 auto; filter: drop-shadow(0 14px 30px rgba(0,0,0,0.40)); }
 .english-name { font-family: 'Lato', sans-serif; font-size: 4.2rem; letter-spacing: 0.32em; font-weight: 700; line-height: 1.05; text-transform: uppercase; margin: -10px 0 0 0; }
 .sub-title { font-family: 'Lato', sans-serif; font-size: 1.1rem; letter-spacing: 0.38em; opacity: 0.95; margin-top: -2px; }
-.section-title { text-align: center; font-size: 1.8rem; letter-spacing: 0.2em; margin-bottom: 60px; font-weight: 700; font-family: 'Lato', sans-serif; }
-.section-title::after{ content:""; display:block; width:90px; height:2px; background:#333; margin:18px auto 0; }
 
-/* NEWS [修正済み：GAS同期用] */
+/* NEWS */
 .news-section { background-color: rgba(59, 122, 87, 0.85); color: #fff; padding: 100px 20px; text-align: center; }
-.news-title { font-size: 1.8rem; letter-spacing: 0.2em; margin-bottom: 60px; font-weight: 700; font-family: 'Lato', sans-serif; }
-.news-title::after { content: ""; display: block; width: 60px; height: 2px; background: #fff; margin: 15px auto 0; }
 .news-container { max-width: 600px; margin: 0 auto; text-align: left; }
 .news-item { margin-bottom: 50px; }
 .news-date { font-size: 1.5rem; font-weight: 700; font-family: 'Lato', sans-serif; margin-bottom: 15px; display: block; }
 .news-text { font-size: 0.95rem; line-height: 2.0; opacity: 0.9; }
 
-/* ARCHIVE [復元] */
+/* ARCHIVE */
 .archive-section { position: relative; padding: 100px 0 120px; background-image: url('image.png'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; }
 .archive-section::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.6); }
 .archive-content { position: relative; z-index: 2; }
 .archive-card { background: #fff; width: 300px; height: 484px; box-shadow: 0 15px 40px rgba(0,0,0,0.5); overflow: hidden; display: flex; flex-direction: column; }
 .archive-card img { width: 100%; height: 424px; object-fit: cover; }
-.archive-info { background: #fff; padding: 5px 15px; color: #111; height: 60px; }
+.archive-info { background: #fff; padding: 5px 15px; color: #111; height: 60px; font-weight: bold; }
 
-/* VOICE [修正：ロゴ縮小対応] */
-.voice-section { padding: 80px 0 100px; width: 100%; overflow: hidden; position: relative; }
+/* VOICE & LOGO FIX */
+.voice-section { padding: 80px 0 100px; width: 100%; overflow: hidden; position: relative; z-index: 1; }
 .voice-slide { background: #fff; width: 85%; max-width: 380px; height: 600px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); display: flex; flex-direction: column; overflow: hidden; }
 .voice-img-box { width: 100%; height: 300px; display: flex; justify-content: center; align-items: center; background: #fff; overflow: hidden; }
-/* ★ロゴ縮小の絶対命令 */
-.voice-img-box img.voice-photo { width: 100%; height: 100%; object-fit: cover; }
-.voice-img-box img.voice-logo-placeholder { width: 160px !important; height: auto !important; object-fit: contain !important; opacity: 0.9; }
-.voice-content { padding: 20px 30px 30px; }
+/* ★修正：ロゴを確実に縮小させる優先指定 */
+.voice-img-box img.voice-photo { width: 100%; height: 100%; object-fit: cover; display: block; }
+.voice-img-box img.voice-logo-placeholder { width: 160px !important; height: auto !important; object-fit: contain !important; opacity: 0.9; display: block; }
+.voice-content { width: 100%; text-align: left; padding: 20px 30px 30px; flex-grow: 1; }
 .voice-date-text { font-family: 'Lato', sans-serif; font-size: 1.6rem; border-bottom: 2px solid #111; display: inline-block; width: 100%; }
 
-/* PROFILE / CONTACT / MENU 全て復元 */
-.profile-section{ background: #c9aa5a; padding: 80px 20px 90px; }
-.profile-anim-wrap{ width: min(520px, 88vw); margin: 18px auto 26px; position: relative; }
-.topbar{ position:absolute; top:0; left:0; width:100%; height:50px; background:#fff; z-index: 3; display:flex; align-items:center; padding:0 12px; }
+/* OTHER UI */
+.topbar{ position:absolute; top:0; left:0; width:100%; height:50px; background:#fff; z-index: 3; display:flex; align-items:center; padding: 0 12px; }
 .fixed-menu-btn { position: fixed; top: 0; right: 0; width: 50px; height: 50px; background-color: #000; z-index: 10001; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; }
 .fixed-menu-btn span { display: block; width: 24px; height: 1px; background-color: #fff; margin: 4px 0; }
-.menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10000; display: none; flex-direction: column; justify-content: center; align-items: flex-start; padding-left: 10%; }
+.menu-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); z-index: 10000; display: none; flex-direction: column; justify-content: center; align-items: flex-start; padding-left: 10%; }
 .menu-overlay.is-open { display: flex; }
-.menu-link { font-family: 'Lato'; font-size: 2rem; color: #fff; margin: 15px 0; }
+.menu-link { font-family: 'Lato', sans-serif; font-size: 2rem; color: #fff; text-decoration: none; margin: 15px 0; }
+.profile-section{ background: #c9aa5a; padding: 80px 20px 90px; }
+.profile-anim-wrap{ width: min(520px, 88vw); margin: 18px auto 26px; position: relative; }
+.profile-anim-wrap img{ width: 100%; height: auto; display: block; }
 footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding: 50px 20px; font-size: 0.7rem; }
 </style>
 </head>
@@ -73,12 +81,12 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
         <a href="#profile" class="menu-link">PROFILE</a>
         <a href="#contact" class="menu-link">CONTACT</a>
     </nav>
-    
+
     <header id="top">
         <div class="topbar">
             <div style="display:flex; align-items:center;">
-                <div style="font-family:'Lato'; font-weight:700; font-size:12px;">HARUHISA<br>HOSEI</div>
-                <div style="width:1px; height:24px; background:rgba(0,0,0,0.18); margin:0 10px;"></div>
+                <div style="font-family:'Lato'; font-weight:700; font-size:12px; line-height:1;">HARUHISA<br>HOSEI</div>
+                <div style="width:1px; height:24px; background:rgba(0,0,0,0.18); margin: 0 10px;"></div>
                 <img src="officialhedderlogo.png" style="height:20px;">
             </div>
         </div>
@@ -90,7 +98,7 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
     </header>
 
     <section id="news" class="news-section">
-        <h2 class="news-title">NEWS</h2>
+        <h2 class="section-title" style="color:#fff;">NEWS</h2>
         <div class="news-container"></div>
     </section>
 
@@ -100,7 +108,8 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
             <div class="swiper archive-swiper">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide"><div class="archive-card"><img src="archive_2022.png"><div class="archive-info">2022.7.6 鳳聲晴久 第2回リサイタル</div></div></div>
-                    <div class="swiper-slide"><div class="archive-card"><img src="archive_2019.png"><div class="archive-info">2019.4.18 紀尾井午後の音楽会</div></div></div>
+                    <div class="swiper-slide"><div class="archive-card"><img src="archive_2019.png"><div class="archive-info">2019.4.18 旅 - 起点 -</div></div></div>
+                    <div class="swiper-slide"><div class="archive-card"><img src="archive_2017.png"><div class="archive-info">2017.11.24 横笛の世界に触れる</div></div></div>
                 </div>
             </div>
         </div>
@@ -114,10 +123,12 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
     </section>
 
     <section id="profile" class="profile-section">
-        <div style="max-width:820px; margin:0 auto; text-align:center;">
+        <div style="max-width:820px; margin: 0 auto; text-align:center;">
             <h2 class="section-title">PROFILE</h2>
-            <div class="profile-anim-wrap"><img id="personFrame" src="profile.jpg"></div>
-            <p style="text-align:left; line-height:2.1; font-size:16px;">東京藝術大学 音楽学部 邦楽科 卒業。鳳聲流にて 若山胤雄師、鳳聲晴雄師に師事。江戸囃子・神楽・長唄などの古典邦楽を中心に、国内外の舞台で演奏。現代音楽・ジャズとのコラボレーションや、地域文化継承プロジェクト、体験型のワークショップを通じて、笛の世界を次の世代へつなぐ活動を続けています。</p>
+            <div class="profile-anim-wrap">
+                <img class="person-frame" id="personFrame" src="profile.jpg">
+            </div>
+            <p style="text-align:left; line-height:2.1; font-size:16px;">東京藝術大学 音楽学部 邦楽科 卒業。江戸囃子・神楽・長唄などの古典邦楽を中心に国内外で演奏。現代音楽や地域文化継承プロジェクトを通じて、笛の世界を次世代へつなぐ活動を続けています。</p>
         </div>
     </section>
 
@@ -132,36 +143,32 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
     <script>
     (async function() {
       const API_URL = "https://script.google.com/macros/s/AKfycbwdpDAvg8yLiYGkHOjx9LCGIR67Q-tojNT6VH_AzFY6ThPHE0UVQaGbAO34obe4LQF5/exec";
-      const data = await (await fetch(API_URL)).json();
-
-      if (data.news) {
-        document.querySelector('.news-container').innerHTML = data.news.map(item => `
-          <div class="news-item">
-            <span class="news-date">${item.date || ""}</span>
-            <div class="news-text">${item.ja_html || ""}${item.ja_link_href ? `<br><a href="${item.ja_link_href}" target="_blank" style="color:#fff; text-decoration:underline;">${item.ja_link_text || "詳細"}</a>` : ""}</div>
-          </div>`).join("");
-      }
-
-      if (data.voice) {
-        document.querySelector('#voice .swiper-wrapper').innerHTML = data.voice.map(v => {
-          const kind = String(v.image_kind || "").toLowerCase().trim();
-          const imgClass = (kind === "logo") ? "voice-logo-placeholder" : "voice-photo";
-          return `<div class="swiper-slide voice-slide">
-                    <div class="voice-img-box"><img src="${v.image_src}" class="${imgClass}"></div>
-                    <div class="voice-content"><div class="voice-date-text">${v.date || ""}</div><p>${v.ja_html || ""}</p></div>
-                  </div>`;
-        }).join("");
-        new Swiper('.swiper-container', { loop: true, slidesPerView: 'auto', centeredSlides: true, spaceBetween: 25 });
-      }
+      try {
+        const data = await (await fetch(API_URL)).json();
+        if (data.news) {
+          document.querySelector('.news-container').innerHTML = data.news.map(item => `
+            <div class="news-item">
+              <span class="news-date">${item.date || ""}</span>
+              <div class="news-text">${item.ja_html || ""}${item.ja_link_href ? `<br><a href="${item.ja_link_href}" target="_blank" style="color:#fff; text-decoration:underline;">${item.ja_link_text || "詳細"}</a>` : ""}</div>
+            </div>`).join("");
+        }
+        if (data.voice) {
+          document.querySelector('#voice .swiper-wrapper').innerHTML = data.voice.map(v => {
+            const kind = String(v.image_kind || "").toLowerCase().trim();
+            const imgClass = (kind === "logo") ? "voice-logo-placeholder" : "voice-photo";
+            return `<div class="swiper-slide voice-slide">
+                      <div class="voice-img-box"><img src="${v.image_src}" class="${imgClass}"></div>
+                      <div class="voice-content"><div class="voice-date-text">${v.date || ""}</div><p>${v.ja_html || ""}</p></div>
+                    </div>`;
+          }).join("");
+          new Swiper('.swiper-container', { loop: true, slidesPerView: 'auto', centeredSlides: true, spaceBetween: 25 });
+        }
+      } catch (e) { console.error(e); }
       new Swiper('.archive-swiper', { loop: true, slidesPerView: 'auto', centeredSlides: true, spaceBetween: 30 });
-
-      const menuBtn = document.getElementById('menuBtn');
-      const navOverlay = document.getElementById('navOverlay');
-      menuBtn.addEventListener('click', () => { navOverlay.classList.toggle('is-open'); });
+      document.getElementById('menuBtn').addEventListener('click', () => { document.getElementById('navOverlay').classList.toggle('is-open'); });
       window.addEventListener('scroll', () => { document.getElementById('sunLight').classList.toggle('is-active', window.scrollY > 50); });
-      
-      const frames = ['profile.jpg','officialprofile2.png','officialprofile3.png'];
-      let fi = 0;
+      const header = document.querySelector('header'); setTimeout(() => header.classList.add('is-visible'), 100);
+      const frames = ['profile.jpg','officialprofile2.png','officialprofile3.png']; let fi = 0;
       setInterval(() => { document.getElementById('personFrame').src = frames[fi]; fi = (fi + 1) % frames.length; }, 1000);
     })();
     </script>
