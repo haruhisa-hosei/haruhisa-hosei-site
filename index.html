@@ -242,22 +242,33 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
 
 <script>
 // ==========================================
-//  Google Apps Script (GAS) Data Fetcher
+//  【診断モード】GAS連携スクリプト
 // ==========================================
 (async function() {
   const LANG = "ja";
-  // ▼▼ あなたが取得した最新のGAS URL ▼▼
+  // ▼▼ ここにコピーしたURLが入っているか確認してください ▼▼
   const API_URL = "https://script.google.com/macros/s/AKfycbwdpDAvg8yLiYGkHOjx9LCGIR67Q-tojNT6VH_AzFY6ThPHE0UVQaGbAO34obe4LQF5/exec";
 
   async function loadJson() {
     try {
-      // GASからデータを取得
+      // 1. まずGASに取りに行く
       const res = await fetch(API_URL);
-      if (!res.ok) throw new Error("GAS HTTP " + res.status);
-      return await res.json();
+      
+      // もし通信自体が失敗したら、ここは実行されず catch に飛びます
+      if (!res.ok) {
+        alert("【診断】GASと通信できましたが、エラーが返ってきました。\nステータス: " + res.status);
+        throw new Error("GAS HTTP " + res.status);
+      }
+      
+      const json = await res.json();
+      // alert("【診断】成功！GASからデータを取得しました！"); // 成功なら何も言わなくてOK
+      return json;
+
     } catch (e) {
-      console.warn("GAS load failed, trying backup content.json...", e);
-      // 万が一GASがダメなら、フォルダ内の content.json を読みに行く（保険）
+      // 2. 失敗した場合、エラー内容を表示する
+      alert("【診断エラー】GAS読み込みに失敗しました。\n原因: " + e.message + "\n\n※この後、バックアップデータを表示します。");
+      
+      // バックアップを取りに行く
       try {
         const res2 = await fetch("./content.json?v=" + Date.now(), { cache: "no-store" });
         return await res2.json();
@@ -295,8 +306,8 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
       `;
     }).join("");
     if (htmlNews.trim()) newsContainer.innerHTML = htmlNews;
-
-    // Anim
+    
+    // アニメーション用
     const items = Array.from(newsContainer.querySelectorAll('.news-item.fade-up'));
     items.forEach((el, i) => { el.classList.remove('is-visible'); el.dataset.stagger = String(i); });
     const obs = new IntersectionObserver((entries, obs) => {
@@ -313,7 +324,6 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
   const voiceWrapper = document.querySelector('#voice .swiper-wrapper');
   if (voiceWrapper && Array.isArray(data.voice) && data.voice.length > 0) {
     const sorted = [...data.voice].sort((a,b) => parseDate(b.date) - parseDate(a.date));
-
     const htmlVoice = sorted.map((v) => {
       const body = (v[LANG] && v[LANG].html) ? v[LANG].html : "";
       const img = (v.image && v.image.src) ? v.image.src : "";
@@ -337,6 +347,7 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
   }
 })();
 </script>
+
 
 </body>
 </html>
