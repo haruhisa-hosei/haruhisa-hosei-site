@@ -117,9 +117,9 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
 .swiper-container { width: 100%; padding-bottom: 50px; }
 .voice-slide { background: #fff; width: 85%; max-width: 380px; height: 600px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: flex-start; padding: 0; overflow: hidden; }
 .voice-img-box { width: 100%; height: 300px; flex-shrink: 0; margin-bottom: 0; display: flex; justify-content: center; align-items: center; background: #fff; overflow: hidden; }
-.voice-photo { width: 100%; height: 100%; object-fit: cover; display: block; }
-/* ★修正：ロゴ表示用のサイズ指定を追加 */
-.voice-logo-placeholder { width: 160px !important; height: auto !important; object-fit: contain !important; opacity: 0.9; }
+/* ★修正：画像サイズ指定を詳細化してロゴ用の設定を優先させる */
+.voice-img-box img.voice-photo { width: 100%; height: 100%; object-fit: cover; display: block; }
+.voice-img-box img.voice-logo-placeholder { width: 160px !important; height: auto !important; object-fit: contain !important; opacity: 0.9; display: block; }
 .voice-content { width: 100%; text-align: left; padding: 20px 30px 30px; flex-grow: 1; }
 .voice-date-text { font-family: 'Lato', sans-serif; font-size: 1.6rem; letter-spacing: 0.1em; margin: 0 0 8px 0; padding-bottom: 8px; border-bottom: 2px solid #111; display: inline-block; width: 100%; }
 .voice-body { font-size: 0.95rem; line-height: 1.8; color: #111; text-align: left; margin-top: 0; }
