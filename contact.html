@@ -1,38 +1,39 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
-<title>鳳聲晴久｜笛奏者・日本伝統音楽 Official Site</title>
-<meta name="description" content="鳳聲晴久（ほうせい はるひさ）公式サイト。日本伝統音楽に基づく笛の演奏活動、公演情報、プロフィール、記録を掲載。">
+<title>CONTACT｜鳳聲晴久 Official Site</title>
+<meta content="鳳聲晴久（ほうせい はるひさ）へのお問い合わせページ。出演依頼・稽古・取材等のご連絡はこちらから。" name="description"/>
+<meta content="website" property="og:type"/>
+<meta content="HARUHISA HOSEI OFFICIAL SITE" property="og:site_name"/>
+<meta content="CONTACT｜鳳聲晴久 Official Site" property="og:title"/>
+<meta content="鳳聲晴久（ほうせい はるひさ）へのお問い合わせページ。出演依頼・稽古・取材等のご連絡はこちらから。" property="og:description"/>
+<meta content="https://haruhisa-hosei.com/contact.html" property="og:url"/>
+<meta content="https://haruhisa-hosei.com/og-image.png" property="og:image"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="鳳聲晴久｜笛奏者・日本伝統音楽 Official Site"/>
+<meta name="twitter:description" content="鳳聲晴久（ほうせい はるひさ）公式サイト。日本伝統音楽に基づく笛の演奏活動、公演情報、プロフィール、記録を掲載。"/>
+<meta name="twitter:image" content="https://haruhisa-hosei.com/og-image.png"/>
 
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="HARUHISA HOSEI OFFICIAL SITE">
-<meta property="og:title" content="鳳聲晴久｜笛奏者・日本伝統音楽 Official Site">
-<meta property="og:description" content="鳳聲晴久（ほうせい はるひさ）公式サイト。日本伝統音楽に基づく笛の演奏活動、公演情報、プロフィール、記録を掲載。">
-<meta property="og:url" content="https://haruhisa-hosei.com/">
-<meta property="og:image" content="https://haruhisa-hosei.com/og-image.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+<link href="/favicon-32.png" rel="icon" sizes="32x32"/>
+<link href="/apple-touch-icon.png" rel="apple-touch-icon"/>
+<meta charset="utf-8"/>
+<meta name="theme-color" content="#000000"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 
-<link rel="icon" href="/favicon-32.png" sizes="32x32">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link href="https://haruhisa-hosei.com/contact.html" rel="canonical"/>
+<link href="https://haruhisa-hosei.com/contact.html" hreflang="ja" rel="alternate"/>
+<link href="https://haruhisa-hosei.com/contact_en.html" hreflang="en" rel="alternate"/>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CONTACT | HARUHISA HOSEI OFFICIAL SITE</title>
 
-    
-    <link rel="canonical" href="https://haruhisa-hosei.com/contact.html">
-    <link rel="alternate" hreflang="ja" href="https://haruhisa-hosei.com/contact.html">
-    <link rel="alternate" hreflang="en" href="https://haruhisa-hosei.com/contact_en.html">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="HARUHISA HOSEI OFFICIAL SITE">
-    <meta property="og:url" content="https://haruhisa-hosei.com/contact.html">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet">
 
-    <style>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&amp;display=swap" rel="stylesheet"/>
+<style>
         /* =========================================
            ▼ ベーススタイル ▼
            ========================================= */
@@ -222,82 +223,129 @@
             .email-link { font-size: 1.1rem; }
             .contact-body { width: 100%; }
         }
-    </style>
+    
+
+/* --- A11y polish (focus + skip link + reduced motion) --- */
+.skip-link{
+  position:absolute; left:-9999px; top:10px;
+  background:#fff; color:#111; border:2px solid #111;
+  padding:10px 14px; z-index:20000; font-family:'Lato',sans-serif;
+  letter-spacing:0.08em;
+}
+.skip-link:focus{ left:10px; }
+:focus-visible{
+  outline: 3px solid rgba(0,0,0,0.75);
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce){
+  html:focus-within{ scroll-behavior:auto; }
+  *, *::before, *::after{
+    animation-duration:0.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:0.01ms !important;
+  }
+}
+
+/* --- Touch response polish (hamburger + menu links) --- */
+.fixed-menu-btn, .lang-btn, .menu-link{
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.fixed-menu-btn{
+  user-select: none;
+}
+.fixed-menu-btn.is-pressing{
+  transform: scale(0.98);
+}
+.menu-link{
+  padding: 14px 10px;
+}
+.menu-link:active{
+  opacity: 0.75;
+}
+
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "鳳聲晴久",
+  "alternateName": [
+    "Haruhisa Hosei",
+    "鳳聲晴久"
+  ],
+  "url": "https://haruhisa-hosei.com/",
+  "jobTitle": "笛奏者",
+  "description": "日本伝統音楽に基づく笛の演奏活動、公演情報、プロフィール、記録を掲載。"
+}
+</script>
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 
-    <header class="topbar">
-        <div class="topbar-inner">
-            <a href="index.html" class="brand-left">
-                <div class="brand-stacked">
-                    <div class="b1">HARUHISA</div>
-                    <div class="b2">HOSEI</div>
-                </div>
-                <div class="brand-divider"></div>
-                <img class="brand-logo" src="officialhedderlogo.png" alt="logo">
-            </a>
-            
-            <div class="topbar-right">
-                <button class="lang-btn" id="langToggle" type="button">
-                    <img src="lang_icon.png" alt="Lang">
-                    <div class="lang-label">Languages</div>
-                </button>
-                <div class="lang-menu" id="langMenu">
-                    <a href="contact.html" class="lang-item is-current">JP</a>
-                    <a href="contact_en.html" class="lang-item">EN</a>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <div class="fixed-menu-btn" id="menuBtn">
-        <span></span>
-        <span></span>
-        <span></span>
-    </div>
-
-    <nav class="menu-overlay" id="navOverlay">
-        <a href="index.html#top" class="menu-link" style="--active-color: #fff;">TOP</a>
-        <a href="index.html#news" class="menu-link" style="--active-color: #90ee90;">NEWS</a>
-        <a href="index.html#archive" class="menu-link" style="--active-color: #aaa;">ARCHIVE</a>
-        <a href="index.html#voice" class="menu-link" style="--active-color: #3b7a57;">VOICE</a>
-        <a href="index.html#profile" class="menu-link" style="--active-color: #c9aa5a;">PROFILE</a>
-        <a href="#" class="menu-link" style="--active-color: #333;">CONTACT</a>
-    </nav>
-
-    <main class="main-content">
-        <h1 class="page-title fade-up">CONTACT</h1>
-
-        <div class="contact-body fade-up delay-1">
-            <p class="intro-text">
-                鳳聲晴久にお問い合わせは、<br>
+<header class="topbar">
+<div class="topbar-inner">
+<a class="brand-left" href="index.html">
+<div class="brand-stacked">
+<div class="b1">HARUHISA</div>
+<div class="b2">HOSEI</div>
+</div>
+<div class="brand-divider"></div>
+<img alt="鳳聲晴久 公式ロゴ" class="brand-logo" src="officialhedderlogo.png"/>
+</a>
+<div class="topbar-right">
+<button class="lang-btn" id="langToggle" type="button" aria-label="Open language menu" aria-controls="langMenu" aria-expanded="false">
+<img alt="言語切替" src="lang_icon.png"/>
+<div class="lang-label">Languages</div>
+</button>
+<div class="lang-menu" id="langMenu">
+<a class="lang-item is-current" href="contact.html" aria-current="page">JP</a>
+<a class="lang-item" href="contact_en.html">EN</a>
+</div>
+</div>
+</div>
+</header>
+<div class="fixed-menu-btn" id="menuBtn" role="button" tabindex="0" aria-label="メニューを開く" aria-controls="navOverlay" aria-expanded="false">
+<span></span>
+<span></span>
+<span></span>
+</div>
+<nav class="menu-overlay" id="navOverlay">
+<a class="menu-link" href="index.html#top" style="--active-color: #fff;">TOP</a>
+<a class="menu-link" href="index.html#news" style="--active-color: #90ee90;">NEWS</a>
+<a class="menu-link" href="index.html#archive" style="--active-color: #aaa;">ARCHIVE</a>
+<a class="menu-link" href="index.html#voice" style="--active-color: #3b7a57;">VOICE</a>
+<a class="menu-link" href="index.html#profile" style="--active-color: #c9aa5a;">PROFILE</a>
+<a class="menu-link" href="#" style="--active-color: #333;">CONTACT</a>
+</nav>
+<main class="main-content" id="main">
+<h1 class="page-title fade-up">CONTACT</h1>
+<div class="contact-body fade-up delay-1">
+<p class="intro-text">
+                鳳聲晴久にお問い合わせは、<br/>
                 以下のメールアドレスにご連絡ください。
             </p>
-
-            <div class="note-list">
-                <div class="note-item">
-                    <span class="note-mark">※</span>
-                    <span class="note-text">お名前、会社名、メールアドレス、電話番号、お問い合わせ内容を明記の上ご連絡ください。</span>
-                </div>
-                <div class="note-item">
-                    <span class="note-mark">※</span>
-                    <span class="note-text">お問い合わせの内容により返信が遅れたり返信いたしかねることもございます。あらかじめご了承ください。</span>
-                </div>
-            </div>
-
-            <div style="text-align: center; margin-top: 50px;">
-                <a href="mailto:contact@haruhisa-hosei.com" class="email-link fade-up delay-2">
+<div class="note-list">
+<div class="note-item">
+<span class="note-mark">※</span>
+<span class="note-text">お名前、会社名、メールアドレス、電話番号、お問い合わせ内容を明記の上ご連絡ください。</span>
+</div>
+<div class="note-item">
+<span class="note-mark">※</span>
+<span class="note-text">お問い合わせの内容により返信が遅れたり返信いたしかねることもございます。あらかじめご了承ください。</span>
+</div>
+</div>
+<div style="text-align: center; margin-top: 50px;">
+<a class="email-link fade-up delay-2" href="mailto:contact@haruhisa-hosei.com">
                     contact@haruhisa-hosei.com
                 </a>
-            </div>
-        </div>
-    </main>
-
-    <footer>
-        &copy; HARUHISA HOSEI All Rights Reserved.
+</div>
+</div>
+</main>
+<footer>
+        © HARUHISA HOSEI All Rights Reserved.
     </footer>
-
-    <script>
+<script>
         document.addEventListener('DOMContentLoaded', function() {
             // ハンバーガーメニュー
             const menuBtn = document.getElementById('menuBtn');
@@ -335,5 +383,84 @@
             }
         });
     </script>
+
+<script>
+(function(){
+  function onReady(fn){ if(document.readyState!=='loading') fn(); else document.addEventListener('DOMContentLoaded', fn); }
+  onReady(function(){
+    var menuBtn = document.getElementById('menuBtn');
+    var navOverlay = document.getElementById('navOverlay');
+    var langToggle = document.getElementById('langToggle');
+    var langMenu = document.getElementById('langMenu');
+
+    function setExpanded(el, val){ if(!el) return; el.setAttribute('aria-expanded', val ? 'true' : 'false'); }
+
+    // Hamburger: add keyboard support + aria sync (works even if existing click handler exists)
+    if(menuBtn && navOverlay){
+      menuBtn.addEventListener('click', function(){
+        setExpanded(menuBtn, menuBtn.classList.contains('is-open'));
+      }, true);
+
+      menuBtn.addEventListener('keydown', function(e){
+        if(e.key === 'Enter' || e.key === ' '){
+          e.preventDefault();
+          menuBtn.click();
+        }
+      });
+    }
+
+    // Language menu: aria sync + escape close
+    if(langToggle && langMenu){
+      langToggle.addEventListener('click', function(){
+        setExpanded(langToggle, langMenu.classList.contains('is-open'));
+      }, true);
+    }
+
+    document.addEventListener('keydown', function(e){
+      if(e.key !== 'Escape') return;
+
+      if(langMenu && langMenu.classList.contains('is-open')){
+        langMenu.classList.remove('is-open');
+        setExpanded(langToggle, false);
+      }
+      if(menuBtn && menuBtn.classList.contains('is-open')){
+        menuBtn.classList.remove('is-open');
+        if(navOverlay) navOverlay.classList.remove('is-open');
+        setExpanded(menuBtn, false);
+      }
+    });
+
+    // Click-outside close for language menu (if not already)
+    if(langToggle && langMenu){
+      document.addEventListener('click', function(e){
+        if(langMenu.classList.contains('is-open') &&
+           !langToggle.contains(e.target) &&
+           !langMenu.contains(e.target)){
+          langMenu.classList.remove('is-open');
+          setExpanded(langToggle, false);
+        }
+      });
+    }
+
+    // Touch feedback for hamburger (instant "pressed" feel)
+    if(menuBtn){
+      var pressOn = function(){ menuBtn.classList.add('is-pressing'); };
+      var pressOff = function(){ menuBtn.classList.remove('is-pressing'); };
+
+      menuBtn.addEventListener('pointerdown', pressOn);
+      menuBtn.addEventListener('pointerup', pressOff);
+      menuBtn.addEventListener('pointercancel', pressOff);
+      menuBtn.addEventListener('pointerleave', pressOff);
+      // Fallback for older iOS Safari
+      menuBtn.addEventListener('touchstart', pressOn, {passive:true});
+      menuBtn.addEventListener('touchend', pressOff);
+      menuBtn.addEventListener('touchcancel', pressOff);
+    }
+
+  });
+})();
+</script>
+
 </body>
+<!-- build: improved 2026-01-02 -->
 </html>

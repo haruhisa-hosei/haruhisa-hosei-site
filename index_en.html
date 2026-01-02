@@ -1,40 +1,46 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <title>Haruhisa Hosei | Japanese Flute Musician Official Site</title>
-<meta name="description" content="Official website of Haruhisa Hosei, a Japanese traditional flute musician. Profile, performances, and works.">
+<meta content="Official website of Haruhisa Hosei, a Japanese traditional flute musician. Profile, performances, and works." name="description"/>
+<meta content="website" property="og:type"/>
+<meta content="HARUHISA HOSEI OFFICIAL SITE" property="og:site_name"/>
+<meta content="Haruhisa Hosei | Japanese Flute Musician Official Site" property="og:title"/>
+<meta content="Official website of Haruhisa Hosei, a Japanese traditional flute musician. Profile, performances, and works." property="og:description"/>
+<meta content="https://haruhisa-hosei.com/index_en.html" property="og:url"/>
+<meta content="https://haruhisa-hosei.com/og-image.png" property="og:image"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Haruhisa Hosei | Japanese Flute Musician Official Site"/>
+<meta name="twitter:description" content="Official website of Haruhisa Hosei, a Japanese traditional flute musician. Profile, performances, and works."/>
+<meta name="twitter:image" content="https://haruhisa-hosei.com/og-image.png"/>
 
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="HARUHISA HOSEI OFFICIAL SITE">
-<meta property="og:title" content="Haruhisa Hosei | Japanese Flute Musician Official Site">
-<meta property="og:description" content="Official website of Haruhisa Hosei, a Japanese traditional flute musician. Profile, performances, and works.">
-<meta property="og:url" content="https://haruhisa-hosei.com/">
-<meta property="og:image" content="https://haruhisa-hosei.com/og-image.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+<link href="/favicon-32.png" rel="icon" sizes="32x32"/>
+<link href="/apple-touch-icon.png" rel="apple-touch-icon"/>
+<meta charset="utf-8"/>
+<meta name="theme-color" content="#000000"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link rel="preload" as="image" href="officialtop.png"/>
+<link rel="preload" as="image" href="officiallogo.png"/>
+<link rel="preload" as="image" href="officialhedderlogo.png"/>
+<link rel="preload" as="image" href="bamboo.png"/>
 
-<link rel="icon" href="/favicon-32.png" sizes="32x32">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HARUHISA HOSEI OFFICIAL SITE</title>
+<link href="https://haruhisa-hosei.com/index_en.html" rel="canonical"/>
+<link href="https://haruhisa-hosei.com/" hreflang="ja" rel="alternate"/>
+<link href="https://haruhisa-hosei.com/index_en.html" hreflang="en" rel="alternate"/>
 
-    
-    <link rel="canonical" href="https://haruhisa-hosei.com/index_en.html">
-    <link rel="alternate" hreflang="ja" href="https://haruhisa-hosei.com/">
-    <link rel="alternate" hreflang="en" href="https://haruhisa-hosei.com/index_en.html">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="HARUHISA HOSEI OFFICIAL SITE">
-    <meta property="og:url" content="https://haruhisa-hosei.com/index_en.html">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
 
-    <style>
+<link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<style>
         /* =========================================
            ▼ Base CSS ▼
            ========================================= */
@@ -322,8 +328,41 @@
         .contact-link-btn:hover { background-color: #111; color: #fff; letter-spacing: 0.25em; }
         .contact-arrow { font-size: 1.5rem; }
 
-    </style>
+    
 
+/* --- A11y polish (focus + skip link + reduced motion) --- */
+.skip-link{
+  position:absolute; left:-9999px; top:10px;
+  background:#fff; color:#111; border:2px solid #111;
+  padding:10px 14px; z-index:20000; font-family:'Lato',sans-serif;
+  letter-spacing:0.08em;
+}
+.skip-link:focus{ left:10px; }
+:focus-visible{
+  outline: 3px solid rgba(0,0,0,0.75);
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce){
+  html:focus-within{ scroll-behavior:auto; }
+  *, *::before, *::after{
+    animation-duration:0.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:0.01ms !important;
+  }
+}
+
+        .hero-tagline{
+            font-family: 'Lato', sans-serif;
+            font-size: 0.95rem;
+            letter-spacing: 0.14em;
+            margin-top: 14px;
+            opacity: 0.9;
+            text-shadow: 0 10px 24px rgba(0,0,0,0.35);
+        }
+        @media (max-width: 480px){
+            .hero-tagline{ font-size: 0.9rem; letter-spacing: 0.12em; }
+        }
+</style>
 <style id="newsStaggerAnim">
 /* NEWS stagger reveal (in case original CSS doesn't define it) */
 #news .news-item.fade-up { 
@@ -339,223 +378,228 @@
 @media (prefers-reduced-motion: reduce) {
   #news .news-item.fade-up { transition: none; transform: none; opacity: 1; }
 }
-</style>
 
+/* --- Touch response polish (hamburger + menu links) --- */
+.fixed-menu-btn, .lang-btn, .menu-link{
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.fixed-menu-btn{
+  user-select: none;
+}
+.fixed-menu-btn.is-pressing{
+  transform: scale(0.98);
+}
+.menu-link{
+  padding: 14px 10px;
+}
+.menu-link:active{
+  opacity: 0.75;
+}
+
+/* --- Hide hero tagline under title (kept in HTML but not shown) --- */
+.hero-tagline{ display:none !important; }
+
+</style>
+<script ></script>
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 
-    <div class="top-sun-light" id="sunLight"></div>
-
-    <div class="fixed-menu-btn" id="menuBtn">
-        <span></span><span></span><span></span>
-    </div>
-
-    <nav class="menu-overlay" id="navOverlay">
-        <a href="#top" class="menu-link" style="--active-color: #fff;">TOP</a>
-        <a href="#news" class="menu-link" style="--active-color: #90ee90;">NEWS</a>
-        <a href="#archive" class="menu-link" style="--active-color: #aaa;">ARCHIVE</a>
-        <a href="#voice" class="menu-link" style="--active-color: #3b7a57;">VOICE</a>
-        <a href="#profile" class="menu-link" style="--active-color: #c9aa5a;">PROFILE</a>
-        <a href="#contact" class="menu-link" style="--active-color: #333;">CONTACT</a>
-    </nav>
-    
-    <header id="top">
-        <div class="topbar">
-            <div class="topbar-inner">
-                <div class="brand-left">
-                    <div class="brand-stacked">
-                        <div class="b1">HARUHISA</div><div class="b2">HOSEI</div>
-                    </div>
-                    <div class="brand-divider"></div>
-                    <img class="brand-logo" src="officialhedderlogo.png" alt="logo">
-                </div>
-                <div class="topbar-right">
-                    <button class="lang-btn" id="langToggle" type="button">
-                        <img src="lang_icon.png" alt="Lang">
-                        <div class="lang-label">Languages</div>
-                    </button>
-                    <div class="lang-menu" id="langMenu">
-                        <a href="index.html" class="lang-item">JP</a>
-                        <a href="index_en.html" class="lang-item is-current">EN</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="hero-inner">
-            <img src="officiallogo.png" alt="logo" class="profile-image hero-reveal hero-delay-logo">
-            <h1 class="english-name hero-reveal hero-delay-title">HARUHISA HOSEI</h1>
-            <p class="sub-title hero-reveal hero-delay-sub">OFFICIAL SITE</p>
-        </div>
-    </header>
-
-    <section id="news" class="news-section">
-        <h2 class="news-title fade-up">NEWS</h2>
-        <div class="news-container">
-            <div class="news-item fade-up delay-1">
-                <span class="news-date">2026.1.10</span>
-                <div class="news-text">
-                    Appearance in "Ichiryu Manbai".<br>
-                    Venue: Kanze Noh Theater (GINZA SIX B3F)<br>
-                    Time: Matinee at 12:00 / Soiree at 16:00<br>
-                    <a href="https://ichiryumanbai.com/info/202105_R8#actors" target="_blank" rel="noopener">Performance Details & Tickets</a>
-                </div>
-            </div>
-
-            <div class="news-item fade-up delay-2">
-                <span class="news-date">2026.1.01</span>
-                <div class="news-text">
-                    Appearance in "Edo Kotobuki Jishi" at The Okura Tokyo.<br>
-                    New Year's lion dance performance and parade.<br>
-                    Venue: Prestige Tower Main Lobby and other areas.<br>
-                    <a href="https://theokuratokyo.jp" target="_blank" rel="noopener">Hotel Official Website</a>
-                </div>
-            </div>
-
-            <div class="news-item fade-up delay-3">
-                <span class="news-date">2025.12.25</span>
-                <div class="news-text">
-                    Official website opened.<br>
+<div class="top-sun-light" id="sunLight"></div>
+<div class="fixed-menu-btn" id="menuBtn" role="button" tabindex="0" aria-label="Open menu" aria-controls="navOverlay" aria-expanded="false">
+<span></span><span></span><span></span>
+</div>
+<nav class="menu-overlay" id="navOverlay">
+<a class="menu-link" href="#top" style="--active-color: #fff;">TOP</a>
+<a class="menu-link" href="#news" style="--active-color: #90ee90;">NEWS</a>
+<a class="menu-link" href="#archive" style="--active-color: #aaa;">ARCHIVE</a>
+<a class="menu-link" href="#voice" style="--active-color: #3b7a57;">VOICE</a>
+<a class="menu-link" href="#profile" style="--active-color: #c9aa5a;">PROFILE</a>
+<a class="menu-link" href="#contact" style="--active-color: #333;">CONTACT</a>
+</nav>
+<header id="top">
+<div class="topbar">
+<div class="topbar-inner">
+<div class="brand-left">
+<div class="brand-stacked">
+<div class="b1">HARUHISA</div><div class="b2">HOSEI</div>
+</div>
+<div class="brand-divider"></div>
+<img alt="Haruhisa Hosei official logo" class="brand-logo" src="officialhedderlogo.png"/>
+</div>
+<div class="topbar-right">
+<button class="lang-btn" id="langToggle" type="button" aria-label="Open language menu" aria-controls="langMenu" aria-expanded="false">
+<img alt="Language menu" src="lang_icon.png"/>
+<div class="lang-label">Languages</div>
+</button>
+<div class="lang-menu" id="langMenu">
+<a class="lang-item" href="index.html">JP</a>
+<a class="lang-item is-current" href="index_en.html" aria-current="page">EN</a>
+</div>
+</div>
+</div>
+</div>
+<div class="hero-inner">
+<img alt="Haruhisa Hosei official logo" class="profile-image hero-reveal hero-delay-logo" src="officiallogo.png"/>
+<h1 class="english-name hero-reveal hero-delay-title">HARUHISA HOSEI</h1>
+<p class="sub-title hero-reveal hero-delay-sub">OFFICIAL SITE</p>
+<p class="hero-tagline hero-reveal hero-delay-sub">Japanese traditional flute musician — Nohkan / Shinobue</p>
+</div>
+</header>
+<main id="main">
+<section class="news-section" id="news">
+<h2 class="news-title fade-up">NEWS</h2>
+<div class="news-container">
+<div class="news-item fade-up delay-1">
+<span class="news-date">2026.1.10</span>
+<div class="news-text">
+                    Appearance in "Ichiryu Manbai".<br/>
+                    Venue: Kanze Noh Theater (GINZA SIX B3F)<br/>
+                    Time: Matinee at 12:00 / Soiree at 16:00<br/>
+<a href="https://ichiryumanbai.com/info/202105_R8#actors" rel="noopener noreferrer" target="_blank">Performance Details &amp; Tickets</a>
+</div>
+</div>
+<div class="news-item fade-up delay-2">
+<span class="news-date">2026.1.01</span>
+<div class="news-text">
+                    Appearance in "Edo Kotobuki Jishi" at The Okura Tokyo.<br/>
+                    New Year's lion dance performance and parade.<br/>
+                    Venue: Prestige Tower Main Lobby and other areas.<br/>
+<a href="https://theokuratokyo.jp" rel="noopener noreferrer" target="_blank">Hotel Official Website</a>
+</div>
+</div>
+<div class="news-item fade-up delay-3">
+<span class="news-date">2025.12.25</span>
+<div class="news-text">
+                    Official website opened.<br/>
                     We will be updating information on future activities.
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="archive" class="archive-section">
-        <div class="archive-content">
-            <h2 class="section-title fade-up archive-title">ARCHIVE</h2>
-            <div class="swiper archive-swiper fade-up delay-1">
-                <div class="swiper-wrapper">
-                    
-                    <div class="swiper-slide">
-                        <div class="archive-card">
-                            <img src="archive_2022.png" alt="Flyer">
-                            <div class="archive-info">
-                                <div class="archive-date">2022.7.6</div>
-                                <div class="archive-name">Haruhisa Hosei<br>2nd Recital</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="swiper-slide">
-                        <div class="archive-card">
-                            <img src="archive_2019.png" alt="Flyer">
-                            <div class="archive-info">
-                                <div class="archive-date">2019.4.18</div>
-                                <div class="archive-name">Kioi Afternoon Concert<br>Journey - Origin -</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="swiper-slide">
-                        <div class="archive-card">
-                            <img src="archive_2017.png" alt="Flyer">
-                            <div class="archive-info">
-                                <div class="archive-date">2017.11.24</div>
-                                <div class="archive-name">Haruhisa Hosei Concert<br>Touch the World of Fue</div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <section id="voice" class="voice-section">
-        <h2 class="section-title fade-up">VOICE</h2>
-        <div class="swiper swiper-container fade-up delay-1">
-            <div class="swiper-wrapper">
-                
-                <div class="swiper-slide voice-slide">
-                    <div class="voice-img-box">
-                        <img src="voice_card_logo_text_black.png" alt="Logo" class="voice-logo-placeholder">
-                    </div>
-                    <div class="voice-content">
-                        <div class="voice-date-text">2025.12.27</div>
-                        <p class="voice-body">
-                            Editing the website.<br>
+</div>
+</div>
+</section>
+<section class="archive-section" id="archive">
+<div class="archive-content">
+<h2 class="section-title fade-up archive-title">ARCHIVE</h2>
+<div class="swiper archive-swiper fade-up delay-1">
+<div class="swiper-wrapper">
+<div class="swiper-slide">
+<div class="archive-card">
+<img alt="Flyer" src="archive_2022.png"" loading="lazy" decoding="async">
+<div class="archive-info">
+<div class="archive-date">2022.7.6</div>
+<div class="archive-name">Haruhisa Hosei<br/>2nd Recital</div>
+</div>
+</div>
+</div>
+<div class="swiper-slide">
+<div class="archive-card">
+<img alt="Flyer" src="archive_2019.png"" loading="lazy" decoding="async">
+<div class="archive-info">
+<div class="archive-date">2019.4.18</div>
+<div class="archive-name">Kioi Afternoon Concert<br/>Journey - Origin -</div>
+</div>
+</div>
+</div>
+<div class="swiper-slide">
+<div class="archive-card">
+<img alt="Flyer" src="archive_2017.png"" loading="lazy" decoding="async">
+<div class="archive-info">
+<div class="archive-date">2017.11.24</div>
+<div class="archive-name">Haruhisa Hosei Concert<br/>Touch the World of Fue</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="voice-section" id="voice">
+<h2 class="section-title fade-up">VOICE</h2>
+<div class="swiper swiper-container fade-up delay-1">
+<div class="swiper-wrapper">
+<div class="swiper-slide voice-slide">
+<div class="voice-img-box">
+<img alt="Haruhisa Hosei official logo" class="voice-logo-placeholder" src="voice_card_logo_text_black.png"" loading="lazy" decoding="async">
+</div>
+<div class="voice-content">
+<div class="voice-date-text">2025.12.27</div>
+<p class="voice-body">
+                            Editing the website.<br/>
                             Almost there!
                         </p>
-                    </div>
-                </div>
-
-                <div class="swiper-slide voice-slide">
-                    <div class="voice-img-box">
-                        <img src="voice_party.jpg" alt="Photo" class="voice-photo">
-                    </div>
-                    <div class="voice-content">
-                        <div class="voice-date-text">2025.12.23</div>
-                        <p class="voice-body">
-                            At the Christmas party.<br>
+</div>
+</div>
+<div class="swiper-slide voice-slide">
+<div class="voice-img-box">
+<img alt="Photo" class="voice-photo" src="voice_party.jpg"" loading="lazy" decoding="async" loading="lazy" decoding="async">
+</div>
+<div class="voice-content">
+<div class="voice-date-text">2025.12.23</div>
+<p class="voice-body">
+                            At the Christmas party.<br/>
                             It was a wonderful time.
                         </p>
-                    </div>
-                </div>
-
-                <div class="swiper-slide voice-slide">
-                    <div class="voice-img-box">
-                        <img src="voice_steak.jpg" alt="Photo" class="voice-photo">
-                    </div>
-                    <div class="voice-content">
-                        <div class="voice-date-text">2025.12.3</div>
-                        <p class="voice-body">
-                            Steak at the wrap-up party!<br>
+</div>
+</div>
+<div class="swiper-slide voice-slide">
+<div class="voice-img-box">
+<img alt="Photo" class="voice-photo" src="voice_steak.jpg"" loading="lazy" decoding="async" loading="lazy" decoding="async">
+</div>
+<div class="voice-content">
+<div class="voice-date-text">2025.12.3</div>
+<p class="voice-body">
+                            Steak at the wrap-up party!<br/>
                             Wow!
                         </p>
-                    </div>
-                </div>
-
-            </div>
-            <div class="swiper-button-next"></div>
-            <div class="swiper-button-prev"></div>
-        </div>
-    </section>
-
-    <section id="profile" class="profile-section">
-        <div class="profile-card">
-            <h2 class="section-title fade-up">PROFILE</h2>
-            <div class="profile-names fade-up delay-1">
-                <div class="profile-name-ja">鳳聲晴久</div>
-                <div class="profile-name-en">HARUHISA HOSEI</div>
-            </div>
-            <div class="profile-anim-wrap fade-in delay-2" aria-label="profile animation">
-                <img class="person-frame" src="profile.jpg" alt="Haruhisa Hosei">
-                <img class="notes-frame" src="notes_01.png" alt="">
-            </div>
-            <div class="profile-role fade-up delay-3">Shinobue & Nohkan Player / Traditional Arts Producer</div>
-            <div class="profile-text slide-left delay-4">
-                Graduated from Tokyo University of the Arts, Department of Traditional Japanese Music.<br>
-                Studied under Taneo Wakayama and Haruo Hosei in the Hosei School.<br>
-                <br>
-                Based on classical Japanese music such as Edo Bayashi, Kagura, and Nagauta, performing on stages both in Japan and abroad. Continues activities to connect the world of the flute to the next generation through collaborations with contemporary music and jazz, regional cultural heritage projects, and hands-on workshops.<br>
-                <br>
-                Main Productions & Appearances:<br>
-                - Chiba Prefecture 150th Anniversary Commemorative Performance: Koshiro Matsumoto Kabuki Dance Performance "Renjishi" (Appearance/Production)<br>
-                - Traditional Arts Schola "Let's Enjoy Kabuki" Production (Lecture, Demonstration, Instrument Experience)<br>
+</div>
+</div>
+</div>
+<div class="swiper-button-next"></div>
+<div class="swiper-button-prev"></div>
+</div>
+</section>
+<section class="profile-section" id="profile">
+<div class="profile-card">
+<h2 class="section-title fade-up">PROFILE</h2>
+<div class="profile-names fade-up delay-1">
+<div class="profile-name-ja">鳳聲晴久</div>
+<div class="profile-name-en">HARUHISA HOSEI</div>
+</div>
+<div aria-label="profile animation" class="profile-anim-wrap fade-in delay-2">
+<img alt="Haruhisa Hosei" class="person-frame" src="profile.jpg"" loading="lazy" decoding="async">
+<img alt="" class="notes-frame" src="notes_01.png"" loading="lazy" decoding="async">
+</div>
+<div class="profile-role fade-up delay-3">Shinobue &amp; Nohkan Player / Traditional Arts Producer</div>
+<div class="profile-text slide-left delay-4">
+                Graduated from Tokyo University of the Arts, Department of Traditional Japanese Music.<br/>
+                Studied under Taneo Wakayama and Haruo Hosei in the Hosei School.<br/>
+<br/>
+                Based on classical Japanese music such as Edo Bayashi, Kagura, and Nagauta, performing on stages both in Japan and abroad. Continues activities to connect the world of the flute to the next generation through collaborations with contemporary music and jazz, regional cultural heritage projects, and hands-on workshops.<br/>
+<br/>
+                Main Productions &amp; Appearances:<br/>
+                - Chiba Prefecture 150th Anniversary Commemorative Performance: Koshiro Matsumoto Kabuki Dance Performance "Renjishi" (Appearance/Production)<br/>
+                - Traditional Arts Schola "Let's Enjoy Kabuki" Production (Lecture, Demonstration, Instrument Experience)<br/>
                 - Niigata City Request "Kakubeijishi" Hayashi Restoration Project (Planning/Instruction)
             </div>
-        </div>
-    </section>
-
-    <section id="contact" class="contact-preview-section">
-        <h2 class="section-title fade-up">CONTACT</h2>
-        <p class="fade-up delay-1" style="line-height:2.0; font-size:0.95rem;">
-            For performance requests, workshop consultations,<br>
+</div>
+</section>
+<section class="contact-preview-section" id="contact">
+<h2 class="section-title fade-up">CONTACT</h2>
+<p class="fade-up delay-1" style="line-height:2.0; font-size:0.95rem;">
+            For performance requests, workshop consultations,<br/>
             and other inquiries, please contact us here.
         </p>
-        <a href="contact_en.html" class="contact-link-btn fade-up delay-2">
+<a class="contact-link-btn fade-up delay-2" href="contact_en.html">
             Contact Us <span class="contact-arrow">→</span>
-        </a>
-    </section>
-    
-    <footer>
-        &copy; HARUHISA HOSEI All Rights Reserved.
+</a>
+</section>
+</main>
+<footer>
+        © HARUHISA HOSEI All Rights Reserved.
     </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
         document.addEventListener('DOMContentLoaded', function() {
             
             // Swiper (VOICE)
@@ -660,7 +704,6 @@
 
         });
     </script>
-
 <script id="siteContent" type="application/json">
 {
   "news": [
@@ -805,7 +848,6 @@
   ]
 }
 </script>
-
 <script>
 // CONTENT_JSON_RENDER_V5_ANIM_VOICE_SORT
 (async function() {
@@ -830,7 +872,21 @@
     }
   }
 
-  function parseDate(s) {
+  
+  function isSafeHttpUrl(u) {
+    const s = String(u || "").trim();
+    return /^https?:\/\//i.test(s);
+  }
+  function escapeText(s) {
+    return String(s || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+function parseDate(s) {
     // accepts YYYY.M.D or YYYY.MM.DD
     const m = String(s||"").match(/^(\d{4})\.(\d{1,2})\.(\d{1,2})$/);
     if (!m) return 0;
@@ -848,7 +904,7 @@
     const htmlNews = data.news.map((item, idx) => {
       const t = item[LANG] || {};
       const link = (t.link && t.link.href && t.link.text)
-        ? `<a href="${t.link.href}" target="_blank" rel="noopener">${t.link.text}</a>`
+        ? `<a href="${t.link.href}" target="_blank" rel="noopener noreferrer">${t.link.text}</a>`
         : "";
       const body = t.html || "";
       return `
@@ -905,7 +961,7 @@
       return `
         <div class="swiper-slide voice-slide">
           <div class="voice-img-box">
-            <img src="${img}" alt="${alt}" class="${imgClass}">
+            <img src="${img}" alt="${alt}" class="${imgClass}" loading="lazy" decoding="async">
           </div>
           <div class="voice-content">
             <div class="voice-date-text">${v.date || ""}</div>
@@ -940,5 +996,83 @@
 })();
 </script>
 
+<script>
+(function(){
+  function onReady(fn){ if(document.readyState!=='loading') fn(); else document.addEventListener('DOMContentLoaded', fn); }
+  onReady(function(){
+    var menuBtn = document.getElementById('menuBtn');
+    var navOverlay = document.getElementById('navOverlay');
+    var langToggle = document.getElementById('langToggle');
+    var langMenu = document.getElementById('langMenu');
+
+    function setExpanded(el, val){ if(!el) return; el.setAttribute('aria-expanded', val ? 'true' : 'false'); }
+
+    // Hamburger: add keyboard support + aria sync (works even if existing click handler exists)
+    if(menuBtn && navOverlay){
+      menuBtn.addEventListener('click', function(){
+        setExpanded(menuBtn, menuBtn.classList.contains('is-open'));
+      }, true);
+
+      menuBtn.addEventListener('keydown', function(e){
+        if(e.key === 'Enter' || e.key === ' '){
+          e.preventDefault();
+          menuBtn.click();
+        }
+      });
+    }
+
+    // Language menu: aria sync + escape close
+    if(langToggle && langMenu){
+      langToggle.addEventListener('click', function(){
+        setExpanded(langToggle, langMenu.classList.contains('is-open'));
+      }, true);
+    }
+
+    document.addEventListener('keydown', function(e){
+      if(e.key !== 'Escape') return;
+
+      if(langMenu && langMenu.classList.contains('is-open')){
+        langMenu.classList.remove('is-open');
+        setExpanded(langToggle, false);
+      }
+      if(menuBtn && menuBtn.classList.contains('is-open')){
+        menuBtn.classList.remove('is-open');
+        if(navOverlay) navOverlay.classList.remove('is-open');
+        setExpanded(menuBtn, false);
+      }
+    });
+
+    // Click-outside close for language menu (if not already)
+    if(langToggle && langMenu){
+      document.addEventListener('click', function(e){
+        if(langMenu.classList.contains('is-open') &&
+           !langToggle.contains(e.target) &&
+           !langMenu.contains(e.target)){
+          langMenu.classList.remove('is-open');
+          setExpanded(langToggle, false);
+        }
+      });
+    }
+
+    // Touch feedback for hamburger (instant "pressed" feel)
+    if(menuBtn){
+      var pressOn = function(){ menuBtn.classList.add('is-pressing'); };
+      var pressOff = function(){ menuBtn.classList.remove('is-pressing'); };
+
+      menuBtn.addEventListener('pointerdown', pressOn);
+      menuBtn.addEventListener('pointerup', pressOff);
+      menuBtn.addEventListener('pointercancel', pressOff);
+      menuBtn.addEventListener('pointerleave', pressOff);
+      // Fallback for older iOS Safari
+      menuBtn.addEventListener('touchstart', pressOn, {passive:true});
+      menuBtn.addEventListener('touchend', pressOff);
+      menuBtn.addEventListener('touchcancel', pressOff);
+    }
+
+  });
+})();
+</script>
+
 </body>
+<!-- build: improved 2026-01-02 -->
 </html>
