@@ -317,10 +317,10 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
     const htmlVoice = sorted.map((v) => {
       // ★修正ポイント：ここもGASの名前に合わせる
       const body = v[LANG + "_html"] || "";
-      const img = v.image_src || ""; // image.src ではなく image_src
-      const kind = v.image_kind || "photo"; // image.kind ではなく image_kind
-      
-      const imgClass = (kind === "photo") ? "voice-photo" : "voice-logo-placeholder";
+            const kind = v.image_kind || "photo";
+      const imgClass = (kind === "logo") ? "voice-logo-placeholder" : "voice-photo";
+      const img = v.image_src || "";
+
       
       return `
         <div class="swiper-slide voice-slide">
