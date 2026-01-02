@@ -118,7 +118,8 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
 .voice-slide { background: #fff; width: 85%; max-width: 380px; height: 600px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: flex-start; padding: 0; overflow: hidden; }
 .voice-img-box { width: 100%; height: 300px; flex-shrink: 0; margin-bottom: 0; display: flex; justify-content: center; align-items: center; background: #fff; overflow: hidden; }
 .voice-photo { width: 100%; height: 100%; object-fit: cover; display: block; }
-.voice-logo-placeholder { width: 50%; height: auto; opacity: 0.8; object-fit: contain; }
+/* ★修正：ロゴ表示用のサイズ指定を追加 */
+.voice-logo-placeholder { width: 160px !important; height: auto !important; object-fit: contain !important; opacity: 0.9; }
 .voice-content { width: 100%; text-align: left; padding: 20px 30px 30px; flex-grow: 1; }
 .voice-date-text { font-family: 'Lato', sans-serif; font-size: 1.6rem; letter-spacing: 0.1em; margin: 0 0 8px 0; padding-bottom: 8px; border-bottom: 2px solid #111; display: inline-block; width: 100%; }
 .voice-body { font-size: 0.95rem; line-height: 1.8; color: #111; text-align: left; margin-top: 0; }
@@ -204,7 +205,7 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
                 東京藝術大学 音楽学部 邦楽科 卒業<br>鳳聲流にて 若山胤雄師、鳳聲晴雄師に師事<br><br>
                 江戸囃子・神楽・長唄などの古典邦楽を中心に、国内外の舞台で演奏。現代音楽・ジャズとのコラボレーションや、地域文化継承プロジェクト、体験型のワークショップを通じて、笛の世界を次の世代へつなぐ活動を続けています。<br><br>
                 主なプロデュース・出演<br>
-                千葉県誕生150周年記念公演 松本幸四郎 歌舞伎舞踊公演「連獅子」出演・プロデュース<br>
+                千葉県誕生150周年記念公演 松本幸和 歌舞伎舞踊公演「連獅子」出演・プロデュース<br>
                 伝統芸能スコラ「かぶきを楽しもう」プロデュース（講義・実演・楽器体験）<br>
                 新潟市依頼「角兵衛獅子」囃子復元プロジェクト（企画・指導）
             </div>
@@ -242,11 +243,10 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
 
 <script>
 // ==========================================
-//  【GAS完全連動】修正版スクリプト
+//  【GAS完全連動】修復版スクリプト
 // ==========================================
 (async function() {
   const LANG = "ja";
-  // ▼▼ 正しいGASのURL（変更なし） ▼▼
   const API_URL = "https://script.google.com/macros/s/AKfycbwdpDAvg8yLiYGkHOjx9LCGIR67Q-tojNT6VH_AzFY6ThPHE0UVQaGbAO34obe4LQF5/exec";
 
   async function loadJson() {
@@ -276,52 +276,29 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
 
   // ---------- NEWS ----------
   const newsContainer = document.querySelector('#news .news-container');
-  if (newsContainer && Array.isArray(data.news) && data.news.length > 0) {
-    const htmlNews = data.news.map((item, idx) => {
-      // ★修正ポイント：GASのデータ名（ja_htmlなど）に合わせて取得
+  if (newsContainer && Array.isArray(data.news)) {
+    const htmlNews = data.news.map((item) => {
       const body = item[LANG + "_html"] || ""; 
       const linkText = item[LANG + "_link_text"];
       const linkHref = item[LANG + "_link_href"];
-      
-      const link = (linkText && linkHref)
-        ? `<a href="${linkHref}" target="_blank" rel="noopener">${linkText}</a>`
-        : "";
-        
-      return `
-        <div class="news-item fade-up">
-          <span class="news-date">${item.date || ""}</span>
-          <div class="news-text">${body}${link ? "<br>" + link : ""}</div>
-        </div>
-      `;
+      const link = (linkText && linkHref) ? `<a href="${linkHref}" target="_blank" rel="noopener">${linkText}</a>` : "";
+      return `<div class="news-item fade-up"><span class="news-date">${item.date || ""}</span><div class="news-text">${body}${link ? "<br>" + link : ""}</div></div>`;
     }).join("");
-    if (htmlNews.trim()) newsContainer.innerHTML = htmlNews;
-    
-    // アニメーション
-    const items = Array.from(newsContainer.querySelectorAll('.news-item.fade-up'));
-    items.forEach((el, i) => { el.classList.remove('is-visible'); el.dataset.stagger = String(i); });
-    const obs = new IntersectionObserver((entries, obs) => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        setTimeout(() => entry.target.classList.add('is-visible'), 120 * Number(entry.target.dataset.stagger||0));
-        obs.unobserve(entry.target);
-      });
-    }, { root: null, margin: '0px 0px -10% 0px', threshold: 0.15 });
-    items.forEach(el => obs.observe(el));
+    newsContainer.innerHTML = htmlNews;
   }
 
   // ---------- VOICE ----------
   const voiceWrapper = document.querySelector('#voice .swiper-wrapper');
-  if (voiceWrapper && Array.isArray(data.voice) && data.voice.length > 0) {
+  if (voiceWrapper && Array.isArray(data.voice)) {
     const sorted = [...data.voice].sort((a,b) => parseDate(b.date) - parseDate(a.date));
 
     const htmlVoice = sorted.map((v) => {
-      // ★修正ポイント：ここもGASの名前に合わせる
       const body = v[LANG + "_html"] || "";
-            const kind = v.image_kind || "photo";
+      // ★判定を強化：小文字化して空白削除
+      const kind = String(v.image_kind || "").toLowerCase().trim();
       const imgClass = (kind === "logo") ? "voice-logo-placeholder" : "voice-photo";
       const img = v.image_src || "";
 
-      
       return `
         <div class="swiper-slide voice-slide">
           <div class="voice-img-box">
@@ -334,16 +311,13 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
         </div>
       `;
     }).join("");
-    if (htmlVoice.trim()) voiceWrapper.innerHTML = htmlVoice;
+    voiceWrapper.innerHTML = htmlVoice;
     
-    // Swiper更新
-    const el = document.querySelector('#voice .swiper, #voice .swiper-container');
+    const el = document.querySelector('#voice .swiper-container');
     if (el && el.swiper) { el.swiper.update(); el.swiper.slideTo(0, 0); }
   }
 })();
 </script>
-
-
 
 </body>
 </html>
