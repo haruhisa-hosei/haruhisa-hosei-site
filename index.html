@@ -240,34 +240,34 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
         });
     </script>
 
-<script id="siteContent" type="application/json">{"news": [{"date": "2026.1.10", "ja": {"html": "『一粒万倍』に出演いたします。<br>\n会場：観世能楽堂（GINZA SIX 地下3階）<br>\n時間：昼の部 12:00開演 ／ 夜の部 16:00開演<br>", "link": {"href": "https://www.k-kanze.jp/", "text": "公演詳細・チケット情報はこちら"}}, "en": {"html": "Appearance in \"Ichiryu Manbai\".<br>\nVenue: Kanze Noh Theatre (GINZA SIX B3F)<br>\nTime: Matinee 12:00 / Evening 16:00<br>", "link": {"href": "https://www.k-kanze.jp/", "text": "Performance details / Tickets"}}}, {"date": "2026.1.01", "ja": {"html": "The Okura Tokyoにて『石渡大介社中 江戸寿獅子』に出演します。<br>\n新春の獅子舞練り歩きを行います。<br>\n会場：プレステージタワー メインロビーほか<br>", "link": {"href": "https://theokuratokyo.jp", "text": "ホテル公式サイトはこちら"}}, "en": {"html": "Appearance in \"Edo Kotobuki Jishi\" at The Okura Tokyo.<br>\nNew Year's lion dance performance and parade.<br>\nVenue: Prestige Tower Main Lobby and other areas.<br>", "link": {"href": "https://theokuratokyo.jp", "text": "Hotel Official Website"}}}, {"date": "2025.12.25", "ja": {"html": "鳳聲晴久オフィシャルサイトを開設いたしました。<br>\n今後の活動情報などを発信してまいります。"}, "en": {"html": "Official website opened.<br>\nWe will be updating information on future activities."}}], "voice": [{"date": "2026.01.01", "image": {"src": "voice_logo_newyear_2026.png", "kind": "logo", "alt": {"ja": "新年のご挨拶", "en": "New Year Greeting"}}, "ja": {"html": "謹んで新年のお慶びを申し上げます。<br><br>本年も、音と間を大切にしながら、<br>一つ一つの舞台に向き合ってまいります。<br><br>どうぞよろしくお願い申し上げます。"}, "en": {"html": "Wishing you a very happy New Year.<br><br>This year, I will continue to approach each stage<br>with care for sound, silence, and space.<br><br>Thank you for your continued support."}}, {"date": "2025.12.27", "image": {"src": "voice_card_logo_text_black.png", "kind": "logo", "alt": {"ja": "ロゴ", "en": "Logo"}}, "ja": {"html": "ホームページ編集中。<br>\nもう少しだー"}, "en": {"html": "Editing the website.<br>\nAlmost there!"}}, {"date": "2025.12.23", "image": {"src": "voice_party.jpg", "kind": "photo", "alt": {"ja": "写真", "en": "Photo"}}, "ja": {"html": "クリスマスパーティーにて。<br>\n楽しいひとときでした。"}, "en": {"html": "At the Christmas party.<br>\nIt was a wonderful time."}}, {"date": "2025.12.03", "image": {"src": "voice_steak.jpg", "kind": "photo", "alt": {"ja": "写真", "en": "Photo"}}, "ja": {"html": "打ち上げでステーキ！<br>\nワオ"}, "en": {"html": "Steak at the wrap-up party!<br>\nWow!"}}]}</script>
-
 <script>
-// CONTENT_JSON_RENDER_V5_ANIM_VOICE_SORT
+// ==========================================
+//  Google Apps Script (GAS) Data Fetcher
+// ==========================================
 (async function() {
   const LANG = "ja";
-
-  function readEmbedded() {
-    const el = document.getElementById("siteContent");
-    if (!el) return null;
-    try { return JSON.parse(el.textContent); } catch(e) { return null; }
-  }
+  // ▼▼ あなたが取得した最新のGAS URL ▼▼
+  const API_URL = "https://script.google.com/macros/s/AKfycbwdpDAvg8yLiYGkHOjx9LCGIR67Q-tojNT6VH_AzFY6ThPHE0UVQaGbAO34obe4LQF5/exec";
 
   async function loadJson() {
     try {
-      const res = await fetch("./content.json?v=" + Date.now(), { cache: "no-store" });
-      if (!res.ok) throw new Error("HTTP " + res.status);
+      // GASからデータを取得
+      const res = await fetch(API_URL);
+      if (!res.ok) throw new Error("GAS HTTP " + res.status);
       return await res.json();
     } catch (e) {
-      const embedded = readEmbedded();
-      if (embedded) return embedded;
-      console.warn("content.json load failed", e);
-      return null;
+      console.warn("GAS load failed, trying backup content.json...", e);
+      // 万が一GASがダメなら、フォルダ内の content.json を読みに行く（保険）
+      try {
+        const res2 = await fetch("./content.json?v=" + Date.now(), { cache: "no-store" });
+        return await res2.json();
+      } catch (e2) {
+        return null;
+      }
     }
   }
 
   function parseDate(s) {
-    // accepts YYYY.M.D or YYYY.MM.DD
     const m = String(s||"").match(/^(\d{4})\.(\d{1,2})\.(\d{1,2})$/);
     if (!m) return 0;
     const y = Number(m[1]), mo = Number(m[2])-1, d = Number(m[3]);
@@ -296,37 +296,20 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
     }).join("");
     if (htmlNews.trim()) newsContainer.innerHTML = htmlNews;
 
-    // scroll-based stagger reveal (each item rises when it enters viewport)
-  const items = Array.from(newsContainer.querySelectorAll('.news-item.fade-up'));
-  items.forEach((el, i) => {
-    el.classList.remove('is-visible');
-    el.dataset.stagger = String(i);
-  });
-  
-  const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (prefersReduced) {
-    items.forEach(el => el.classList.add('is-visible'));
-  } else {
-    // create (or recreate) a dedicated observer for NEWS items
-    if (window.__newsObserver) {
-      try { window.__newsObserver.disconnect(); } catch(e){}
-    }
-    window.__newsObserver = new IntersectionObserver((entries, obs) => {
+    // Anim
+    const items = Array.from(newsContainer.querySelectorAll('.news-item.fade-up'));
+    items.forEach((el, i) => { el.classList.remove('is-visible'); el.dataset.stagger = String(i); });
+    const obs = new IntersectionObserver((entries, obs) => {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
-        const el = entry.target;
-        const i = Number(el.dataset.stagger || 0);
-        // delay gives the "順に出てくる" feel, but still tied to scroll
-        setTimeout(() => el.classList.add('is-visible'), 120 * i);
-        obs.unobserve(el);
+        setTimeout(() => entry.target.classList.add('is-visible'), 120 * Number(entry.target.dataset.stagger||0));
+        obs.unobserve(entry.target);
       });
-    }, { root: null, rootMargin: '0px 0px -10% 0px', threshold: 0.15 });
-  
-    items.forEach(el => window.__newsObserver.observe(el));
-  }
+    }, { root: null, margin: '0px 0px -10% 0px', threshold: 0.15 });
+    items.forEach(el => obs.observe(el));
   }
 
-  // ---------- VOICE (sort newest first, show latest on first slide) ----------
+  // ---------- VOICE ----------
   const voiceWrapper = document.querySelector('#voice .swiper-wrapper');
   if (voiceWrapper && Array.isArray(data.voice) && data.voice.length > 0) {
     const sorted = [...data.voice].sort((a,b) => parseDate(b.date) - parseDate(a.date));
@@ -335,13 +318,11 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
       const body = (v[LANG] && v[LANG].html) ? v[LANG].html : "";
       const img = (v.image && v.image.src) ? v.image.src : "";
       const kind = (v.image && v.image.kind) ? v.image.kind : "photo";
-      const alt = (v.image && v.image.alt && v.image.alt[LANG]) ? v.image.alt[LANG] : "Image";
       const imgClass = (kind === "photo") ? "voice-photo" : "voice-logo-placeholder";
-
       return `
         <div class="swiper-slide voice-slide">
           <div class="voice-img-box">
-            <img src="${img}" alt="${alt}" class="${imgClass}">
+            <img src="${img}" alt="Img" class="${imgClass}">
           </div>
           <div class="voice-content">
             <div class="voice-date-text">${v.date || ""}</div>
@@ -351,30 +332,11 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
       `;
     }).join("");
     if (htmlVoice.trim()) voiceWrapper.innerHTML = htmlVoice;
-  }
-
-  // Swiper update + force to first slide (latest)
-  function forceVoiceToFirst() {
     const el = document.querySelector('#voice .swiper, #voice .swiper-container');
-    if (el && el.swiper) {
-      try {
-        el.swiper.update();
-        el.swiper.slideTo(0, 0);
-      } catch(e) {}
-      return true;
-    }
-    return false;
-  }
-  if (!forceVoiceToFirst()) {
-    let tries = 0;
-    const timer = setInterval(() => {
-      tries++;
-      if (forceVoiceToFirst() || tries > 30) clearInterval(timer);
-    }, 200);
+    if (el && el.swiper) { el.swiper.update(); el.swiper.slideTo(0, 0); }
   }
 })();
 </script>
 
 </body>
 </html>
-
