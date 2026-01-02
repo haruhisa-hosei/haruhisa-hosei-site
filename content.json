@@ -1,0 +1,117 @@
+{
+  "news": [
+    {
+      "date": "2026.1.10",
+      "ja": {
+        "html": "『一粒萬倍』に出演いたします。<br>会場：観世能楽堂（GINZA SIX 地下3階）<br>時間：昼の部 12:00開演 ／ 夜の部 16:00開演",
+        "link": {
+          "text": "公演詳細・チケット情報はこちら",
+          "href": "https://ichiryumanbai.com/info/202105_R8#actors"
+        }
+      },
+      "en": {
+        "html": "I will appear in “Ichiryumanbai”.<br>Venue: Kanze Noh Theatre (GINZA SIX B3F)<br>Time: Matinee 12:00 / Evening 16:00",
+        "link": {
+          "text": "Details & tickets",
+          "href": "https://ichiryumanbai.com/info/202105_R8#actors"
+        }
+      }
+    },
+    {
+      "date": "2026.1.01",
+      "ja": {
+        "html": "The Okura Tokyoにて『石渡大介社中 江戸寿獅子』に出演します。<br>新春の獅子舞練り歩きを行います。<br>会場：プレステージタワー メインロビーほか",
+        "link": {
+          "text": "ホテル公式サイトはこちら",
+          "href": "https://theokuratokyo.jp/ja/"
+        }
+      },
+      "en": {
+        "html": "I will appear in “Ishiwata Daisuke Shachu – Edo Kotobuki Shishimai” at The Okura Tokyo.<br>A New Year’s shishimai procession will take place.<br>Venue: Prestige Tower main lobby and others.",
+        "link": {
+          "text": "The Okura Tokyo official site",
+          "href": "https://theokuratokyo.jp/ja/"
+        }
+      }
+    },
+    {
+      "date": "2025.12.25",
+      "ja": {
+        "html": "鳳聲晴久オフィシャルサイトを開設いたしました。<br>今後の活動情報などを発信してまいります。"
+      },
+      "en": {
+        "html": "My official website is now live.<br>I will share upcoming activities and news here."
+      }
+    }
+  ],
+  "voice": [
+    {
+      "date": "2026.01.01",
+      "image": {
+        "src": "voice_logo_newyear_2026.png",
+        "kind": "logo",
+        "alt": {
+          "ja": "新年のご挨拶",
+          "en": "New Year Greeting"
+        }
+      },
+      "ja": {
+        "html": "謹んで新年のお慶びを申し上げます。<br>本年も、音と間を大切にしながら、<br>一つ一つの舞台に向き合ってまいります。<br>どうぞよろしくお願い申し上げます。"
+      },
+      "en": {
+        "html": "Wishing you a peaceful New Year.<br>With care for sound,<br>silence, and space."
+      }
+    },
+    {
+      "date": "2025.12.27",
+      "image": {
+        "src": "voice_card_logo_text_black.png",
+        "kind": "logo",
+        "alt": {
+          "ja": "ロゴ",
+          "en": "Logo"
+        }
+      },
+      "ja": {
+        "html": "ホームページ編集中。<br>もう少しだー"
+      },
+      "en": {
+        "html": "Editing the website.<br>Almost there!"
+      }
+    },
+    {
+      "date": "2025.12.23",
+      "image": {
+        "src": "voice_party.jpg",
+        "kind": "photo",
+        "alt": {
+          "ja": "写真",
+          "en": "Photo"
+        }
+      },
+      "ja": {
+        "html": "クリスマスパーティーにて。<br>楽しいひとときでした。"
+      },
+      "en": {
+        "html": "At the Christmas party.<br>It was a wonderful time."
+      }
+    },
+    {
+      "date": "2025.12.03",
+      "image": {
+        "src": "voice_steak.jpg",
+        "kind": "photo",
+        "alt": {
+          "ja": "写真",
+          "en": "Photo"
+        }
+      },
+      "ja": {
+        "html": "打ち上げでステーキ！<br>ワオ"
+      },
+      "en": {
+        "html": "Steak at the wrap-up party!<br>Wow!"
+      }
+    }
+  ]
+}
