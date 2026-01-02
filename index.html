@@ -5,57 +5,100 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>鳳聲晴久｜笛奏者・日本伝統音楽 Official Site</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
 <style>
-/* CSSの優先順位を修正：ロゴを確実に160pxにする */
+/* 鳳聲晴久様サイトの全スタイル・背景を完全に復元 */
+*, *::before, *::after { box-sizing: border-box; }
+body { font-family: 'Shippori Mincho', serif; margin: 0; padding: 0; background-color: #fcfaf2; color: #111; position: relative; min-height: 100vh; overflow-x: hidden; width: 100%; }
+body::before { content: ""; position: fixed; inset: 0; background-image: url('bamboo.png'); background-size: cover; background-position: center top; opacity: 0.15; z-index: -5; pointer-events: none; }
+header { position: relative; min-height: 100vh; width: 100%; display: flex; align-items: center; justify-content: center; text-align: center; background-image: url('officialtop.png'); background-size: 88%; background-position: 68% center; background-repeat: no-repeat; background-color: #000; color: #fff; }
+header::before{ content:""; position:absolute; inset:0; background: rgba(0,0,0,0.46); z-index:0; }
+.hero-inner{ position: relative; z-index: 2; transform: translateY(-100px); }
+.profile-image { width: 440px; max-width: 92vw; height: auto; display: block; margin: 0 auto; }
+.english-name { font-family: 'Lato', sans-serif; font-size: 4.2rem; letter-spacing: 0.32em; font-weight: 700; margin: -10px 0 0 0; }
+.sub-title { font-family: 'Lato', sans-serif; font-size: 1.1rem; letter-spacing: 0.38em; margin-top: -2px; }
+
+/* NEWSセクションのデザイン復元 */
+.news-section { background-color: rgba(59, 122, 87, 0.85); color: #fff; padding: 100px 20px; text-align: center; }
+.news-container { max-width: 600px; margin: 0 auto; text-align: left; }
+.news-item { margin-bottom: 50px; }
+.news-date { font-size: 1.5rem; font-weight: 700; font-family: 'Lato', sans-serif; margin-bottom: 15px; display: block; }
+.news-text { font-size: 0.95rem; line-height: 2.0; opacity: 0.9; }
+
+/* VOICEセクションのデザイン復元とロゴ縮小の強制設定 */
+.voice-section { padding: 80px 0 100px; width: 100%; overflow: hidden; position: relative; z-index: 1; }
+.voice-slide { background: #fff; width: 85%; max-width: 380px; height: 600px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); display: flex; flex-direction: column; overflow: hidden; }
+.voice-img-box { width: 100%; height: 300px; display: flex; justify-content: center; align-items: center; background: #fff; overflow: hidden; }
+/* ★最重要：写真とロゴの切り替え指定 */
 .voice-img-box img.voice-photo { width: 100%; height: 100%; object-fit: cover; display: block; }
-.voice-img-box img.voice-logo-placeholder { width: 160px !important; height: auto !important; object-fit: contain !important; opacity: 0.9; display: block; margin: 0 auto; }
-/* その他必要なベースCSS（省略せず全文に含めています） */
+.voice-img-box img.voice-logo-placeholder { width: 160px !important; height: auto !important; object-fit: contain !important; opacity: 0.9; display: block; }
+.voice-content { width: 100%; text-align: left; padding: 20px 30px 30px; flex-grow: 1; }
+.voice-date-text { font-family: 'Lato', sans-serif; font-size: 1.6rem; letter-spacing: 0.1em; border-bottom: 2px solid #111; display: inline-block; width: 100%; }
+.voice-body { font-size: 0.95rem; line-height: 1.8; color: #111; }
 </style>
 </head>
 <body>
-<script>
-(async function() {
-  const LANG = "ja";
-  const API_URL = "https://script.google.com/macros/s/AKfycbwdpDAvg8yLiYGkHOjx9LCGIR67Q-tojNT6VH_AzFY6ThPHE0UVQaGbAO34obe4LQF5/exec";
+    <header id="top">
+        <div class="hero-inner">
+            <img src="officiallogo.png" alt="logo" class="profile-image">
+            <h1 class="english-name">HARUHISA HOSEI</h1>
+            <p class="sub-title">OFFICIAL SITE</p>
+        </div>
+    </header>
 
-  const data = await (await fetch(API_URL)).json();
-  if (!data) return;
+    <section id="news" class="news-section">
+        <h2 style="font-family:'Lato'; letter-spacing:0.2em; margin-bottom:60px;">NEWS</h2>
+        <div class="news-container"></div>
+    </section>
 
-  // ---------- NEWS 復活の修正 ----------
-  const newsContainer = document.querySelector('#news .news-container');
-  if (newsContainer && Array.isArray(data.news)) {
-    newsContainer.innerHTML = data.news.map(item => {
-      // GASの出力(画像21, 25枚目)と名前を完全に一致させる
-      const date = item.date || ""; 
-      const body = item.ja_html || "";
-      const link = (item.ja_link_text && item.ja_link_href) 
-        ? `<br><a href="${item.ja_link_href}" target="_blank">${item.ja_link_text}</a>` : "";
-      
-      return `<div class="news-item fade-up is-visible">
-                <span class="news-date">${date}</span>
-                <div class="news-text">${body}${link}</div>
+    <section id="voice" class="voice-section">
+        <h2 style="text-align:center; font-family:'Lato'; letter-spacing:0.2em; margin-bottom:60px;">VOICE</h2>
+        <div class="swiper swiper-container">
+            <div class="swiper-wrapper"></div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+    (async function() {
+      const API_URL = "https://script.google.com/macros/s/AKfycbwdpDAvg8yLiYGkHOjx9LCGIR67Q-tojNT6VH_AzFY6ThPHE0UVQaGbAO34obe4LQF5/exec";
+      try {
+        const data = await (await fetch(API_URL)).json();
+        if (!data) return;
+
+        // NEWSを表示
+        const newsContainer = document.querySelector('.news-container');
+        if (newsContainer && data.news) {
+          newsContainer.innerHTML = data.news.map(item => `
+            <div class="news-item">
+              <span class="news-date">${item.date || ""}</span>
+              <div class="news-text">${item.ja_html || ""}${item.ja_link_href ? `<br><a href="${item.ja_link_href}" style="color:#fff; text-decoration:underline;">${item.ja_link_text || "詳細"}</a>` : ""}</div>
+            </div>
+          `).join("");
+        }
+
+        // VOICEとロゴを縮小表示
+        const voiceWrapper = document.querySelector('.swiper-wrapper');
+        if (voiceWrapper && data.voice) {
+          voiceWrapper.innerHTML = data.voice.map(v => {
+            const kind = String(v.image_kind || "").toLowerCase().trim();
+            const imgClass = (kind === "logo") ? "voice-logo-placeholder" : "voice-photo";
+            return `
+              <div class="swiper-slide voice-slide">
+                <div class="voice-img-box"><img src="${v.image_src}" class="${imgClass}"></div>
+                <div class="voice-content">
+                  <div class="voice-date-text">${v.date || ""}</div>
+                  <p class="voice-body">${v.ja_html || ""}</p>
+                </div>
               </div>`;
-    }).join("");
-  }
-
-  // ---------- VOICE ロゴ縮小の修正 ----------
-  const voiceWrapper = document.querySelector('#voice .swiper-wrapper');
-  if (voiceWrapper && Array.isArray(data.voice)) {
-    voiceWrapper.innerHTML = data.voice.map(v => {
-      // kindの判定をGASからの出力(F列)に合わせる
-      const kind = String(v.image_kind || "").toLowerCase().trim();
-      const imgClass = (kind === "logo") ? "voice-logo-placeholder" : "voice-photo";
-      return `
-        <div class="swiper-slide voice-slide">
-          <div class="voice-img-box"><img src="${v.image_src}" class="${imgClass}"></div>
-          <div class="voice-content">
-            <div class="voice-date-text">${v.date || ""}</div>
-            <p class="voice-body">${v.ja_html || ""}</p>
-          </div>
-        </div>`;
-    }).join("");
-  }
-})();
-</script>
+          }).join("");
+          new Swiper('.swiper-container', { slidesPerView: 'auto', centeredSlides: true, spaceBetween: 25, loop: true });
+        }
+      } catch (e) { console.error(e); }
+    })();
+    </script>
 </body>
 </html>
