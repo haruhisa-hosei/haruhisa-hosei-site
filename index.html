@@ -118,7 +118,17 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
 .voice-slide { background: #fff; width: 85%; max-width: 380px; height: 600px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: flex-start; padding: 0; overflow: hidden; }
 .voice-img-box { width: 100%; height: 300px; flex-shrink: 0; margin-bottom: 0; display: flex; justify-content: center; align-items: center; background: #fff; overflow: hidden; }
 .voice-photo { width: 100%; height: 100%; object-fit: cover; display: block; }
-.voice-logo-placeholder { width: 50%; height: auto; opacity: 0.8; object-fit: contain; }
+
+/* ▼▼▼ ここだけ修正（ロゴを小さく） ▼▼▼ */
+.voice-logo-placeholder {
+  width: 32%;
+  max-height: 120px;
+  height: auto;
+  opacity: 0.85;
+  object-fit: contain;
+}
+/* ▲▲▲ ここだけ修正（ロゴを小さく） ▲▲▲ */
+
 .voice-content { width: 100%; text-align: left; padding: 20px 30px 30px; flex-grow: 1; }
 .voice-date-text { font-family: 'Lato', sans-serif; font-size: 1.6rem; letter-spacing: 0.1em; margin: 0 0 8px 0; padding-bottom: 8px; border-bottom: 2px solid #111; display: inline-block; width: 100%; }
 .voice-body { font-size: 0.95rem; line-height: 1.8; color: #111; text-align: left; margin-top: 0; }
@@ -317,11 +327,10 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
     const htmlVoice = sorted.map((v) => {
       // ★修正ポイント：ここもGASの名前に合わせる
       const body = v[LANG + "_html"] || "";
-            const kind = v.image_kind || "photo";
+      const kind = v.image_kind || "photo";
       const imgClass = (kind === "logo") ? "voice-logo-placeholder" : "voice-photo";
       const img = v.image_src || "";
 
-      
       return `
         <div class="swiper-slide voice-slide">
           <div class="voice-img-box">
@@ -342,8 +351,6 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
   }
 })();
 </script>
-
-
 
 </body>
 </html>
