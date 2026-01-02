@@ -242,39 +242,24 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
 
 <script>
 // ==========================================
-//  【診断モード】GAS連携スクリプト
+//  【GAS完全連動】修正版スクリプト
 // ==========================================
 (async function() {
   const LANG = "ja";
-  // ▼▼ ここにコピーしたURLが入っているか確認してください ▼▼
+  // ▼▼ 正しいGASのURL（変更なし） ▼▼
   const API_URL = "https://script.google.com/macros/s/AKfycbwdpDAvg8yLiYGkHOjx9LCGIR67Q-tojNT6VH_AzFY6ThPHE0UVQaGbAO34obe4LQF5/exec";
 
   async function loadJson() {
     try {
-      // 1. まずGASに取りに行く
       const res = await fetch(API_URL);
-      
-      // もし通信自体が失敗したら、ここは実行されず catch に飛びます
-      if (!res.ok) {
-        alert("【診断】GASと通信できましたが、エラーが返ってきました。\nステータス: " + res.status);
-        throw new Error("GAS HTTP " + res.status);
-      }
-      
-      const json = await res.json();
-      // alert("【診断】成功！GASからデータを取得しました！"); // 成功なら何も言わなくてOK
-      return json;
-
+      if (!res.ok) throw new Error("GAS HTTP " + res.status);
+      return await res.json();
     } catch (e) {
-      // 2. 失敗した場合、エラー内容を表示する
-      alert("【診断エラー】GAS読み込みに失敗しました。\n原因: " + e.message + "\n\n※この後、バックアップデータを表示します。");
-      
-      // バックアップを取りに行く
+      console.warn("GAS error, trying backup...", e);
       try {
         const res2 = await fetch("./content.json?v=" + Date.now(), { cache: "no-store" });
         return await res2.json();
-      } catch (e2) {
-        return null;
-      }
+      } catch (e2) { return null; }
     }
   }
 
@@ -293,11 +278,15 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
   const newsContainer = document.querySelector('#news .news-container');
   if (newsContainer && Array.isArray(data.news) && data.news.length > 0) {
     const htmlNews = data.news.map((item, idx) => {
-      const t = item[LANG] || {};
-      const link = (t.link && t.link.href && t.link.text)
-        ? `<a href="${t.link.href}" target="_blank" rel="noopener">${t.link.text}</a>`
+      // ★修正ポイント：GASのデータ名（ja_htmlなど）に合わせて取得
+      const body = item[LANG + "_html"] || ""; 
+      const linkText = item[LANG + "_link_text"];
+      const linkHref = item[LANG + "_link_href"];
+      
+      const link = (linkText && linkHref)
+        ? `<a href="${linkHref}" target="_blank" rel="noopener">${linkText}</a>`
         : "";
-      const body = t.html || "";
+        
       return `
         <div class="news-item fade-up">
           <span class="news-date">${item.date || ""}</span>
@@ -307,7 +296,7 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
     }).join("");
     if (htmlNews.trim()) newsContainer.innerHTML = htmlNews;
     
-    // アニメーション用
+    // アニメーション
     const items = Array.from(newsContainer.querySelectorAll('.news-item.fade-up'));
     items.forEach((el, i) => { el.classList.remove('is-visible'); el.dataset.stagger = String(i); });
     const obs = new IntersectionObserver((entries, obs) => {
@@ -324,11 +313,15 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
   const voiceWrapper = document.querySelector('#voice .swiper-wrapper');
   if (voiceWrapper && Array.isArray(data.voice) && data.voice.length > 0) {
     const sorted = [...data.voice].sort((a,b) => parseDate(b.date) - parseDate(a.date));
+
     const htmlVoice = sorted.map((v) => {
-      const body = (v[LANG] && v[LANG].html) ? v[LANG].html : "";
-      const img = (v.image && v.image.src) ? v.image.src : "";
-      const kind = (v.image && v.image.kind) ? v.image.kind : "photo";
+      // ★修正ポイント：ここもGASの名前に合わせる
+      const body = v[LANG + "_html"] || "";
+      const img = v.image_src || ""; // image.src ではなく image_src
+      const kind = v.image_kind || "photo"; // image.kind ではなく image_kind
+      
       const imgClass = (kind === "photo") ? "voice-photo" : "voice-logo-placeholder";
+      
       return `
         <div class="swiper-slide voice-slide">
           <div class="voice-img-box">
@@ -342,11 +335,14 @@ footer { background-color: #4a4538; color: #dcdcdc; text-align: center; padding:
       `;
     }).join("");
     if (htmlVoice.trim()) voiceWrapper.innerHTML = htmlVoice;
+    
+    // Swiper更新
     const el = document.querySelector('#voice .swiper, #voice .swiper-container');
     if (el && el.swiper) { el.swiper.update(); el.swiper.slideTo(0, 0); }
   }
 })();
 </script>
+
 
 
 </body>
