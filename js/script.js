@@ -157,7 +157,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const NEWS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSkBOovAHzdZWtA0Z-KRe27h5ZzGFi5Bq2G7Bp0Mv4sQ-2C9urIYy8oR9IaMf7xdSR9M_iww2zMbG-/pub?gid=0&single=true&output=csv";
     const VOICE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSkBOovAHzdZWtA0Z-KRe27h5ZzGFi5Bq2G7Bp0Mv4sQ-2C9urIYy8oR9IaMf7xdSR9M_iww2zMbG-/pub?gid=793239367&single=true&output=csv";
 
-    // Detect current language from HTML tag
+    
+
+// Cache-buster: avoid iOS/edge caching of Google published CSV
+function withCacheBuster(url) {
+  const sep = url.includes('?') ? '&' : '?';
+  return url + sep + '_ts=' + Date.now();
+}
+// Detect current language from HTML tag
     const LANG = document.documentElement.lang === 'en' ? 'en' : 'ja';
 
     const newsContainer = document.querySelector('#news .news-container');
@@ -171,8 +178,8 @@ document.addEventListener('DOMContentLoaded', function() {
     async function fetchData() {
         try {
             const [newsRes, voiceRes] = await Promise.all([
-                fetch(NEWS_CSV_URL),
-                fetch(VOICE_CSV_URL)
+                fetch(withCacheBuster(NEWS_CSV_URL), { cache: 'no-store' }),
+                fetch(withCacheBuster(VOICE_CSV_URL), { cache: 'no-store' })
             ]);
 
             if (newsRes.ok && newsContainer) {
@@ -289,31 +296,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         const html = validItems.map(item => {
-                        const body = item[LANG + '_html'] || "";
-
-            // Default logo when image_src is empty or fails to load
-            const DEFAULT_VOICE_LOGO = "images/voice_card_logo_text_black.png";
-
-            const rawSrc = (item.image_src || "").trim();
-
-            // image_src が空なら自動で logo 扱い（＝表示サイズをロゴに）
-            const kind = ((item.image_kind || "").trim() || (rawSrc ? "photo" : "logo"));
+            const body = item[LANG + '_html'] || "";
+            const kind = item.image_kind || "photo";
             const imgClass = (kind === "logo") ? "voice-logo-placeholder" : "voice-photo";
-
-            // src 決定：空ならデフォルトロゴ
-            let imgSrc = rawSrc || DEFAULT_VOICE_LOGO;
-
-            // 既存互換：ファイル名だけなら images/ を付ける
-            if (imgSrc && !imgSrc.startsWith('http') && !imgSrc.startsWith('images/') && !imgSrc.startsWith('/')) {
+            // Prepend images/ path if just filename is given
+            let imgSrc = item.image_src;
+            if(imgSrc && !imgSrc.startsWith('http') && !imgSrc.startsWith('images/')) {
                  imgSrc = 'images/' + imgSrc;
             }
-            // /images/... が来た場合は images/... に寄せる
-            if (imgSrc.startsWith('/images/')) imgSrc = imgSrc.slice(1);
 
             return `
                 <div class="swiper-slide voice-slide">
                     <div class="voice-img-box">
-                        <img src="${imgSrc}" alt="Voice Image" class="${imgClass}" loading="lazy" onerror="this.onerror=null; this.src='images/voice_card_logo_text_black.png';">
+                        <img src="${imgSrc}" alt="Voice Image" class="${imgClass}" loading="lazy">
                     </div>
                     <div class="voice-content">
                         <div class="voice-date-text">${item.date}</div>
