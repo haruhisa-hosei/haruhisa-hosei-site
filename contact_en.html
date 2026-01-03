@@ -1,451 +1,89 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
+<meta charset="utf-8">
 <title>CONTACT | Haruhisa Hosei Official Site</title>
-<meta content="Contact page for Haruhisa Hosei. Performance inquiries, lessons, and media requests." name="description"/>
-<meta content="website" property="og:type"/>
-<meta content="HARUHISA HOSEI OFFICIAL SITE" property="og:site_name"/>
-<meta content="CONTACT | Haruhisa Hosei Official Site" property="og:title"/>
-<meta content="Contact page for Haruhisa Hosei. Performance inquiries, lessons, and media requests." property="og:description"/>
-<meta content="https://haruhisa-hosei.com/contact_en.html" property="og:url"/>
-<meta content="https://haruhisa-hosei.com/og-image.png" property="og:image"/>
-<meta content="1200" property="og:image:width"/>
-<meta content="630" property="og:image:height"/>
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="Haruhisa Hosei | Japanese Flute Musician Official Site"/>
-<meta name="twitter:description" content="Official website of Haruhisa Hosei, a Japanese traditional flute musician. Profile, performances, and works."/>
-<meta name="twitter:image" content="https://haruhisa-hosei.com/og-image.png"/>
+<meta name="description" content="Contact page for Haruhisa Hosei. Performance inquiries, lessons, and media requests.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="HARUHISA HOSEI OFFICIAL SITE">
+<meta property="og:title" content="CONTACT | Haruhisa Hosei Official Site">
+<meta property="og:url" content="https://haruhisa-hosei.com/contact_en.html">
+<meta property="og:image" content="https://haruhisa-hosei.com/images/og-image.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link href="/favicon-32.png" rel="icon" sizes="32x32"/>
-<link href="/apple-touch-icon.png" rel="apple-touch-icon"/>
-<meta charset="utf-8"/>
-<meta name="theme-color" content="#000000"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link rel="icon" href="images/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<link rel="canonical" href="https://haruhisa-hosei.com/contact_en.html">
+<link rel="alternate" hreflang="ja" href="https://haruhisa-hosei.com/contact.html">
+<link rel="alternate" hreflang="en" href="https://haruhisa-hosei.com/contact_en.html">
 
-<link href="https://haruhisa-hosei.com/contact_en.html" rel="canonical"/>
-<link href="https://haruhisa-hosei.com/contact.html" hreflang="ja" rel="alternate"/>
-<link href="https://haruhisa-hosei.com/contact_en.html" hreflang="en" rel="alternate"/>
-
-
-
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&amp;display=swap" rel="stylesheet"/>
-<style>
-        /* =========================================
-           ▼ Base Styles ▼
-           ========================================= */
-        *, *::before, *::after { box-sizing: border-box; }
-
-        body {
-            font-family: 'Shippori Mincho', serif;
-            margin: 0; padding: 0;
-            background-color: #fff;
-            color: #111;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        a { text-decoration: none; color: inherit; }
-
-        /* Animations */
-        .fade-up {
-            opacity: 0; transform: translateY(30px);
-            transition: all 1.0s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .fade-up.is-visible { opacity: 1; transform: translateY(0); }
-        .delay-1 { transition-delay: 0.2s; }
-        .delay-2 { transition-delay: 0.4s; }
-
-        /* =========================================
-           ▼ Header (TopBar) ▼
-           ========================================= */
-        .topbar {
-            position: fixed; top: 0; left: 0; width: 100%; height: 60px;
-            background: #fff; z-index: 100; display: flex; align-items: center;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-        }
-        .topbar-inner {
-            width: 100%; height: 100%; display: flex; align-items: center;
-            justify-content: space-between; padding: 0 20px; padding-right: 70px;
-        }
-        .brand-left { display: flex; align-items: center; gap: 10px; color: #111; }
-        .brand-stacked { display: flex; flex-direction: column; line-height: 0.92; }
-        .brand-stacked .b1, .brand-stacked .b2 {
-            font-family: 'Lato', sans-serif; font-weight: 700; font-size: 12px;
-            letter-spacing: 0.26em; margin: 0;
-        }
-        .brand-divider { width: 1px; height: 24px; background: rgba(0,0,0,0.18); }
-        .brand-logo { height: 20px; width: auto; display: block; }
-        
-        /* Language Menu */
-        .topbar-right { margin-left: auto; position: relative; }
-        .lang-btn {
-            border: 0; background: transparent; cursor: pointer; display: flex;
-            flex-direction: column; align-items: center; gap: 4px;
-            color: #111;
-        }
-        .lang-btn img { width: 22px; }
-        .lang-btn .lang-label {
-            font-family: 'Lato'; font-size: 10px; letter-spacing: 0.05em;
-            color: #111;
-        }
-
-        .lang-menu {
-            position: absolute; top: 50px; right: -10px;
-            background: #fff; border: 1px solid #eee; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            display: flex; flex-direction: column; width: 80px;
-            opacity: 0; visibility: hidden; transform: translateY(-10px);
-            transition: all 0.3s ease; z-index: 10002;
-        }
-        .lang-menu.is-open { opacity: 1; visibility: visible; transform: translateY(0); }
-        .lang-item {
-            display: block; padding: 12px 0; text-align: center;
-            font-family: 'Lato', sans-serif; font-size: 0.9rem; color: #999;
-            text-decoration: none; transition: 0.3s;
-        }
-        .lang-item:hover { background-color: #fcfaf2; color: #111; }
-        .lang-item.is-current { color: #111; font-weight: bold; pointer-events: none; }
-
-
-        /* =========================================
-           ▼ Hamburger Menu ▼
-           ========================================= */
-        .fixed-menu-btn {
-            position: fixed; top: 0; right: 0; width: 60px; height: 60px;
-            background-color: #000; z-index: 10001;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            cursor: pointer;
-        }
-        .fixed-menu-btn span {
-            display: block; width: 24px; height: 1px; background-color: #fff;
-            margin: 4px 0; transition: 0.4s;
-        }
-        .fixed-menu-btn.is-open span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
-        .fixed-menu-btn.is-open span:nth-child(2) { opacity: 0; }
-        .fixed-menu-btn.is-open span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
-
-        .menu-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10000;
-            display: flex; flex-direction: column; justify-content: center; padding-left: 10%;
-            opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
-        }
-        .menu-overlay.is-open { opacity: 1; pointer-events: auto; }
-
-        .menu-link {
-            font-family: 'Lato', sans-serif; font-size: 2rem; color: #fff;
-            margin: 15px 0; letter-spacing: 0.1em; will-change: letter-spacing, color;
-            transition: letter-spacing 0.5s ease, color 0.3s ease;
-        }
-        .menu-link:hover, .menu-link:active { letter-spacing: 0.3em; color: var(--active-color); }
-
-        /* =========================================
-           ▼ Contact Main Content ▼
-           ========================================= */
-        .main-content {
-            flex: 1;
-            padding: 160px 20px 100px;
-            max-width: 800px;
-            margin: 0 auto;
-            width: 100%;
-            text-align: center;
-        }
-
-        .page-title {
-            font-family: 'Lato', sans-serif;
-            font-size: 2.4rem;
-            letter-spacing: 0.25em;
-            margin-bottom: 80px;
-            font-weight: 700;
-        }
-
-        .contact-body {
-            text-align: left;
-            display: inline-block;
-            max-width: 650px;
-        }
-
-        .intro-text {
-            font-size: 1.1rem;
-            font-weight: bold;
-            margin-bottom: 40px;
-            line-height: 1.8;
-        }
-
-        .note-list {
-            margin-bottom: 60px;
-            font-size: 0.9rem;
-            line-height: 2.0;
-            color: #444;
-        }
-        .note-item {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 10px;
-        }
-        .note-mark {
-            margin-right: 0.5em;
-            display: inline-block;
-        }
-
-        .email-link {
-            display: inline-block;
-            font-family: 'Lato', sans-serif;
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #111;
-            border-bottom: 2px solid #111;
-            padding-bottom: 5px;
-            transition: opacity 0.3s;
-            letter-spacing: 0.05em;
-        }
-        .email-link:hover {
-            opacity: 0.6;
-        }
-
-        /* =========================================
-           ▼ Footer ▼
-           ========================================= */
-        footer {
-            background-color: #4a4538; color: #dcdcdc; text-align: center;
-            padding: 50px 20px; font-size: 0.7rem; font-family: sans-serif;
-            letter-spacing: 0.1em;
-        }
-
-        @media (max-width: 600px) {
-            .page-title { font-size: 2.0rem; margin-bottom: 60px; }
-            .intro-text { font-size: 1.0rem; }
-            .email-link { font-size: 1.1rem; }
-            .contact-body { width: 100%; }
-        }
-    
-
-/* --- A11y polish (focus + skip link + reduced motion) --- */
-.skip-link{
-  position:absolute; left:-9999px; top:10px;
-  background:#fff; color:#111; border:2px solid #111;
-  padding:10px 14px; z-index:20000; font-family:'Lato',sans-serif;
-  letter-spacing:0.08em;
-}
-.skip-link:focus{ left:10px; }
-:focus-visible{
-  outline: 3px solid rgba(0,0,0,0.75);
-  outline-offset: 3px;
-}
-@media (prefers-reduced-motion: reduce){
-  html:focus-within{ scroll-behavior:auto; }
-  *, *::before, *::after{
-    animation-duration:0.01ms !important;
-    animation-iteration-count:1 !important;
-    transition-duration:0.01ms !important;
-  }
-}
-
-/* --- Touch response polish (hamburger + menu links) --- */
-.fixed-menu-btn, .lang-btn, .menu-link{
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-}
-.fixed-menu-btn{
-  user-select: none;
-}
-.fixed-menu-btn.is-pressing{
-  transform: scale(0.98);
-}
-.menu-link{
-  padding: 14px 10px;
-}
-.menu-link:active{
-  opacity: 0.75;
-}
-
-</style>
-<script ></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;700&family=Lato:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="page-contact">
 <a class="skip-link" href="#main">Skip to content</a>
 
 <header class="topbar">
-<div class="topbar-inner">
-<a class="brand-left" href="index_en.html">
-<div class="brand-stacked">
-<div class="b1">HARUHISA</div>
-<div class="b2">HOSEI</div>
-</div>
-<div class="brand-divider"></div>
-<img alt="Haruhisa Hosei official logo" class="brand-logo" src="officialhedderlogo.png"/>
-</a>
-<div class="topbar-right">
-<button class="lang-btn" id="langToggle" type="button" aria-label="Open language menu" aria-controls="langMenu" aria-expanded="false">
-<img alt="Language menu" src="lang_icon.png"/>
-<div class="lang-label">Languages</div>
-</button>
-<div class="lang-menu" id="langMenu">
-<a class="lang-item" href="contact.html">JP</a>
-<a class="lang-item is-current" href="contact_en.html" aria-current="page">EN</a>
-</div>
-</div>
-</div>
+    <div class="topbar-inner">
+        <a class="brand-left" href="index_en.html">
+            <div class="brand-stacked"><div class="b1">HARUHISA</div><div class="b2">HOSEI</div></div>
+            <div class="brand-divider"></div>
+            <img alt="Haruhisa Hosei official logo" class="brand-logo" src="images/officialhedderlogo.png">
+        </a>
+        <div class="topbar-right">
+            <button class="lang-btn" id="langToggle" type="button" aria-label="Open language menu" aria-controls="langMenu" aria-expanded="false">
+                <img alt="Language menu" src="images/lang_icon.png">
+                <div class="lang-label">Languages</div>
+            </button>
+            <div class="lang-menu" id="langMenu">
+                <a class="lang-item" href="contact.html">JP</a>
+                <a class="lang-item is-current" href="contact_en.html" aria-current="page">EN</a>
+            </div>
+        </div>
+    </div>
 </header>
+
 <div class="fixed-menu-btn" id="menuBtn" role="button" tabindex="0" aria-label="Open menu" aria-controls="navOverlay" aria-expanded="false">
-<span></span>
-<span></span>
-<span></span>
+    <span></span><span></span><span></span>
 </div>
 <nav class="menu-overlay" id="navOverlay">
-<a class="menu-link" href="index_en.html#top" style="--active-color: #fff;">TOP</a>
-<a class="menu-link" href="index_en.html#news" style="--active-color: #90ee90;">NEWS</a>
-<a class="menu-link" href="index_en.html#archive" style="--active-color: #aaa;">ARCHIVE</a>
-<a class="menu-link" href="index_en.html#voice" style="--active-color: #3b7a57;">VOICE</a>
-<a class="menu-link" href="index_en.html#profile" style="--active-color: #c9aa5a;">PROFILE</a>
-<a class="menu-link" href="#" style="--active-color: #333;">CONTACT</a>
+    <a class="menu-link" href="index_en.html#top" style="--active-color: #fff;">TOP</a>
+    <a class="menu-link" href="index_en.html#news" style="--active-color: #90ee90;">NEWS</a>
+    <a class="menu-link" href="index_en.html#archive" style="--active-color: #aaa;">ARCHIVE</a>
+    <a class="menu-link" href="index_en.html#voice" style="--active-color: #3b7a57;">VOICE</a>
+    <a class="menu-link" href="index_en.html#profile" style="--active-color: #c9aa5a;">PROFILE</a>
+    <a class="menu-link" href="#" style="--active-color: #333;">CONTACT</a>
 </nav>
-<main class="main-content" id="main">
-<h1 class="page-title fade-up">CONTACT</h1>
-<div class="contact-body fade-up delay-1">
-<p class="intro-text">
-                For performance requests and inquiries,<br/>
-                please contact Haruhisa Hosei at the email address below.
-            </p>
-<div class="note-list">
-<div class="note-item">
-<span class="note-mark">*</span>
-<span class="note-text">Please include your name, company name, email address, phone number, and the details of your inquiry.</span>
-</div>
-<div class="note-item">
-<span class="note-mark">*</span>
-<span class="note-text">Please note that depending on the nature of your inquiry, it may take some time to reply, or we may be unable to respond.</span>
-</div>
-</div>
-<div style="text-align: center; margin-top: 50px;">
-<a class="email-link fade-up delay-2" href="mailto:contact@haruhisa-hosei.com">
-                    contact@haruhisa-hosei.com
-                </a>
-</div>
-</div>
+
+<main class="contact-main-content" id="main">
+    <h1 class="page-title fade-up">CONTACT</h1>
+    <div class="contact-body fade-up delay-1">
+        <p class="intro-text">
+            For performance requests and inquiries,<br>
+            please contact Haruhisa Hosei at the email address below.
+        </p>
+        <div class="note-list">
+            <div class="note-item">
+                <span class="note-mark">*</span>
+                <span class="note-text">Please include your name, company name, email address, phone number, and the details of your inquiry.</span>
+            </div>
+            <div class="note-item">
+                <span class="note-mark">*</span>
+                <span class="note-text">Please note that depending on the nature of your inquiry, it may take some time to reply, or we may be unable to respond.</span>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 50px;">
+            <a class="email-link fade-up delay-2" href="mailto:contact@haruhisa-hosei.com">
+                contact@haruhisa-hosei.com
+            </a>
+        </div>
+    </div>
 </main>
 <footer>
-        © HARUHISA HOSEI All Rights Reserved.
-    </footer>
-<script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Hamburger Menu
-            const menuBtn = document.getElementById('menuBtn');
-            const navOverlay = document.getElementById('navOverlay');
-            
-            menuBtn.addEventListener('click', () => {
-                const isOpen = menuBtn.classList.toggle('is-open');
-                navOverlay.classList.toggle('is-open');
-            });
-
-            // Animation Observer
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
-                    }
-                });
-            }, { threshold: 0.1 });
-
-            document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-
-            // Language Menu Toggle
-            const langToggle = document.getElementById('langToggle');
-            const langMenu = document.getElementById('langMenu');
-            if(langToggle && langMenu){
-                langToggle.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    langMenu.classList.toggle('is-open');
-                });
-                document.addEventListener('click', (e) => {
-                    if (!langToggle.contains(e.target) && !langMenu.contains(e.target)) {
-                        langMenu.classList.remove('is-open');
-                    }
-                });
-            }
-        });
-    </script>
-
-<script>
-(function(){
-  function onReady(fn){ if(document.readyState!=='loading') fn(); else document.addEventListener('DOMContentLoaded', fn); }
-  onReady(function(){
-    var menuBtn = document.getElementById('menuBtn');
-    var navOverlay = document.getElementById('navOverlay');
-    var langToggle = document.getElementById('langToggle');
-    var langMenu = document.getElementById('langMenu');
-
-    function setExpanded(el, val){ if(!el) return; el.setAttribute('aria-expanded', val ? 'true' : 'false'); }
-
-    // Hamburger: add keyboard support + aria sync (works even if existing click handler exists)
-    if(menuBtn && navOverlay){
-      menuBtn.addEventListener('click', function(){
-        setExpanded(menuBtn, menuBtn.classList.contains('is-open'));
-      }, true);
-
-      menuBtn.addEventListener('keydown', function(e){
-        if(e.key === 'Enter' || e.key === ' '){
-          e.preventDefault();
-          menuBtn.click();
-        }
-      });
-    }
-
-    // Language menu: aria sync + escape close
-    if(langToggle && langMenu){
-      langToggle.addEventListener('click', function(){
-        setExpanded(langToggle, langMenu.classList.contains('is-open'));
-      }, true);
-    }
-
-    document.addEventListener('keydown', function(e){
-      if(e.key !== 'Escape') return;
-
-      if(langMenu && langMenu.classList.contains('is-open')){
-        langMenu.classList.remove('is-open');
-        setExpanded(langToggle, false);
-      }
-      if(menuBtn && menuBtn.classList.contains('is-open')){
-        menuBtn.classList.remove('is-open');
-        if(navOverlay) navOverlay.classList.remove('is-open');
-        setExpanded(menuBtn, false);
-      }
-    });
-
-    // Click-outside close for language menu (if not already)
-    if(langToggle && langMenu){
-      document.addEventListener('click', function(e){
-        if(langMenu.classList.contains('is-open') &&
-           !langToggle.contains(e.target) &&
-           !langMenu.contains(e.target)){
-          langMenu.classList.remove('is-open');
-          setExpanded(langToggle, false);
-        }
-      });
-    }
-
-    // Touch feedback for hamburger (instant "pressed" feel)
-    if(menuBtn){
-      var pressOn = function(){ menuBtn.classList.add('is-pressing'); };
-      var pressOff = function(){ menuBtn.classList.remove('is-pressing'); };
-
-      menuBtn.addEventListener('pointerdown', pressOn);
-      menuBtn.addEventListener('pointerup', pressOff);
-      menuBtn.addEventListener('pointercancel', pressOff);
-      menuBtn.addEventListener('pointerleave', pressOff);
-      // Fallback for older iOS Safari
-      menuBtn.addEventListener('touchstart', pressOn, {passive:true});
-      menuBtn.addEventListener('touchend', pressOff);
-      menuBtn.addEventListener('touchcancel', pressOff);
-    }
-
-  });
-})();
-</script>
-
+    © HARUHISA HOSEI All Rights Reserved.
+</footer>
+<script src="js/script.js"></script>
 </body>
-<!-- build: improved 2026-01-02 -->
 </html>
