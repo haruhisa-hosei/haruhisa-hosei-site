@@ -289,19 +289,31 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         const html = validItems.map(item => {
-            const body = item[LANG + '_html'] || "";
-            const kind = item.image_kind || "photo";
+                        const body = item[LANG + '_html'] || "";
+
+            // Default logo when image_src is empty or fails to load
+            const DEFAULT_VOICE_LOGO = "images/voice_card_logo_text_black.png";
+
+            const rawSrc = (item.image_src || "").trim();
+
+            // image_src が空なら自動で logo 扱い（＝表示サイズをロゴに）
+            const kind = ((item.image_kind || "").trim() || (rawSrc ? "photo" : "logo"));
             const imgClass = (kind === "logo") ? "voice-logo-placeholder" : "voice-photo";
-            // Prepend images/ path if just filename is given
-            let imgSrc = item.image_src;
-            if(imgSrc && !imgSrc.startsWith('http') && !imgSrc.startsWith('images/')) {
+
+            // src 決定：空ならデフォルトロゴ
+            let imgSrc = rawSrc || DEFAULT_VOICE_LOGO;
+
+            // 既存互換：ファイル名だけなら images/ を付ける
+            if (imgSrc && !imgSrc.startsWith('http') && !imgSrc.startsWith('images/') && !imgSrc.startsWith('/')) {
                  imgSrc = 'images/' + imgSrc;
             }
+            // /images/... が来た場合は images/... に寄せる
+            if (imgSrc.startsWith('/images/')) imgSrc = imgSrc.slice(1);
 
             return `
                 <div class="swiper-slide voice-slide">
                     <div class="voice-img-box">
-                        <img src="${imgSrc}" alt="Voice Image" class="${imgClass}" loading="lazy">
+                        <img src="${imgSrc}" alt="Voice Image" class="${imgClass}" loading="lazy" onerror="this.onerror=null; this.src='images/voice_card_logo_text_black.png';">
                     </div>
                     <div class="voice-content">
                         <div class="voice-date-text">${item.date}</div>
