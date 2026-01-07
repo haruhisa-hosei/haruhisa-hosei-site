@@ -361,3 +361,69 @@ footer {
 .fixed-menu-btn.is-pressing { transform: scale(0.98); }
 .menu-link { padding: 14px 10px; }
 .menu-link:active { opacity: 0.75; }
+
+/* =========================================
+   Header Brand (Normalized SVGs) – SINGLE FINAL (Phoenix up / Face down)
+   ========================================= */
+
+.brand-left{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+/* Name (heder_name_logo.svg) */
+.brand-name-logo{
+    height:30px;
+    width:auto;
+    display:block;
+}
+
+/* Phoenix (phoenix_logo.svg) */
+.brand-logo{
+    height:23px; /* +40% from 16px (final) */
+    width:auto;
+    display:block;
+}
+
+/* Face (hosei_face_cap_red.svg) */
+.brand-face{
+    height:18px; /* -25% from 24px */
+    width:auto;
+    display:block;
+}
+
+/* Home (hero) emphasis */
+body.home .brand-name-logo{ height:34px; }
+body.home .brand-face{ height:21px; }  /* -25% from 28px */
+body.home .brand-logo{ height:23px; }  /* +25% from 16px */
+
+/* Mobile */
+@media (max-width:480px){
+    .brand-left{ gap:10px; }
+    .brand-name-logo{ height:26px; }
+    .brand-face{ height:16px; }  /* ~-25% from 22px */
+    .brand-logo{ height:21px; }  /* ~+40% from 14px (final) */
+}
+
+
+/* Cordyceps divider */
+.cordyceps-divider {
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 0 20px;
+}
+.cordyceps-divider img {
+  max-width: 420px;
+  width: 70%;
+  height: auto;
+  display: block;
+}
+@media (max-width: 768px) {
+  .cordyceps-divider img {
+    max-width: 300px;
+    width: 80%;
+  }
+}
