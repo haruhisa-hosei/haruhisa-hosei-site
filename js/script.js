@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-    // --- 1. UI周り (既存の動きを維持) ---
+    // --- 1. UI (ハンバーガーメニュー等) ---
     const menuBtn = document.getElementById('menuBtn');
     const navOverlay = document.getElementById('navOverlay');
     if (menuBtn && navOverlay) {
@@ -10,22 +10,24 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // --- 2. Swiper設定 (アーカイブの写真を消さないよう保護) ---
-    if (typeof Swiper !== 'undefined') {
-        const voiceEl = document.querySelector('.voice-section .swiper-container');
-        if (voiceEl) {
-            new Swiper(voiceEl, {
+    // --- 2. Swiper初期化 (既存のアーカイブとVoiceを保護) ---
+    function initSwipers() {
+        if (typeof Swiper === 'undefined') return;
+        // Archive
+        if (document.querySelector('.archive-swiper')) {
+            new Swiper('.archive-swiper', {
+                loop: true, centeredSlides: true, slidesPerView: 'auto', spaceBetween: 30, speed: 800
+            });
+        }
+        // Voice
+        if (document.querySelector('.voice-section .swiper-container')) {
+            new Swiper('.voice-section .swiper-container', {
                 loop: true, centeredSlides: true, slidesPerView: 'auto', spaceBetween: 25,
                 navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }
             });
         }
-        const archiveEl = document.querySelector('.archive-swiper');
-        if (archiveEl) {
-            new Swiper(archiveEl, {
-                loop: true, centeredSlides: true, slidesPerView: 'auto', spaceBetween: 30, speed: 800
-            });
-        }
     }
+    initSwipers();
 
     // --- 3. NEWSデータ取得・徹底修正ロジック ---
     const NEWS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSkBOovAHzdZWtA0Z-KRe27h5ZzGFi5Bq2G7Bp0Mv4sQ-2C9urIYy8oR9IaMf7xdSR9M_iww2zMbG-/pub?gid=0&single=true&output=csv";
@@ -36,61 +38,75 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch(NEWS_URL)
             .then(res => res.text())
             .then(csvText => {
-                // 文字列を1行ずつ分解し、空行を除去
-                const rows = csvText.split(/\r?\n/).filter(row => row.trim());
-                // ヘッダー取得
-                const headers = rows[0].split(',').map(h => h.trim());
+                // CSVパース（カンマや改行を考慮した堅牢なパース）
+                const rows = [];
+                let curRow = [];
+                let curCell = "";
+                let inQuote = false;
                 
-                // データをオブジェクト形式に変換
-                const rawItems = rows.slice(1).map(row => {
-                    const values = row.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(v => v.replace(/^"|"$/g, '').trim());
+                for (let i = 0; i < csvText.length; i++) {
+                    let c = csvText[i];
+                    if (inQuote) {
+                        if (c === '"') {
+                            if (csvText[i+1] === '"') { curCell += '"'; i++; }
+                            else { inQuote = false; }
+                        } else { curCell += c; }
+                    } else {
+                        if (c === '"') { inQuote = true; }
+                        else if (c === ',') { curRow.push(curCell.trim()); curCell = ""; }
+                        else if (c === '\n' || c === '\r') {
+                            curRow.push(curCell.trim()); curCell = "";
+                            if (curRow.length > 1) rows.push(curRow);
+                            curRow = [];
+                            if (c === '\r' && csvText[i+1] === '\n') i++;
+                        } else { curCell += c; }
+                    }
+                }
+                if (curRow.length > 0) { curRow.push(curCell.trim()); rows.push(curRow); }
+
+                const headers = rows[0];
+                const items = rows.slice(1).map(r => {
                     let obj = {};
-                    headers.forEach((h, i) => { obj[h] = values[i] || ""; });
+                    headers.forEach((h, idx) => { obj[h] = r[idx] || ""; });
                     return obj;
                 });
 
-                // 【ここが最重要：日付の再構築とソート】
-                const processedItems = rawItems
+                // 【最重要】日付の正規化とソート
+                const processed = items
                     .filter(item => String(item.enabled).toUpperCase() === 'TRUE')
                     .map(item => {
-                        // "2026.01.10" や "2026/1/1" などから数字だけを抽出
-                        const dateMatch = item.date.match(/\d+/g);
-                        if (!dateMatch || dateMatch.length < 3) return null;
-
-                        const y = parseInt(dateMatch[0], 10);
-                        const m = parseInt(dateMatch[1], 10);
-                        const d = parseInt(dateMatch[2], 10);
-
+                        const d = (item.date || "").match(/\d+/g);
+                        if (!d || d.length < 3) return null;
+                        const y = parseInt(d[0], 10);
+                        const m = parseInt(d[1], 10);
+                        const day = parseInt(d[2], 10);
                         return {
                             ...item,
-                            _sortKey: new Date(y, m - 1, d).getTime(), // ソート用の数値
-                            _displayDate: `${y}.${m}.${d}` // 0を消した表示用
+                            _time: new Date(y, m - 1, day).getTime(),
+                            _display: `${y}.${m}.${day}` // ここで 01 -> 1 になる
                         };
                     })
-                    .filter(item => item !== null)
-                    // 14日が10日より上に来るように降順ソート
-                    .sort((a, b) => b._sortKey - a._sortKey);
+                    .filter(i => i !== null)
+                    .sort((a, b) => b._time - a._time); // 降順（最新が上）
 
-                // HTMLに反映
-                newsContainer.innerHTML = processedItems.map(item => {
-                    const body = (LANG === 'ja' ? item.ja_html : item.en_html) || "";
-                    const linkText = item[LANG + '_link_text'] || item.link_text;
-                    const linkHref = item[LANG + '_link_href'] || item.link_href;
-                    const linkHtml = (linkText && linkHref) ? `<br><a href="${linkHref}" target="_blank">${linkText}</a>` : "";
-
+                // HTML反映
+                newsContainer.innerHTML = processed.map(item => {
+                    const body = item[LANG + '_html'] || "";
+                    const lText = item[LANG + '_link_text'];
+                    const lHref = item[LANG + '_link_href'];
+                    const link = (lText && lHref) ? `<br><a href="${lHref}" target="_blank">${lText}</a>` : "";
                     return `
                         <div class="news-item fade-up is-visible">
-                            <span class="news-date">${item._displayDate}</span>
-                            <div class="news-text">${body}${linkHtml}</div>
+                            <span class="news-date">${item._display}</span>
+                            <div class="news-text">${body}${link}</div>
                         </div>`;
                 }).join('');
-            })
-            .catch(err => console.error("Data fetch error:", err));
+            });
     }
 
-    // アニメーション設定
+    // --- 4. アニメーション ---
     const observer = new IntersectionObserver(entries => {
         entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('is-visible'); });
     }, { threshold: 0.1 });
-    document.querySelectorAll('.fade-up, .fade-in, .slide-left').forEach(el => observer.observe(el));
+    document.querySelectorAll('.fade-up, .fade-in').forEach(el => observer.observe(el));
 });
