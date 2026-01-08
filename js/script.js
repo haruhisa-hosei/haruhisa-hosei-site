@@ -1,10 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
 
     // ===============================================
-    // 1. UI & Animations (Common)
+    // 1. UI & Animations (共通)
     // ===============================================
 
-    // --- Hamburger Menu ---
     const menuBtn = document.getElementById('menuBtn');
     const navOverlay = document.getElementById('navOverlay');
     const menuLinks = document.querySelectorAll('.menu-link');
@@ -17,65 +16,35 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         menuLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                menuLinks.forEach(l => l.classList.remove('is-active'));
-                link.classList.add('is-active');
+            link.addEventListener('click', () => {
                 setTimeout(() => {
                     menuBtn.classList.remove('is-open');
                     navOverlay.classList.remove('is-open');
                     menuBtn.setAttribute('aria-expanded', 'false');
-                    setTimeout(() => { link.classList.remove('is-active'); }, 500);
                 }, 600);
             });
         });
-
-        menuBtn.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                menuBtn.click();
-            }
-        });
-        
-        const pressOn = () => menuBtn.classList.add('is-pressing');
-        const pressOff = () => menuBtn.classList.remove('is-pressing');
-        menuBtn.addEventListener('pointerdown', pressOn);
-        menuBtn.addEventListener('pointerup', pressOff);
-        menuBtn.addEventListener('pointerleave', pressOff);
     }
 
-    // --- Language Menu ---
+    // 言語メニュー
     const langToggle = document.getElementById('langToggle');
     const langMenu = document.getElementById('langMenu');
-
     if (langToggle && langMenu) {
         langToggle.addEventListener('click', (e) => {
             e.stopPropagation();
-            const isOpen = langMenu.classList.toggle('is-open');
-            langToggle.setAttribute('aria-expanded', isOpen);
+            langMenu.classList.toggle('is-open');
         });
         document.addEventListener('click', (e) => {
             if (!langToggle.contains(e.target) && !langMenu.contains(e.target)) {
                 langMenu.classList.remove('is-open');
-                langToggle.setAttribute('aria-expanded', 'false');
-            }
-        });
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                if (langMenu.classList.contains('is-open')) {
-                    langMenu.classList.remove('is-open');
-                    langToggle.setAttribute('aria-expanded', 'false');
-                }
-                if (menuBtn && menuBtn.classList.contains('is-open')) {
-                    menuBtn.click();
-                }
             }
         });
     }
 
-    // --- Scroll Effects (Home Only) ---
+    // スクロールエフェクト
     const sunLight = document.getElementById('sunLight');
     if (sunLight && menuBtn) {
-        window.addEventListener('scroll', function() {
+        window.addEventListener('scroll', () => {
             if (window.scrollY > 50) {
                 sunLight.classList.add('is-active');
                 menuBtn.classList.add('is-active-scroll');
@@ -86,29 +55,17 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // --- Intersection Observer ---
-    const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
-    const observer = new IntersectionObserver((entries, obs) => {
+    // アニメーション監視
+    const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('is-visible');
-                obs.unobserve(entry.target);
             }
         });
-    }, observerOptions);
+    }, { threshold: 0.15 });
     document.querySelectorAll('.fade-up, .fade-in, .slide-left').forEach(el => observer.observe(el));
 
-    // --- Header Reveal ---
-    const header = document.querySelector('header.hero-header');
-    if (header) {
-        setTimeout(() => {
-            if (!header.classList.contains('is-visible')) {
-                header.classList.add('is-visible');
-            }
-        }, 1000);
-    }
-
-    // --- Profile Animation ---
+    // プロフィールアニメ
     const personEl = document.querySelector('.profile-anim-wrap .person-frame');
     const notesEl = document.querySelector('.profile-anim-wrap .notes-frame');
     if (personEl && notesEl) {
@@ -119,22 +76,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const tick = () => {
             personEl.src = personFrames[fi];
             notesEl.src = notesFrames[fi];
-            const wait = frameDurations[fi];
+            setTimeout(tick, frameDurations[fi]);
             fi = (fi + 1) % personFrames.length;
-            window.setTimeout(tick, wait);
         };
-        window.setTimeout(tick, 60);
+        setTimeout(tick, 60);
     }
 
-    // --- Initialize Swipers ---
+    // Swiper初期化 (アーカイブ写真を消さないよう保護)
     if (typeof Swiper !== 'undefined') {
         const voiceEl = document.querySelector('.voice-section .swiper-container');
         if (voiceEl) {
             new Swiper(voiceEl, {
                 loop: true, centeredSlides: true, slidesPerView: 'auto', spaceBetween: 25, speed: 600,
-                observer: true, observeParents: true,
-                navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
-                on: { init: function() { setTimeout(() => { this.update(); }, 100); } }
+                navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }
             });
         }
         const archiveEl = document.querySelector('.archive-swiper');
@@ -145,9 +99,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-
     // ===============================================
-    // 2. Data Fetching & Date Helpers
+    // 2. データ取得・解析 (NEWS & VOICE)
     // ===============================================
     const NEWS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSkBOovAHzdZWtA0Z-KRe27h5ZzGFi5Bq2G7Bp0Mv4sQ-2C9urIYy8oR9IaMf7xdSR9M_iww2zMbG-/pub?gid=0&single=true&output=csv";
     const VOICE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSkBOovAHzdZWtA0Z-KRe27h5ZzGFi5Bq2G7Bp0Mv4sQ-2C9urIYy8oR9IaMf7xdSR9M_iww2zMbG-/pub?gid=793239367&single=true&output=csv";
@@ -156,8 +109,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const newsContainer = document.querySelector('#news .news-container');
     const voiceWrapper = document.querySelector('#voice .swiper-wrapper');
 
-    if (newsContainer || voiceWrapper) {
-        fetchData();
+    // 日付処理ヘルパー (2026.1.10 形式 & ソート用)
+    function parseDate(dateStr) {
+        const s = String(dateStr || '').trim();
+        const parts = (s.match(/\d+/g) || []).map(Number);
+        if (parts.length < 3) return { display: dateStr, time: 0 };
+        const [y, m, d] = parts;
+        return {
+            display: `${y}.${m}.${d}`, // 「01」を「1」にする
+            time: new Date(y, m - 1, d).getTime()
+        };
     }
 
     async function fetchData() {
@@ -166,154 +127,62 @@ document.addEventListener('DOMContentLoaded', function() {
                 fetch(NEWS_CSV_URL),
                 fetch(VOICE_CSV_URL)
             ]);
-
-            if (newsRes.ok && newsContainer) {
-                const text = await newsRes.text();
-                const newsData = parseCSV(text);
-                renderNews(newsData);
-            }
-            if (voiceRes.ok && voiceWrapper) {
-                const text = await voiceRes.text();
-                const voiceData = parseCSV(text);
-                renderVoice(voiceData);
-            }
-        } catch (e) {
-            console.error("Data load failed:", e);
-        }
+            if (newsRes.ok && newsContainer) renderNews(parseCSV(await newsRes.text()));
+            if (voiceRes.ok && voiceWrapper) renderVoice(parseCSV(await voiceRes.text()));
+        } catch (e) { console.error(e); }
     }
 
     function parseCSV(text) {
-        const rows = [];
-        let row = [];
-        let cur = "";
-        let inQuote = false;
-        if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
-        for (let i = 0; i < text.length; i++) {
-            let c = text[i];
-            if (inQuote) {
-                if (c === '"') {
-                    if (i + 1 < text.length && text[i + 1] === '"') {
-                        cur += '"'; i++;
-                    } else { inQuote = false; }
-                } else { cur += c; }
-            } else {
-                if (c === '"') { inQuote = true; }
-                else if (c === ',') { row.push(cur.trim()); cur = ""; }
-                else if (c === '\n' || c === '\r') {
-                    row.push(cur.trim()); cur = "";
-                    if (row.length > 0) rows.push(row);
-                    row = [];
-                    if (c === '\r' && text[i + 1] === '\n') i++;
-                } else { cur += c; }
-            }
-        }
-        if (cur || row.length > 0) { row.push(cur.trim()); rows.push(row); }
-        const headers = rows[0];
-        return rows.slice(1).map(r => {
+        const lines = text.split(/\r?\n/);
+        const headers = lines[0].split(',');
+        return lines.slice(1).filter(line => line).map(line => {
+            const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
             let obj = {};
-            headers.forEach((h, idx) => { obj[h] = r[idx]; });
+            headers.forEach((h, i) => { obj[h.trim()] = (values[i] || "").replace(/^"|"$/g, ''); });
             return obj;
         });
     }
 
-    // --- Date Formatting (Fixed for sorting and "2026.1.10" style) ---
-    function parseYmd(dateStr) {
-        const s = String(dateStr || '').trim();
-        const parts = (s.match(/\d+/g) || []).slice(0, 3).map(n => parseInt(n, 10));
-        if (parts.length < 3) return { y: 0, m: 0, d: 0, time: -Infinity };
-        const [y, m, d] = parts;
-        // UTCを用いてタイムゾーンの影響を防ぎ、ソート用の数値を生成
-        const time = Date.UTC(y, m - 1, d);
-        return { y, m, d, time };
-    }
-
-    function formatYmd(dateStr) {
-        const { y, m, d } = parseYmd(dateStr);
-        if (!y) return String(dateStr || '');
-        // 0埋めをせず「2026.1.10」形式で返す
-        return `${y}.${m}.${d}`;
-    }
-
-    function sortByDateDesc(list, key = 'date') {
-        return [...(list || [])].sort((a, b) => {
-            const ta = parseYmd(a[key]).time;
-            const tb = parseYmd(b[key]).time;
-            return tb - ta; // 降順（最新が上）
-        });
-    }
-
     function renderNews(data) {
-        const validItems = sortByDateDesc(
-            data.filter(item => item.enabled && String(item.enabled).toUpperCase() === 'TRUE'),
-            'date'
-        );
-        
-        const html = validItems.map((item, idx) => {
-            const dateDisplay = formatYmd(item.date);
+        // 1. 有効なデータのみ抽出し、日付の降順(新しい順)でソート
+        const items = data
+            .filter(d => String(d.enabled).toUpperCase() === 'TRUE')
+            .map(d => ({ ...d, _dateObj: parseDate(d.date) }))
+            .sort((a, b) => b._dateObj.time - a._dateObj.time);
+
+        newsContainer.innerHTML = items.map((item, idx) => {
             const body = item[LANG + '_html'] || "";
             const linkText = item[LANG + '_link_text'];
             const linkHref = item[LANG + '_link_href'];
-            const linkHtml = (linkText && linkHref) ? `<br><a href="${linkHref}" target="_blank" rel="noopener noreferrer">${linkText}</a>` : "";
-
+            const linkHtml = (linkText && linkHref) ? `<br><a href="${linkHref}" target="_blank">${linkText}</a>` : "";
             return `
-                <div class="news-item fade-up" data-stagger="${idx}">
-                    <span class="news-date">${dateDisplay}</span>
+                <div class="news-item fade-up is-visible" style="transition-delay: ${idx * 100}ms">
+                    <span class="news-date">${item._dateObj.display}</span>
                     <div class="news-text">${body}${linkHtml}</div>
-                </div>
-            `;
+                </div>`;
         }).join("");
-
-        if (html.trim()) {
-            newsContainer.innerHTML = html;
-            const items = newsContainer.querySelectorAll('.news-item');
-            const obs = new IntersectionObserver((entries, o) => {
-                entries.forEach(e => {
-                    if(!e.isIntersecting) return;
-                    const el = e.target;
-                    setTimeout(() => el.classList.add('is-visible'), 120 * (el.dataset.stagger || 0));
-                    o.unobserve(el);
-                });
-            }, { root: null, margin: '0px 0px -10% 0px', threshold: 0.15 });
-            items.forEach(el => obs.observe(el));
-        }
     }
 
     function renderVoice(data) {
-        const validItems = sortByDateDesc(
-            data.filter(item => item.enabled && String(item.enabled).toUpperCase() === 'TRUE'),
-            'date'
-        );
+        const items = data
+            .filter(d => String(d.enabled).toUpperCase() === 'TRUE')
+            .map(d => ({ ...d, _dateObj: parseDate(d.date) }))
+            .sort((a, b) => b._dateObj.time - a._dateObj.time);
 
-        const html = validItems.map(item => {
-            const body = item[LANG + '_html'] || "";
-            const kind = item.image_kind || "photo";
-            const imgClass = (kind === "logo") ? "voice-logo-placeholder" : "voice-photo";
+        voiceWrapper.innerHTML = items.map(item => {
             let imgSrc = item.image_src;
-            if(imgSrc && !imgSrc.startsWith('http') && !imgSrc.startsWith('images/')) {
-                 imgSrc = 'images/' + imgSrc;
-            }
-
+            if(imgSrc && !imgSrc.startsWith('http') && !imgSrc.startsWith('images/')) imgSrc = 'images/' + imgSrc;
             return `
                 <div class="swiper-slide voice-slide">
-                    <div class="voice-img-box">
-                        <img src="${imgSrc}" alt="Voice Image" class="${imgClass}" loading="lazy">
-                    </div>
+                    <div class="voice-img-box"><img src="${imgSrc}" class="voice-photo" loading="lazy"></div>
                     <div class="voice-content">
-                        <div class="voice-date-text">${formatYmd(item.date)}</div>
-                        <p class="voice-body">${body}</p>
+                        <div class="voice-date-text">${item._dateObj.display}</div>
+                        <p class="voice-body">${item[LANG + '_html']}</p>
                     </div>
-                </div>
-            `;
+                </div>`;
         }).join("");
-
-        if (html.trim()) {
-            voiceWrapper.innerHTML = html;
-            const swiperEl = document.querySelector('.voice-section .swiper-container');
-            if(swiperEl && swiperEl.swiper) {
-                swiperEl.swiper.update();
-                swiperEl.swiper.slideTo(0);
-            }
-        }
+        if (voiceWrapper.parentElement.swiper) voiceWrapper.parentElement.swiper.update();
     }
 
+    if (newsContainer || voiceWrapper) fetchData();
 });
