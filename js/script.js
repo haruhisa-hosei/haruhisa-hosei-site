@@ -1,8 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-    // ===============================================
-    // 1. UI & Swiper (既存のアーカイブ機能を守る)
-    // ===============================================
+    // --- UI/Swiper (アーカイブ写真を保護するため既存の設定を維持) ---
     const menuBtn = document.getElementById('menuBtn');
     const navOverlay = document.getElementById('navOverlay');
     if (menuBtn && navOverlay) {
@@ -12,8 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // アーカイブ等のSwiper初期化（ここには一切触れません）
     if (typeof Swiper !== 'undefined') {
+        // Voice Swiper
         const voiceEl = document.querySelector('.voice-section .swiper-container');
         if (voiceEl) {
             new Swiper(voiceEl, {
@@ -21,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }
             });
         }
+        // Archive Swiper (写真を消さないよう元の設定を保持)
         const archiveEl = document.querySelector('.archive-swiper');
         if (archiveEl) {
             new Swiper(archiveEl, {
@@ -30,79 +29,73 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ===============================================
-    // 2. 日付処理の心臓部 (0埋めなし & 正確なソート)
+    // 日付の修正・ソート処理 (ここが最重要)
     // ===============================================
-    
-    // 「2026.01.10」を解析して数値化し、表示用には「2026.1.10」を返す
-    function processDate(dateStr) {
-        if (!dateStr) return { time: 0, display: "" };
-        // 数字だけを抜き出す (2026, 01, 14 など)
-        const parts = String(dateStr).match(/\d+/g);
-        if (!parts || parts.length < 3) return { time: 0, display: dateStr };
+    function parseAndFormatDate(dateStr) {
+        const s = String(dateStr || '').trim();
+        const parts = (s.match(/\d+/g) || []).map(Number);
+        
+        if (parts.length < 3) return { time: 0, display: dateStr };
 
-        const y = parseInt(parts[0], 10);
-        const m = parseInt(parts[1], 10);
-        const d = parseInt(parts[2], 10);
+        const [y, m, d] = parts;
+        // 比較用：Dateオブジェクト（14日を10日より上にするため）
+        const time = new Date(y, m - 1, d).getTime();
+        // 表示用：「2026.1.10」形式（0を消す）
+        const display = `${y}.${m}.${d}`;
 
-        return {
-            time: new Date(y, m - 1, d).getTime(), // 比較用
-            display: `${y}.${m}.${d}`              // 表示用 (0埋めなし)
-        };
+        return { time, display };
     }
 
-    // ===============================================
-    // 3. データ取得 & 描画
-    // ===============================================
     const NEWS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSkBOovAHzdZWtA0Z-KRe27h5ZzGFi5Bq2G7Bp0Mv4sQ-2C9urIYy8oR9IaMf7xdSR9M_iww2zMbG-/pub?gid=0&single=true&output=csv";
     const LANG = document.documentElement.lang === 'en' ? 'en' : 'ja';
-    const newsContainer = document.querySelector('#news .news-container');
+    const container = document.querySelector('#news .news-container');
 
-    if (newsContainer) {
+    if (container) {
         fetch(NEWS_CSV)
             .then(res => res.text())
-            .then(text => {
-                const rows = text.split('\n').slice(1); // ヘッダー飛ばし
-                const data = rows.map(row => {
-                    const cols = row.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(c => c.replace(/^"|"$/g, '').trim());
-                    return {
-                        date: cols[0],
-                        enabled: cols[1],
-                        ja_html: cols[2],
-                        en_html: cols[3],
-                        link_text: cols[4],
-                        link_href: cols[5]
-                    };
+            .then(csvText => {
+                // CSV解析（1行目をヘッダーとして処理）
+                const lines = csvText.split(/\r?\n/).filter(line => line.trim() !== "");
+                const headers = lines[0].split(',').map(h => h.trim());
+                
+                const data = lines.slice(1).map(line => {
+                    const values = line.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(v => v.replace(/^"|"$/g, '').trim());
+                    let obj = {};
+                    headers.forEach((h, i) => obj[h] = values[i]);
+                    return obj;
                 });
 
-                // 1. 有効なものだけ残す
-                // 2. 日付を解析し、降順（新しい順）に並べ替える
-                const sortedData = data
-                    .filter(item => item.enabled && item.enabled.toUpperCase() === 'TRUE')
-                    .map(item => ({ ...item, _d: processDate(item.date) }))
-                    .sort((a, b) => b._d.time - a._d.time);
+                // 1. enabledが"TRUE"のものだけ抽出
+                // 2. 日付を解析し、降順（新しい順）にソート
+                const sortedItems = data
+                    .filter(item => String(item.enabled).toUpperCase() === 'TRUE')
+                    .map(item => {
+                        const dateObj = parseAndFormatDate(item.date);
+                        return { ...item, _time: dateObj.time, _displayDate: dateObj.display };
+                    })
+                    .sort((a, b) => b._time - a._time);
 
-                // HTML生成
-                newsContainer.innerHTML = sortedData.map(item => {
-                    const body = (LANG === 'ja' ? item.ja_html : item.en_html) || "";
-                    // スプレッドシート側の列名に合わせて調整
-                    const lText = item.link_text;
-                    const lHref = item.link_href;
-                    const link = (lText && lHref) ? `<br><a href="${lHref}" target="_blank">${lText}</a>` : "";
+                // HTML書き出し
+                container.innerHTML = sortedItems.map(item => {
+                    const body = item[LANG + '_html'] || "";
+                    const linkText = item[LANG + '_link_text'];
+                    const linkHref = item[LANG + '_link_href'];
+                    const linkHtml = (linkText && linkHref) ? `<br><a href="${linkHref}" target="_blank">${linkText}</a>` : "";
 
                     return `
                         <div class="news-item fade-up is-visible">
-                            <span class="news-date">${item._d.display}</span>
-                            <div class="news-text">${body}${link}</div>
-                        </div>`;
+                            <span class="news-date">${item._displayDate}</span>
+                            <div class="news-text">${body}${linkHtml}</div>
+                        </div>
+                    `;
                 }).join('');
-            });
+            })
+            .catch(err => console.error("News Load Error:", err));
     }
 
-    // Intersection Observer などのアニメーション設定 (共通)
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) entry.target.classList.add('is-visible');
-        });
+    // --- その他アニメーション ---
+    const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('is-visible'); });
     }, { threshold: 0.1 });
-    document.querySelectorAll('.fade-up, .fade-in').forEach(el => observer.observe(el));
+    document.querySelectorAll('.fade-up, .fade-in, .slide-left').forEach(el => obs.observe(el));
 });
