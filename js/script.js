@@ -248,12 +248,41 @@ function withCacheBuster(url) {
         return objects;
     }
 
+    // --- Date helpers (internal format: YYYY.MM.DD; display: YYYY.M.D) ---
+    function parseDateForSort(dateStr) {
+        if (!dateStr) return new Date(0);
+        const parts = String(dateStr).trim().split('.');
+        if (parts.length !== 3) {
+            // Fallback: try native parsing
+            const d = new Date(String(dateStr).replace(/\./g, '/'));
+            return isNaN(d) ? new Date(0) : d;
+        }
+        const y = Number(parts[0]);
+        const m = Number(parts[1]);
+        const d = Number(parts[2]);
+        if (!y || !m || !d) return new Date(0);
+        return new Date(y, m - 1, d);
+    }
+
+    function formatDateDot(dateStr) {
+        if (!dateStr) return '';
+        const parts = String(dateStr).trim().split('.');
+        if (parts.length !== 3) return String(dateStr);
+        const y = parts[0];
+        const m = Number(parts[1]);
+        const d = Number(parts[2]);
+        return `${y}.${m}.${d}`;
+    }
+
+
+
     function renderNews(data) {
-        // Filter enabled
+        // Filter enabled & sort by date descending
         const validItems = data.filter(item => item.enabled && item.enabled.toUpperCase() === 'TRUE');
-        
+        validItems.sort((a, b) => parseDateForSort(b.date) - parseDateForSort(a.date));
+
         const html = validItems.map((item, idx) => {
-            const date = item.date;
+            const date = formatDateDot(item.date);
             const body = item[LANG + '_html'] || "";
             const linkText = item[LANG + '_link_text'];
             const linkHref = item[LANG + '_link_href'];
@@ -289,11 +318,7 @@ function withCacheBuster(url) {
     function renderVoice(data) {
         // Filter enabled & sort by date descending
         const validItems = data.filter(item => item.enabled && item.enabled.toUpperCase() === 'TRUE');
-        validItems.sort((a, b) => {
-            const dA = new Date(a.date.replace(/\./g, '/'));
-            const dB = new Date(b.date.replace(/\./g, '/'));
-            return dB - dA;
-        });
+        validItems.sort((a, b) => parseDateForSort(b.date) - parseDateForSort(a.date));
 
         const html = validItems.map(item => {
             const body = item[LANG + '_html'] || "";
@@ -311,7 +336,7 @@ function withCacheBuster(url) {
                         <img src="${imgSrc}" alt="Voice Image" class="${imgClass}" loading="lazy">
                     </div>
                     <div class="voice-content">
-                        <div class="voice-date-text">${item.date}</div>
+                        <div class="voice-date-text">${formatDateDot(item.date)}</div>
                         <p class="voice-body">${body}</p>
                     </div>
                 </div>
