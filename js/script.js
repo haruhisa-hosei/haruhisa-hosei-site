@@ -157,14 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const NEWS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSkBOovAHzdZWtA0Z-KRe27h5ZzGFi5Bq2G7Bp0Mv4sQ-2C9urIYy8oR9IaMf7xdSR9M_iww2zMbG-/pub?gid=0&single=true&output=csv";
     const VOICE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSkBOovAHzdZWtA0Z-KRe27h5ZzGFi5Bq2G7Bp0Mv4sQ-2C9urIYy8oR9IaMf7xdSR9M_iww2zMbG-/pub?gid=793239367&single=true&output=csv";
 
-    
-
-// Cache-buster: avoid iOS/edge caching of Google published CSV
-function withCacheBuster(url) {
-  const sep = url.includes('?') ? '&' : '?';
-  return url + sep + '_ts=' + Date.now();
-}
-// Detect current language from HTML tag
+    // Detect current language from HTML tag
     const LANG = document.documentElement.lang === 'en' ? 'en' : 'ja';
 
     const newsContainer = document.querySelector('#news .news-container');
@@ -178,8 +171,8 @@ function withCacheBuster(url) {
     async function fetchData() {
         try {
             const [newsRes, voiceRes] = await Promise.all([
-                fetch(withCacheBuster(NEWS_CSV_URL), { cache: 'no-store' }),
-                fetch(withCacheBuster(VOICE_CSV_URL), { cache: 'no-store' })
+                fetch(NEWS_CSV_URL),
+                fetch(VOICE_CSV_URL)
             ]);
 
             if (newsRes.ok && newsContainer) {
@@ -248,41 +241,51 @@ function withCacheBuster(url) {
         return objects;
     }
 
-    // --- Date helpers (internal format: YYYY.MM.DD; display: YYYY.M.D) ---
-    function parseDateForSort(dateStr) {
-        if (!dateStr) return new Date(0);
-        const parts = String(dateStr).trim().split('.');
-        if (parts.length !== 3) {
-            // Fallback: try native parsing
-            const d = new Date(String(dateStr).replace(/\./g, '/'));
-            return isNaN(d) ? new Date(0) : d;
+    // ===============================================
+    // Date helpers (sorting + display normalization)
+    // ===============================================
+    // Accepts: YYYY.MM.DD / YYYY.M.D / YYYY-MM-DD / YYYY/M/D
+    // Returns: { y, m, d, time } where time is UTC ms (stable across TZ)
+    function parseYmd(dateStr) {
+        const s = String(dateStr || '').trim();
+        // grab first 3 numeric groups
+        const parts = (s.match(/\d+/g) || []).slice(0, 3).map(n => parseInt(n, 10));
+        if (parts.length < 3 || parts.some(n => Number.isNaN(n))) {
+            return { y: 0, m: 0, d: 0, time: -Infinity };
         }
-        const y = Number(parts[0]);
-        const m = Number(parts[1]);
-        const d = Number(parts[2]);
-        if (!y || !m || !d) return new Date(0);
-        return new Date(y, m - 1, d);
+        const [y, m, d] = parts;
+        // Use UTC to avoid iOS TZ quirks
+        const time = Date.UTC(y, (m || 1) - 1, d || 1);
+        return { y, m, d, time };
     }
 
-    function formatDateDot(dateStr) {
-        if (!dateStr) return '';
-        const parts = String(dateStr).trim().split('.');
-        if (parts.length !== 3) return String(dateStr);
-        const y = parts[0];
-        const m = Number(parts[1]);
-        const d = Number(parts[2]);
-        return `${y}.${m}.${d}`;
+    function pad2(n) {
+        return String(Math.max(0, n)).padStart(2, '0');
     }
 
+    function formatYmd(dateStr) {
+        const { y, m, d } = parseYmd(dateStr);
+        if (!y) return String(dateStr || '');
+        return `${y}.${pad2(m)}.${pad2(d)}`;
+    }
 
+    function sortByDateDesc(list, key = 'date') {
+        return [...(list || [])].sort((a, b) => {
+            const ta = parseYmd(a?.[key]).time;
+            const tb = parseYmd(b?.[key]).time;
+            return tb - ta;
+        });
+    }
 
     function renderNews(data) {
-        // Filter enabled & sort by date descending
-        const validItems = data.filter(item => item.enabled && item.enabled.toUpperCase() === 'TRUE');
-        validItems.sort((a, b) => parseDateForSort(b.date) - parseDateForSort(a.date));
-
+        // Filter enabled & sort by date (newest first)
+        const validItems = sortByDateDesc(
+            data.filter(item => item.enabled && String(item.enabled).toUpperCase() === 'TRUE'),
+            'date'
+        );
+        
         const html = validItems.map((item, idx) => {
-            const date = formatDateDot(item.date);
+            const date = formatYmd(parseYmd(item.date));
             const body = item[LANG + '_html'] || "";
             const linkText = item[LANG + '_link_text'];
             const linkHref = item[LANG + '_link_href'];
@@ -316,9 +319,11 @@ function withCacheBuster(url) {
     }
 
     function renderVoice(data) {
-        // Filter enabled & sort by date descending
-        const validItems = data.filter(item => item.enabled && item.enabled.toUpperCase() === 'TRUE');
-        validItems.sort((a, b) => parseDateForSort(b.date) - parseDateForSort(a.date));
+        // Filter enabled & sort by date (newest first)
+        const validItems = sortByDateDesc(
+            data.filter(item => item.enabled && String(item.enabled).toUpperCase() === 'TRUE'),
+            'date'
+        );
 
         const html = validItems.map(item => {
             const body = item[LANG + '_html'] || "";
@@ -336,7 +341,7 @@ function withCacheBuster(url) {
                         <img src="${imgSrc}" alt="Voice Image" class="${imgClass}" loading="lazy">
                     </div>
                     <div class="voice-content">
-                        <div class="voice-date-text">${formatDateDot(item.date)}</div>
+                        <div class="voice-date-text">${formatYmdFrom(item.date)}</div>
                         <p class="voice-body">${body}</p>
                     </div>
                 </div>
