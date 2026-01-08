@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', function() {
             menuBtn.setAttribute('aria-expanded', isOpen);
         });
 
-        // Close when link clicked
         menuLinks.forEach(link => {
             link.addEventListener('click', (e) => {
                 menuLinks.forEach(l => l.classList.remove('is-active'));
@@ -30,7 +29,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-        // Keyboard Support
         menuBtn.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
@@ -38,7 +36,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Touch Feedback
         const pressOn = () => menuBtn.classList.add('is-pressing');
         const pressOff = () => menuBtn.classList.remove('is-pressing');
         menuBtn.addEventListener('pointerdown', pressOn);
@@ -89,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // --- Intersection Observer (Fade/Slide Animations) ---
+    // --- Intersection Observer ---
     const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
     const observer = new IntersectionObserver((entries, obs) => {
         entries.forEach(entry => {
@@ -101,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, observerOptions);
     document.querySelectorAll('.fade-up, .fade-in, .slide-left').forEach(el => observer.observe(el));
 
-    // --- Header Reveal (Home Only) ---
+    // --- Header Reveal ---
     const header = document.querySelector('header.hero-header');
     if (header) {
         setTimeout(() => {
@@ -111,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1000);
     }
 
-    // --- Profile Animation (Home Only) ---
+    // --- Profile Animation ---
     const personEl = document.querySelector('.profile-anim-wrap .person-frame');
     const notesEl = document.querySelector('.profile-anim-wrap .notes-frame');
     if (personEl && notesEl) {
@@ -131,7 +128,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- Initialize Swipers ---
     if (typeof Swiper !== 'undefined') {
-        // Voice Swiper
         const voiceEl = document.querySelector('.voice-section .swiper-container');
         if (voiceEl) {
             new Swiper(voiceEl, {
@@ -141,7 +137,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 on: { init: function() { setTimeout(() => { this.update(); }, 100); } }
             });
         }
-        // Archive Swiper
         const archiveEl = document.querySelector('.archive-swiper');
         if (archiveEl) {
             new Swiper(archiveEl, {
@@ -152,18 +147,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     // ===============================================
-    // 2. Data Fetching (CSV from Google Sheets)
+    // 2. Data Fetching & Date Helpers
     // ===============================================
     const NEWS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSkBOovAHzdZWtA0Z-KRe27h5ZzGFi5Bq2G7Bp0Mv4sQ-2C9urIYy8oR9IaMf7xdSR9M_iww2zMbG-/pub?gid=0&single=true&output=csv";
     const VOICE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSkBOovAHzdZWtA0Z-KRe27h5ZzGFi5Bq2G7Bp0Mv4sQ-2C9urIYy8oR9IaMf7xdSR9M_iww2zMbG-/pub?gid=793239367&single=true&output=csv";
 
-    // Detect current language from HTML tag
     const LANG = document.documentElement.lang === 'en' ? 'en' : 'ja';
-
     const newsContainer = document.querySelector('#news .news-container');
     const voiceWrapper = document.querySelector('#voice .swiper-wrapper');
 
-    // Only fetch if containers exist (Home page)
     if (newsContainer || voiceWrapper) {
         fetchData();
     }
@@ -190,113 +182,82 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // CSV Parser (Handles quotes and commas correctly)
     function parseCSV(text) {
         const rows = [];
         let row = [];
         let cur = "";
         let inQuote = false;
-        
-        // Remove BOM if present
         if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
-
         for (let i = 0; i < text.length; i++) {
             let c = text[i];
             if (inQuote) {
                 if (c === '"') {
                     if (i + 1 < text.length && text[i + 1] === '"') {
                         cur += '"'; i++;
-                    } else {
-                        inQuote = false;
-                    }
-                } else {
-                    cur += c;
-                }
+                    } else { inQuote = false; }
+                } else { cur += c; }
             } else {
-                if (c === '"') {
-                    inQuote = true;
-                } else if (c === ',') {
-                    row.push(cur.trim()); cur = "";
-                } else if (c === '\n' || c === '\r') {
+                if (c === '"') { inQuote = true; }
+                else if (c === ',') { row.push(cur.trim()); cur = ""; }
+                else if (c === '\n' || c === '\r') {
                     row.push(cur.trim()); cur = "";
                     if (row.length > 0) rows.push(row);
                     row = [];
                     if (c === '\r' && text[i + 1] === '\n') i++;
-                } else {
-                    cur += c;
-                }
+                } else { cur += c; }
             }
         }
         if (cur || row.length > 0) { row.push(cur.trim()); rows.push(row); }
-        
-        // Convert to Array of Objects using header row
         const headers = rows[0];
-        const objects = rows.slice(1).map(r => {
+        return rows.slice(1).map(r => {
             let obj = {};
-            headers.forEach((h, idx) => {
-                obj[h] = r[idx];
-            });
+            headers.forEach((h, idx) => { obj[h] = r[idx]; });
             return obj;
         });
-        return objects;
     }
 
-    // ===============================================
-    // Date helpers (sorting + display normalization)
-    // ===============================================
-    // Accepts: YYYY.MM.DD / YYYY.M.D / YYYY-MM-DD / YYYY/M/D
-    // Returns: { y, m, d, time } where time is UTC ms (stable across TZ)
+    // --- Date Formatting (Fixed for sorting and "2026.1.10" style) ---
     function parseYmd(dateStr) {
         const s = String(dateStr || '').trim();
-        // grab first 3 numeric groups
         const parts = (s.match(/\d+/g) || []).slice(0, 3).map(n => parseInt(n, 10));
-        if (parts.length < 3 || parts.some(n => Number.isNaN(n))) {
-            return { y: 0, m: 0, d: 0, time: -Infinity };
-        }
+        if (parts.length < 3) return { y: 0, m: 0, d: 0, time: -Infinity };
         const [y, m, d] = parts;
-        // Use UTC to avoid iOS TZ quirks
-        const time = Date.UTC(y, (m || 1) - 1, d || 1);
+        // UTCを用いてタイムゾーンの影響を防ぎ、ソート用の数値を生成
+        const time = Date.UTC(y, m - 1, d);
         return { y, m, d, time };
-    }
-
-    function pad2(n) {
-        return String(Math.max(0, n)).padStart(2, '0');
     }
 
     function formatYmd(dateStr) {
         const { y, m, d } = parseYmd(dateStr);
         if (!y) return String(dateStr || '');
-        return `${y}.${pad2(m)}.${pad2(d)}`;
+        // 0埋めをせず「2026.1.10」形式で返す
+        return `${y}.${m}.${d}`;
     }
 
     function sortByDateDesc(list, key = 'date') {
         return [...(list || [])].sort((a, b) => {
-            const ta = parseYmd(a?.[key]).time;
-            const tb = parseYmd(b?.[key]).time;
-            return tb - ta;
+            const ta = parseYmd(a[key]).time;
+            const tb = parseYmd(b[key]).time;
+            return tb - ta; // 降順（最新が上）
         });
     }
 
     function renderNews(data) {
-        // Filter enabled & sort by date (newest first)
         const validItems = sortByDateDesc(
             data.filter(item => item.enabled && String(item.enabled).toUpperCase() === 'TRUE'),
             'date'
         );
         
         const html = validItems.map((item, idx) => {
-            const date = formatYmd(parseYmd(item.date));
+            const dateDisplay = formatYmd(item.date);
             const body = item[LANG + '_html'] || "";
             const linkText = item[LANG + '_link_text'];
             const linkHref = item[LANG + '_link_href'];
-            
-            const linkHtml = (linkText && linkHref) 
-                ? `<br><a href="${linkHref}" target="_blank" rel="noopener noreferrer">${linkText}</a>`
-                : "";
+            const linkHtml = (linkText && linkHref) ? `<br><a href="${linkHref}" target="_blank" rel="noopener noreferrer">${linkText}</a>` : "";
 
             return `
                 <div class="news-item fade-up" data-stagger="${idx}">
-                    <span class="news-date">${date}</span>
+                    <span class="news-date">${dateDisplay}</span>
                     <div class="news-text">${body}${linkHtml}</div>
                 </div>
             `;
@@ -304,7 +265,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (html.trim()) {
             newsContainer.innerHTML = html;
-            // Activate Stagger Animations for dynamic content
             const items = newsContainer.querySelectorAll('.news-item');
             const obs = new IntersectionObserver((entries, o) => {
                 entries.forEach(e => {
@@ -319,7 +279,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderVoice(data) {
-        // Filter enabled & sort by date (newest first)
         const validItems = sortByDateDesc(
             data.filter(item => item.enabled && String(item.enabled).toUpperCase() === 'TRUE'),
             'date'
@@ -329,7 +288,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const body = item[LANG + '_html'] || "";
             const kind = item.image_kind || "photo";
             const imgClass = (kind === "logo") ? "voice-logo-placeholder" : "voice-photo";
-            // Prepend images/ path if just filename is given
             let imgSrc = item.image_src;
             if(imgSrc && !imgSrc.startsWith('http') && !imgSrc.startsWith('images/')) {
                  imgSrc = 'images/' + imgSrc;
@@ -341,7 +299,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <img src="${imgSrc}" alt="Voice Image" class="${imgClass}" loading="lazy">
                     </div>
                     <div class="voice-content">
-                        <div class="voice-date-text">${formatYmdFrom(item.date)}</div>
+                        <div class="voice-date-text">${formatYmd(item.date)}</div>
                         <p class="voice-body">${body}</p>
                     </div>
                 </div>
@@ -350,7 +308,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (html.trim()) {
             voiceWrapper.innerHTML = html;
-            // Force update Swiper
             const swiperEl = document.querySelector('.voice-section .swiper-container');
             if(swiperEl && swiperEl.swiper) {
                 swiperEl.swiper.update();
