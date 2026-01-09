@@ -253,7 +253,7 @@ function withCacheBuster(url) {
         const validItems = data.filter(item => item.enabled && item.enabled.toUpperCase() === 'TRUE');
         
         const html = validItems.map((item, idx) => {
-            const date = item.date;
+            const date = (item.view_date || item.date);
             const body = item[LANG + '_html'] || "";
             const linkText = item[LANG + '_link_text'];
             const linkHref = item[LANG + '_link_href'];
@@ -311,7 +311,7 @@ function withCacheBuster(url) {
                         <img src="${imgSrc}" alt="Voice Image" class="${imgClass}" loading="lazy">
                     </div>
                     <div class="voice-content">
-                        <div class="voice-date-text">${item.date}</div>
+                        <div class="voice-date-text">${(item.view_date || item.date)}</div>
                         <p class="voice-body">${body}</p>
                     </div>
                 </div>
