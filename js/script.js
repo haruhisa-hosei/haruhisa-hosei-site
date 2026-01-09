@@ -1,4 +1,28 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // ------------------------------
+    // Date helpers (display + sort)
+    // Accepts: "YYYY.MM.DD", "YYYY.M.D", "YYYY-MM-DD", "YYYY/M/D"
+    // ------------------------------
+    function parseDateForSort(s) {
+        s = String(s || '').trim();
+        if (!s) return null;
+        const t = s.replace(/[\/\-]/g, '.');
+        const m = t.match(/^(\d{4})\.(\d{1,2})\.(\d{1,2})$/);
+        if (!m) return null;
+        const y = Number(m[1]), mo = Number(m[2]), d = Number(m[3]);
+        if (!y || mo < 1 || mo > 12 || d < 1 || d > 31) return null;
+        return new Date(y, mo - 1, d).getTime();
+    }
+    function formatDateYYYYMD(s) {
+        // Returns "YYYY.M.D" (no zero padding). If parse fails, returns original string.
+        s = String(s || '').trim();
+        const t = s.replace(/[\/\-]/g, '.');
+        const m = t.match(/^(\d{4})\.(\d{1,2})\.(\d{1,2})$/);
+        if (!m) return s;
+        return `${Number(m[1])}.${Number(m[2])}.${Number(m[3])}`;
+    }
+
+
 
     // ===============================================
     // 1. UI & Animations (Common)
@@ -157,14 +181,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const NEWS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSkBOovAHzdZWtA0Z-KRe27h5ZzGFi5Bq2G7Bp0Mv4sQ-2C9urIYy8oR9IaMf7xdSR9M_iww2zMbG-/pub?gid=0&single=true&output=csv";
     const VOICE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSkBOovAHzdZWtA0Z-KRe27h5ZzGFi5Bq2G7Bp0Mv4sQ-2C9urIYy8oR9IaMf7xdSR9M_iww2zMbG-/pub?gid=793239367&single=true&output=csv";
 
-    
-
-// Cache-buster: avoid iOS/edge caching of Google published CSV
-function withCacheBuster(url) {
-  const sep = url.includes('?') ? '&' : '?';
-  return url + sep + '_ts=' + Date.now();
-}
-// Detect current language from HTML tag
+    // Detect current language from HTML tag
     const LANG = document.documentElement.lang === 'en' ? 'en' : 'ja';
 
     const newsContainer = document.querySelector('#news .news-container');
@@ -178,8 +195,8 @@ function withCacheBuster(url) {
     async function fetchData() {
         try {
             const [newsRes, voiceRes] = await Promise.all([
-                fetch(withCacheBuster(NEWS_CSV_URL), { cache: 'no-store' }),
-                fetch(withCacheBuster(VOICE_CSV_URL), { cache: 'no-store' })
+                fetch(NEWS_CSV_URL),
+                fetch(VOICE_CSV_URL)
             ]);
 
             if (newsRes.ok && newsContainer) {
@@ -248,84 +265,113 @@ function withCacheBuster(url) {
         return objects;
     }
 
-    function renderNews(data) {
-        // Filter enabled
-        const validItems = data.filter(item => item.enabled && item.enabled.toUpperCase() === 'TRUE');
-        
-        const html = validItems.map((item, idx) => {
-            const date = (item.view_date || item.date);
-            const body = item[LANG + '_html'] || "";
-            const linkText = item[LANG + '_link_text'];
-            const linkHref = item[LANG + '_link_href'];
-            
-            const linkHtml = (linkText && linkHref) 
-                ? `<br><a href="${linkHref}" target="_blank" rel="noopener noreferrer">${linkText}</a>`
-                : "";
-
-            return `
-                <div class="news-item fade-up" data-stagger="${idx}">
-                    <span class="news-date">${date}</span>
-                    <div class="news-text">${body}${linkHtml}</div>
-                </div>
-            `;
-        }).join("");
-
-        if (html.trim()) {
-            newsContainer.innerHTML = html;
-            // Activate Stagger Animations for dynamic content
-            const items = newsContainer.querySelectorAll('.news-item');
-            const obs = new IntersectionObserver((entries, o) => {
-                entries.forEach(e => {
-                    if(!e.isIntersecting) return;
-                    const el = e.target;
-                    setTimeout(() => el.classList.add('is-visible'), 120 * (el.dataset.stagger || 0));
-                    o.unobserve(el);
-                });
-            }, { root: null, margin: '0px 0px -10% 0px', threshold: 0.15 });
-            items.forEach(el => obs.observe(el));
-        }
-    }
-
-    function renderVoice(data) {
-        // Filter enabled & sort by date descending
-        const validItems = data.filter(item => item.enabled && item.enabled.toUpperCase() === 'TRUE');
-        validItems.sort((a, b) => {
-            const dA = new Date(a.date.replace(/\./g, '/'));
-            const dB = new Date(b.date.replace(/\./g, '/'));
-            return dB - dA;
+    function renderNews(newsItems) {
+        // Sort by "date" (desc). Display prefers "view_date" if present, otherwise formats "date".
+        const sorted = [...newsItems].sort((a, b) => {
+            const ta = parseDateForSort(a.date);
+            const tb = parseDateForSort(b.date);
+            if (ta == null && tb == null) return 0;
+            if (ta == null) return 1;
+            if (tb == null) return -1;
+            return tb - ta;
         });
 
-        const html = validItems.map(item => {
-            const body = item[LANG + '_html'] || "";
-            const kind = item.image_kind || "photo";
-            const imgClass = (kind === "logo") ? "voice-logo-placeholder" : "voice-photo";
-            // Prepend images/ path if just filename is given
-            let imgSrc = item.image_src;
-            if(imgSrc && !imgSrc.startsWith('http') && !imgSrc.startsWith('images/')) {
-                 imgSrc = 'images/' + imgSrc;
+        newsContainer.innerHTML = '';
+
+        sorted.forEach(item => {
+            const newsItem = document.createElement('div');
+            newsItem.className = 'news-item';
+
+            const dateTextRaw = item.view_date || item.viewDate || item.view || item.date;
+            const dateText = formatDateYYYYMD(dateTextRaw);
+
+            const dateDiv = document.createElement('div');
+            dateDiv.className = 'news-date';
+            dateDiv.textContent = dateText;
+            newsItem.appendChild(dateDiv);
+
+            const jaHtmlDiv = document.createElement('div');
+            jaHtmlDiv.className = 'news-content';
+            jaHtmlDiv.innerHTML = item.ja_html || '';
+            newsItem.appendChild(jaHtmlDiv);
+
+            if (item.ja_link_text && item.ja_link_href) {
+                const link = document.createElement('a');
+                link.href = item.ja_link_href;
+                link.textContent = item.ja_link_text;
+                link.className = 'news-link';
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                newsItem.appendChild(link);
             }
 
-            return `
-                <div class="swiper-slide voice-slide">
-                    <div class="voice-img-box">
-                        <img src="${imgSrc}" alt="Voice Image" class="${imgClass}" loading="lazy">
-                    </div>
-                    <div class="voice-content">
-                        <div class="voice-date-text">${(item.view_date || item.date)}</div>
-                        <p class="voice-body">${body}</p>
-                    </div>
-                </div>
-            `;
-        }).join("");
+            const enHtmlDiv = document.createElement('div');
+            enHtmlDiv.className = 'news-content';
+            enHtmlDiv.innerHTML = item.en_html || '';
+            newsItem.appendChild(enHtmlDiv);
 
-        if (html.trim()) {
-            voiceWrapper.innerHTML = html;
-            // Force update Swiper
-            const swiperEl = document.querySelector('.voice-section .swiper-container');
-            if(swiperEl && swiperEl.swiper) {
-                swiperEl.swiper.update();
-                swiperEl.swiper.slideTo(0);
+            if (item.en_link_text && item.en_link_href) {
+                const link = document.createElement('a');
+                link.href = item.en_link_href;
+                link.textContent = item.en_link_text;
+                link.className = 'news-link';
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                newsItem.appendChild(link);
             }
+
+            newsContainer.appendChild(newsItem);
+        });
+    }
+
+    function renderVoice(voiceItems) {
+        // Sort by "date" (desc). Display prefers "view_date" if present, otherwise formats "date".
+        const sorted = [...voiceItems].sort((a, b) => {
+            const ta = parseDateForSort(a.date);
+            const tb = parseDateForSort(b.date);
+            if (ta == null && tb == null) return 0;
+            if (ta == null) return 1;
+            if (tb == null) return -1;
+            return tb - ta;
+        });
+
+        voiceWrapper.innerHTML = '';
+
+        sorted.forEach(item => {
+            const slide = document.createElement('div');
+            slide.className = 'swiper-slide';
+
+            const dateTextRaw = item.view_date || item.viewDate || item.view || item.date;
+            const dateText = formatDateYYYYMD(dateTextRaw);
+
+            const dateP = document.createElement('p');
+            dateP.className = 'voice-date';
+            dateP.textContent = dateText;
+            slide.appendChild(dateP);
+
+            if (item.image_src) {
+                const img = document.createElement('img');
+                img.src = `images/${item.image_src}`;
+                img.alt = '';
+                img.className = 'voice-image';
+                slide.appendChild(img);
+            }
+
+            const jaDiv = document.createElement('div');
+            jaDiv.className = 'voice-content';
+            jaDiv.innerHTML = item.ja_html || '';
+            slide.appendChild(jaDiv);
+
+            const enDiv = document.createElement('div');
+            enDiv.className = 'voice-content';
+            enDiv.innerHTML = item.en_html || '';
+            slide.appendChild(enDiv);
+
+            voiceWrapper.appendChild(slide);
+        });
+
+        if (window.voiceSwiper && typeof window.voiceSwiper.update === 'function') {
+            window.voiceSwiper.update();
         }
     }
 
