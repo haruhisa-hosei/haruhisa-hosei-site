@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>Newsletter Subscription | HARUHISA HOSEI</title>
+<meta name="description" content="ニュースレター登録フォーム。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="HARUHISA HOSEI OFFICIAL SITE">
+<meta property="og:title" content="Newsletter Subscription">
+<meta property="og:url" content="https://haruhisa-hosei.com/subscribe/index.html">
+<meta property="og:image" content="https://haruhisa-hosei.com/images/og-image.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="icon" href="../images/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../images/apple-touch-icon.png">
+<link rel="canonical" href="https://haruhisa-hosei.com/subscribe/index.html">
+<link rel="alternate" hreflang="ja" href="https://haruhisa-hosei.com/subscribe/index.html">
+<link rel="alternate" hreflang="en" href="https://haruhisa-hosei.com/subscribe/index_en.html">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;700&family=Lato:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<!-- Brevo Form (JP) assets -->
+<style>
+  @font-face{font-display:block;font-family:Roboto;src:url(https://assets.brevo.com/font/Roboto/Latin/normal/normal/7529907e9eaf8ebb5220c5f9850e3811.woff2) format("woff2"),url(https://assets.brevo.com/font/Roboto/Latin/normal/normal/25c678feafdc175a70922a116c9be3e7.woff) format("woff")}
+  @font-face{font-display:fallback;font-family:Roboto;font-weight:600;src:url(https://assets.brevo.com/font/Roboto/Latin/medium/normal/6e9caeeafb1f3491be3e32744bc30440.woff2) format("woff2"),url(https://assets.brevo.com/font/Roboto/Latin/medium/normal/71501f0d8d5aa95960f6475d5487d4c2.woff) format("woff")}
+  @font-face{font-display:fallback;font-family:Roboto;font-weight:700;src:url(https://assets.brevo.com/font/Roboto/Latin/bold/normal/3ef7cf158f310cf752d5ad08cd0e7e60.woff2) format("woff2"),url(https://assets.brevo.com/font/Roboto/Latin/bold/normal/ece3a1d82f18b60bcce0211725c476aa.woff) format("woff")}
+  #sib-container input:-ms-input-placeholder,#sib-container input::placeholder,#sib-container textarea::placeholder{text-align:left;font-family:Helvetica,sans-serif;color:#c0ccda}
+  #sib-container a{text-decoration:underline;color:#2BB2FC}
+</style>
+<link rel="stylesheet" href="https://sibforms.com/forms/end-form/build/sib-styles.css">
+
+</head>
+<body class="page-subscribe page-contact">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="topbar">
+    <div class="topbar-inner">
+        <a class="brand-left" href="../index.html">
+            <img class="brand-name-logo" src="../images/heder_name_logo.svg" alt="HARUHISA HOSEI">
+                <div class="brand-divider"></div>
+            <img alt="鳳聲晴久 公式ロゴ" class="brand-logo" src="../images/phoenix_logo.svg">
+                <img class="brand-face" src="../images/hosei_face_cap_red.svg" alt="鳳聲晴久 アイコン">
+        </a>
+        <div class="topbar-right">
+            <button class="lang-btn" id="langToggle" type="button" aria-label="Open language menu" aria-controls="langMenu" aria-expanded="false">
+                <img alt="言語切替" src="../images/lang_icon.png">
+                <div class="lang-label">Languages</div>
+            </button>
+            <div class="lang-menu" id="langMenu">
+                <a class="lang-item is-current" href="../contact.html" aria-current="page">JP</a>
+                <a class="lang-item" href="index_en.html">EN</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="fixed-menu-btn" id="menuBtn" role="button" tabindex="0" aria-label="メニューを開く" aria-controls="navOverlay" aria-expanded="false">
+    <span></span><span></span><span></span>
+</div>
+<nav class="menu-overlay" id="navOverlay">
+    <a class="menu-link" href="../index.html#top" style="--active-color: #fff;">TOP</a>
+    <a class="menu-link" href="../index.html#news" style="--active-color: #90ee90;">NEWS</a>
+    <a class="menu-link" href="../index.html#archive" style="--active-color: #aaa;">ARCHIVE</a>
+    <a class="menu-link" href="../index.html#voice" style="--active-color: #3b7a57;">VOICE</a>
+    <a class="menu-link" href="../index.html#profile" style="--active-color: #c9aa5a;">PROFILE</a>
+        <a class="menu-link" href="../index.html#subscribe" style="--active-color: #7a7a7a;">SUBSCRIBE</a>
+<a class="menu-link" href="#" style="--active-color: #333;">CONTACT</a>
+</nav>
+
+<main class="contact-main-content" id="main">
+    <h1 class="page-title fade-up">NEWSLETTER</h1>
+    <div class="contact-body fade-up delay-1">
+        <p class="intro-text">
+            演奏会情報・ニュースレターを<br>メールでお届けします。<br>登録は無料です
+        </p>
+        <div class="note-list">
+            <div class="note-item">
+                <span class="note-mark">※</span>
+                <span class="note-text">登録後、確認メールが届きます。メール内のリンクをクリックして登録完了となります。</span>
+            </div>
+            <div class="note-item">
+                <span class="note-mark">※</span>
+                <span class="note-text">配信停止はメール内のリンクからいつでも行えます。</span>
+            </div>
+        </div>
+
+        <div id="brevo-form-embed" class="fade-up delay-2" style="margin-top: 28px;">
+<!-- Begin Brevo Form (JP) -->
+<div class="sib-form" style="text-align:center;background-color:#EFF2F7;">
+  <div id="sib-form-container" class="sib-form-container">
+
+    <div id="error-message" class="sib-form-message-panel" style="font-size:16px;text-align:left;font-family:Helvetica,sans-serif;color:#661d1d;background-color:#ffeded;border-radius:3px;border-color:#ff4949;max-width:540px;">
+      <div class="sib-form-message-panel__text sib-form-message-panel__text--center">
+        <svg viewBox="0 0 512 512" class="sib-icon sib-notification__icon" aria-hidden="true" focusable="false">
+          <path d="M256 40c118.621 0 216 96.075 216 216 0 119.291-96.61 216-216 216-119.244 0-216-96.562-216-216 0-119.203 96.602-216 216-216m0-32C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm-11.49 120h22.979c6.823 0 12.274 5.682 11.99 12.5l-7 168c-.268 6.428-5.556 11.5-11.99 11.5h-8.979c-6.433 0-11.722-5.073-11.99-11.5l-7-168c-.283-6.818 5.167-12.5 11.99-12.5zM256 340c-15.464 0-28 12.536-28 28s12.536 28 28 28 28-12.536 28-28-12.536-28-28-28z" />
+        </svg>
+        <span class="sib-form-message-panel__inner-text">送信に失敗しました。時間をおいて、もう一度お試しください。</span>
+      </div>
+    </div>
+
+    <div id="success-message" class="sib-form-message-panel" style="font-size:16px;text-align:left;font-family:Helvetica,sans-serif;color:#085229;background-color:#e7faf0;border-radius:3px;border-color:#13ce66;max-width:540px;">
+      <div class="sib-form-message-panel__text sib-form-message-panel__text--center">
+        <svg viewBox="0 0 512 512" class="sib-icon sib-notification__icon" aria-hidden="true" focusable="false">
+          <path d="M256 8C119.033 8 8 119.033 8 256s111.033 248 248 248 248-111.033 248-248S392.967 8 256 8zm0 464c-118.664 0-216-96.055-216-216 0-118.663 96.055-216 216-216 118.664 0 216 96.055 216 216 0 118.663-96.055 216-216 216zm141.63-274.961L217.15 376.071c-4.705 4.667-12.303 4.637-16.97-.068l-85.878-86.572c-4.667-4.705-4.637-12.303.068-16.97l8.52-8.451c4.705-4.667 12.303-4.637 16.97.068l68.976 69.533 163.441-162.13c4.705-4.667 12.303-4.637 16.97.068l8.451 8.52c4.668 4.705 4.637 12.303-.068 16.97z" />
+        </svg>
+        <span class="sib-form-message-panel__inner-text">登録を受け付けました。確認メールを送信しましたので、メール内のリンクをクリックして登録を完了してください。</span>
+      </div>
+    </div>
+
+    <div id="sib-container" class="sib-container--large sib-container--vertical" style="text-align:center;background-color:rgba(255,255,255,1);max-width:540px;border-radius:3px;border-width:1px;border-color:#C0CCD9;border-style:solid;direction:ltr">
+      <form id="sib-form" method="POST"
+        action="https://1b8d9f43.sibforms.com/serve/MUIFABtZpBuD8kzl6Nt6uLqciGd0DvgKM1uQ6T-RPPUg2Fcjs98g0D5wMFsfgewhlUubd1R4LccL_rWh-G2DPtoq2lxewzlWbkNMtnvIe6PiMgbf3OR-vmYS_YZJKwu3SuKxz-bfGHHZJ7uOet_UHz6BCAUFDR1kUsO70G5oIVP2xa4Me9kaw6GEoI20P9HxTrbyF-X8BLRpAAJPJQ=="
+        data-type="subscription">
+        <div style="padding:8px 0;">
+          <div class="sib-form-block" style="font-size:32px;text-align:left;font-weight:700;font-family:Helvetica,sans-serif;color:#3C4858;background-color:transparent;">
+            <p>ニュースレター</p>
+          </div>
+        </div>
+
+        <div style="padding:8px 0;">
+          <div class="sib-form-block" style="font-size:16px;text-align:left;font-family:Helvetica,sans-serif;color:#3C4858;background-color:transparent;">
+            <div class="sib-text-form-block">
+              <p>最新情報をお届けします。メールアドレスを登録してください。</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:8px 0;">
+          <div class="sib-input sib-form-block">
+            <div class="form__entry entry_block">
+              <div class="form__label-row">
+                <label class="entry__label" style="font-weight:700;text-align:left;font-size:16px;font-family:Helvetica,sans-serif;color:#3c4858;" for="EMAIL" data-required="*">メールアドレス</label>
+                <div class="entry__field">
+                  <input class="input" type="text" id="EMAIL" name="EMAIL" autocomplete="off" placeholder="例：abc@example.com" data-required="true" required />
+                </div>
+              </div>
+
+              <label class="entry__error entry__error--primary" style="font-size:16px;text-align:left;font-family:Helvetica,sans-serif;color:#661d1d;background-color:#ffeded;border-radius:3px;border-color:#ff4949;"></label>
+
+              <label class="entry__specification" style="font-size:12px;text-align:left;font-family:Helvetica,sans-serif;color:#8390A4;">
+                登録後、確認メールが届きます。メール内のリンクをクリックすると登録が完了します。
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:8px 0;">
+          <div class="sib-form-block" style="text-align:left">
+            <button class="sib-form-block__button sib-form-block__button-with-loader" style="font-size:16px;text-align:left;font-weight:700;font-family:Helvetica,sans-serif;color:#FFFFFF;background-color:#3E4857;border-radius:3px;border-width:0px;" form="sib-form" type="submit">
+              <svg class="icon clickable__icon progress-indicator__icon sib-hide-loader-icon" viewBox="0 0 512 512" aria-hidden="true" focusable="false">
+                <path d="M460.116 373.846l-20.823-12.022c-5.541-3.199-7.54-10.159-4.663-15.874 30.137-59.886 28.343-131.652-5.386-189.946-33.641-58.394-94.896-95.833-161.827-99.676C261.028 55.961 256 50.751 256 44.352V20.309c0-6.904 5.808-12.337 12.703-11.982 83.556 4.306 160.163 50.864 202.11 123.677 42.063 72.696 44.079 162.316 6.031 236.832-3.14 6.148-10.75 8.461-16.728 5.01z"/>
+              </svg>
+              登録する
+            </button>
+          </div>
+        </div>
+
+        <input type="text" name="email_address_check" value="" class="input--hidden">
+        <input type="hidden" name="locale" value="ja">
+      </form>
+    </div>
+  </div>
+</div>
+<!-- End Brevo Form (JP) -->
+
+</div>
+    </div>
+</main>
+<footer>
+    © HARUHISA HOSEI All Rights Reserved.
+</footer>
+<!-- Brevo Form (JP) scripts -->
+<script>
+  window.REQUIRED_CODE_ERROR_MESSAGE = '国番号を選択してください';
+  window.LOCALE = 'ja';
+  window.EMAIL_INVALID_MESSAGE = window.SMS_INVALID_MESSAGE = "入力内容が正しくありません。メールアドレスをご確認のうえ、もう一度お試しください。";
+  window.REQUIRED_ERROR_MESSAGE = "メールアドレスを入力してください。";
+  window.GENERIC_INVALID_MESSAGE = "入力内容が正しくありません。メールアドレスをご確認のうえ、もう一度お試しください。";
+  window.translation = { common: { selectedList:'{quantity} list selected', selectedLists:'{quantity} lists selected', selectedOption:'{quantity} selected', selectedOptions:'{quantity} selected' } };
+  var AUTOHIDE = Boolean(0);
+</script>
+<script defer src="https://sibforms.com/forms/end-form/build/main.js"></script>
+
+
+<script src="../js/script.js"></script>
+</body>
+</html>
