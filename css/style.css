@@ -496,7 +496,7 @@ body.home .brand-logo{ height:23px; }  /* +25% from 16px */
 
 @media (max-width: 480px){
   .lang-btn{
-    margin-right: -6px;     /* shift toward hamburger */
+    margin-right: -7px;     /* shift toward hamburger */
     padding-right: 4px;     /* keep tap area */
   }
   .lang-btn img{
