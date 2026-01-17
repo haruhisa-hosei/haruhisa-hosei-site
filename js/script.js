@@ -332,46 +332,58 @@ function withCacheBuster(url) {
     }
 
     function renderVoice(data) {
-        // Filter enabled & sort by date descending
-        const validItems = data.filter(item => item.enabled && item.enabled.toUpperCase() === 'TRUE');
-        validItems.sort((a, b) => {
-            const dA = new Date(a.date.replace(/\./g, '/'));
-            const dB = new Date(b.date.replace(/\./g, '/'));
-            return dB - dA;
-        });
+    // セレクタをID指定（#voice）に修正してより確実に
+    const voiceWrapper = document.querySelector('#voice .swiper-wrapper');
+    if (!voiceWrapper) return;
 
-        const html = validItems.map(item => {
-            const body = item[LANG + '_html'] || "";
-            const kind = item.image_kind || "photo";
-            const imgClass = (kind === "logo") ? "voice-logo-placeholder" : "voice-photo";
-            // Prepend images/ path if just filename is given
-            let imgSrc = item.image_src;
-            if(imgSrc && !imgSrc.startsWith('http') && !imgSrc.startsWith('images/')) {
-                 imgSrc = 'images/' + imgSrc;
-            }
+    // enabled=TRUEのものだけを表示し、日付順に並び替え
+    const validItems = data.filter(item => item.enabled && item.enabled.toUpperCase() === 'TRUE');
+    validItems.sort((a, b) => {
+        const dA = new Date(a.date.replace(/\./g, '/'));
+        const dB = new Date(b.date.replace(/\./g, '/'));
+        return dB - dA;
+    });
 
-            return `
-                <div class="swiper-slide voice-slide">
-                    <div class="voice-img-box">
-                        <img src="${imgSrc}" alt="Voice Image" class="${imgClass}" loading="lazy">
-                    </div>
-                    <div class="voice-content">
-                        <div class="voice-date-text">${(item.view_date || item.date)}</div>
-                        <p class="voice-body">${body}</p>
-                    </div>
+    const html = validItems.map(item => {
+        const body = item[LANG + '_html'] || "";
+
+        // --- 修正：画像なし（テキストのみ）判定ロジック ---
+        const isNoImage = !item.image_src || item.image_src.trim() === "";
+        // 画像がない、または明示的に logo 指定がある場合は「logo」モード
+        const kind = (isNoImage || item.image_kind === "logo") ? "logo" : "photo";
+        const imgClass = (kind === "logo") ? "voice-logo-placeholder" : "voice-photo";
+
+        let imgSrc = item.image_src;
+        if (isNoImage) {
+            // 画像がない場合に表示する鳳聲さん専用のロゴ
+            imgSrc = "images/voice_card_logo_text_black.png";
+        } else if (!imgSrc.startsWith('http') && !imgSrc.startsWith('images/')) {
+            imgSrc = 'images/' + imgSrc;
+        }
+
+        return `
+            <div class="swiper-slide voice-slide">
+                <div class="voice-img-box">
+                    <img src="${imgSrc}" alt="Voice Image" class="${imgClass}" loading="lazy">
                 </div>
-            `;
-        }).join("");
+                <div class="voice-content">
+                    <div class="voice-date-text">${(item.view_date || item.date)}</div>
+                    <p class="voice-body">${body}</p>
+                </div>
+            </div>
+        `;
+    }).join("");
 
-        if (html.trim()) {
-            voiceWrapper.innerHTML = html;
-            // Force update Swiper
-            const swiperEl = document.querySelector('.voice-section .swiper-container');
-            if(swiperEl && swiperEl.swiper) {
-                swiperEl.swiper.update();
-                swiperEl.swiper.slideTo(0);
-            }
+    if (html.trim()) {
+        voiceWrapper.innerHTML = html;
+        // Swiperの更新
+        const swiperEl = document.querySelector('.voice-section .swiper-container');
+        if (swiperEl && swiperEl.swiper) {
+            swiperEl.swiper.update();
+            // 常に最新（左端）が見えるようにする
+            swiperEl.swiper.slideToLoop(0, 0);
         }
     }
+}
 
 });
