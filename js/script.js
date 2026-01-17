@@ -156,6 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ===============================================
     const NEWS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSkBOovAHzdZWtA0Z-KRe27h5ZzGFi5Bq2G7Bp0Mv4sQ-2C9urIYy8oR9IaMf7xdSR9M_iww2zMbG-/pub?gid=0&single=true&output=csv";
     const VOICE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSkBOovAHzdZWtA0Z-KRe27h5ZzGFi5Bq2G7Bp0Mv4sQ-2C9urIYy8oR9IaMf7xdSR9M_iww2zMbG-/pub?gid=793239367&single=true&output=csv";
+    const ARCHIVE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSkBOovAHzdZWtA0Z-KRe27h5ZzGFi5Bq2G7Bp0Mv4sQ-2C9urIYy8oR9IaMf7xdSR9M_iww2zMbG-/pub?gid=260654898&single=true&output=csv";
 
     
 
@@ -177,9 +178,10 @@ function withCacheBuster(url) {
 
     async function fetchData() {
         try {
-            const [newsRes, voiceRes] = await Promise.all([
+            const [newsRes, voiceRes, archiveRes] = await Promise.all([
                 fetch(withCacheBuster(NEWS_CSV_URL), { cache: 'no-store' }),
-                fetch(withCacheBuster(VOICE_CSV_URL), { cache: 'no-store' })
+                fetch(withCacheBuster(VOICE_CSV_URL), { cache: 'no-store' }),
+                fetch(withCacheBuster(ARCHIVE_CSV_URL), { cache: 'no-store' })
             ]);
 
             if (newsRes.ok && newsContainer) {
@@ -192,8 +194,51 @@ function withCacheBuster(url) {
                 const voiceData = parseCSV(text);
                 renderVoice(voiceData);
             }
+
+            // Archive rendering
+            if (archiveRes.ok) {
+                const text = await archiveRes.text();
+                const archiveData = parseCSV(text);
+                renderArchive(archiveData);
+            }
         } catch (e) {
             console.error("Data load failed:", e);
+        }
+    }
+
+    function renderArchive(data) {
+        const archiveWrapper = document.querySelector('.archive-swiper .swiper-wrapper');
+        if (!archiveWrapper) return;
+
+        // Show only display=TRUE and sort by date DESC
+        const validItems = data.filter(item => item.display && item.display.toUpperCase() === 'TRUE');
+        validItems.sort((a, b) => {
+            const dA = new Date(a.date.replace(/\./g, '/'));
+            const dB = new Date(b.date.replace(/\./g, '/'));
+            return dB - dA;
+        });
+
+        const html = validItems.map(item => {
+            const title = (LANG === 'ja') ? item.title_ja : item.title_en;
+            return `
+                <div class="swiper-slide">
+                    <div class="archive-card">
+                        <img alt="${title}" src="images/${item.image_src}" loading="lazy">
+                        <div class="archive-info">
+                            <div class="archive-date">${item.date}</div>
+                            <div class="archive-name">${title}</div>
+                        </div>
+                    </div>
+                </div>`;
+        }).join("");
+
+        if (html.trim()) {
+            archiveWrapper.innerHTML = html;
+            // Update Swiper instance
+            const swiperEl = document.querySelector('.archive-swiper');
+            if (swiperEl && swiperEl.swiper) {
+                swiperEl.swiper.update();
+            }
         }
     }
 
