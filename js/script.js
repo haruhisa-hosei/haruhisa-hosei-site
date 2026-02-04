@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
+  // --- first-party analytics (self) ---
+  try { initSelfAnalytics(); } catch (e) {}
+
 
     // ===============================================
     // 1. UI & Animations (Common)
@@ -386,4 +389,109 @@ function withCacheBuster(url) {
     }
 }
 
+});
+
+// ============================================================
+// First-party analytics (self) -> Cloudflare Worker /event
+// - Sends: pageview, page_leave (dur_ms)
+// - Config via window.SELF_ANALYTICS_SITE / ENDPOINT / NAME
+// ============================================================
+
+function initSelfAnalytics() {
+  const endpoint = (window.SELF_ANALYTICS_ENDPOINT || "https://analytics-worker.dic706.workers.dev/event").toString();
+  const site = (window.SELF_ANALYTICS_SITE || "main").toString().toLowerCase();
+  const name = (window.SELF_ANALYTICS_NAME || "official").toString();
+
+  const started = performance && typeof performance.now === "function" ? performance.now() : Date.now();
+  const path = location.pathname + location.search + location.hash;
+  const ref = document.referrer || "";
+
+  // pageview
+  sendSelfEvent(endpoint, {
+    site,
+    type: "pageview",
+    name,
+    path,
+    ref,
+    ts: Date.now(),
+    data: {
+      title: document.title || "",
+      lang: document.documentElement.getAttribute("lang") || "",
+    },
+  });
+
+  // dwell time (best effort)
+  const sendLeave = () => {
+    const durMs = (performance && typeof performance.now === "function")
+      ? Math.max(0, Math.round(performance.now() - started))
+      : 0;
+    sendSelfEvent(endpoint, {
+      site,
+      type: "page_leave",
+      name,
+      path,
+      ref,
+      ts: Date.now(),
+      data: { dur_ms: durMs },
+    }, true);
+  };
+
+  // visibility/pagehide are the most reliable
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") sendLeave();
+  });
+  window.addEventListener("pagehide", sendLeave);
+}
+
+function sendSelfEvent(endpoint, payload, keepalive = false) {
+  try {
+    const body = JSON.stringify(payload || {});
+
+    // Prefer sendBeacon for unload-safe delivery
+    if (typeof navigator !== "undefined" && typeof navigator.sendBeacon === "function") {
+      const blob = new Blob([body], { type: "application/json" });
+      const ok = navigator.sendBeacon(endpoint, blob);
+      if (ok) return;
+    }
+
+    fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body,
+      keepalive: !!keepalive,
+    }).catch(() => {});
+  } catch (_) {}
+}
+
+
+
+// -----------------------------
+// Subscribe analytics helpers
+// -----------------------------
+function trackSubscribePages() {
+  try {
+    const p = location.pathname.toLowerCase();
+    if (p.includes("submitted") || p.includes("thanks")) {
+      if (typeof sendSelfEvent === "function") {
+        sendSelfEvent("subscribe_complete", { path: p });
+      }
+    }
+  } catch (e) {}
+}
+
+function bindSubscribeForm() {
+  try {
+    const form = document.querySelector("form");
+    if (!form) return;
+    form.addEventListener("submit", () => {
+      if (typeof sendSelfEvent === "function") {
+        sendSelfEvent("subscribe_submit", { path: location.pathname });
+      }
+    });
+  } catch (e) {}
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  trackSubscribePages();
+  bindSubscribeForm();
 });
