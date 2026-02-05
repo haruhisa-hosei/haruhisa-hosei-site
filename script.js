@@ -1,0 +1,497 @@
+document.addEventListener('DOMContentLoaded', function() {
+  // --- first-party analytics (self) ---
+  try { initSelfAnalytics(); } catch (e) {}
+
+
+    // ===============================================
+    // 1. UI & Animations (Common)
+    // ===============================================
+
+    // --- Hamburger Menu ---
+    const menuBtn = document.getElementById('menuBtn');
+    const navOverlay = document.getElementById('navOverlay');
+    const menuLinks = document.querySelectorAll('.menu-link');
+
+    if (menuBtn && navOverlay) {
+        menuBtn.addEventListener('click', () => {
+            const isOpen = menuBtn.classList.toggle('is-open');
+            navOverlay.classList.toggle('is-open');
+            menuBtn.setAttribute('aria-expanded', isOpen);
+        });
+
+        // Close when link clicked
+        menuLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                menuLinks.forEach(l => l.classList.remove('is-active'));
+                link.classList.add('is-active');
+                setTimeout(() => {
+                    menuBtn.classList.remove('is-open');
+                    navOverlay.classList.remove('is-open');
+                    menuBtn.setAttribute('aria-expanded', 'false');
+                    setTimeout(() => { link.classList.remove('is-active'); }, 500);
+                }, 600);
+            });
+        });
+
+        // Keyboard Support
+        menuBtn.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                menuBtn.click();
+            }
+        });
+        
+        // Touch Feedback
+        const pressOn = () => menuBtn.classList.add('is-pressing');
+        const pressOff = () => menuBtn.classList.remove('is-pressing');
+        menuBtn.addEventListener('pointerdown', pressOn);
+        menuBtn.addEventListener('pointerup', pressOff);
+        menuBtn.addEventListener('pointerleave', pressOff);
+    }
+
+    // --- Language Menu ---
+    const langToggle = document.getElementById('langToggle');
+    const langMenu = document.getElementById('langMenu');
+
+    if (langToggle && langMenu) {
+        langToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = langMenu.classList.toggle('is-open');
+            langToggle.setAttribute('aria-expanded', isOpen);
+        });
+        document.addEventListener('click', (e) => {
+            if (!langToggle.contains(e.target) && !langMenu.contains(e.target)) {
+                langMenu.classList.remove('is-open');
+                langToggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (langMenu.classList.contains('is-open')) {
+                    langMenu.classList.remove('is-open');
+                    langToggle.setAttribute('aria-expanded', 'false');
+                }
+                if (menuBtn && menuBtn.classList.contains('is-open')) {
+                    menuBtn.click();
+                }
+            }
+        });
+    }
+
+    // --- Scroll Effects (Home Only) ---
+    const sunLight = document.getElementById('sunLight');
+    if (sunLight && menuBtn) {
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                sunLight.classList.add('is-active');
+                menuBtn.classList.add('is-active-scroll');
+            } else {
+                sunLight.classList.remove('is-active');
+                menuBtn.classList.remove('is-active-scroll');
+            }
+        });
+    }
+
+    // --- Intersection Observer (Fade/Slide Animations) ---
+    const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
+    const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                obs.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+    document.querySelectorAll('.fade-up, .fade-in, .slide-left').forEach(el => observer.observe(el));
+
+    // --- Header Reveal (Home Only) ---
+    const header = document.querySelector('header.hero-header');
+    if (header) {
+        setTimeout(() => {
+            if (!header.classList.contains('is-visible')) {
+                header.classList.add('is-visible');
+            }
+        }, 1000);
+    }
+
+    // --- Profile Animation (Home Only) ---
+    const personEl = document.querySelector('.profile-anim-wrap .person-frame');
+    const notesEl = document.querySelector('.profile-anim-wrap .notes-frame');
+    if (personEl && notesEl) {
+        const personFrames = ['images/profile.jpg', 'images/officialprofile2.png', 'images/officialprofile3.png', 'images/officialprofile2.png'];
+        const notesFrames = ['images/notes_01.png', 'images/notes_02.png', 'images/notes_03.png', 'images/notes_04.png'];
+        const frameDurations = [260, 260, 520, 260];
+        let fi = 0;
+        const tick = () => {
+            personEl.src = personFrames[fi];
+            notesEl.src = notesFrames[fi];
+            const wait = frameDurations[fi];
+            fi = (fi + 1) % personFrames.length;
+            window.setTimeout(tick, wait);
+        };
+        window.setTimeout(tick, 60);
+    }
+
+    // --- Initialize Swipers ---
+    if (typeof Swiper !== 'undefined') {
+        // Voice Swiper
+        const voiceEl = document.querySelector('.voice-section .swiper-container');
+        if (voiceEl) {
+            new Swiper(voiceEl, {
+                loop: true, centeredSlides: true, slidesPerView: 'auto', spaceBetween: 25, speed: 600,
+                observer: true, observeParents: true,
+                navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+                on: { init: function() { setTimeout(() => { this.update(); }, 100); } }
+            });
+        }
+        // Archive Swiper
+        const archiveEl = document.querySelector('.archive-swiper');
+        if (archiveEl) {
+            new Swiper(archiveEl, {
+                loop: true, centeredSlides: true, slidesPerView: 'auto', spaceBetween: 30, speed: 800
+            });
+        }
+    }
+
+
+    // ===============================================
+    // 2. Data Fetching (CSV from Google Sheets)
+    // ===============================================
+    const NEWS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSkBOovAHzdZWtA0Z-KRe27h5ZzGFi5Bq2G7Bp0Mv4sQ-2C9urIYy8oR9IaMf7xdSR9M_iww2zMbG-/pub?gid=0&single=true&output=csv";
+    const VOICE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSkBOovAHzdZWtA0Z-KRe27h5ZzGFi5Bq2G7Bp0Mv4sQ-2C9urIYy8oR9IaMf7xdSR9M_iww2zMbG-/pub?gid=793239367&single=true&output=csv";
+    const ARCHIVE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSkBOovAHzdZWtA0Z-KRe27h5ZzGFi5Bq2G7Bp0Mv4sQ-2C9urIYy8oR9IaMf7xdSR9M_iww2zMbG-/pub?gid=260654898&single=true&output=csv";
+
+    
+
+// Cache-buster: avoid iOS/edge caching of Google published CSV
+function withCacheBuster(url) {
+  const sep = url.includes('?') ? '&' : '?';
+  return url + sep + '_ts=' + Date.now();
+}
+// Detect current language from HTML tag
+    const LANG = document.documentElement.lang === 'en' ? 'en' : 'ja';
+
+    const newsContainer = document.querySelector('#news .news-container');
+    const voiceWrapper = document.querySelector('#voice .swiper-wrapper');
+
+    // Only fetch if containers exist (Home page)
+    if (newsContainer || voiceWrapper) {
+        fetchData();
+    }
+
+    async function fetchData() {
+        try {
+            const [newsRes, voiceRes, archiveRes] = await Promise.all([
+                fetch(withCacheBuster(NEWS_CSV_URL), { cache: 'no-store' }),
+                fetch(withCacheBuster(VOICE_CSV_URL), { cache: 'no-store' }),
+                fetch(withCacheBuster(ARCHIVE_CSV_URL), { cache: 'no-store' })
+            ]);
+
+            if (newsRes.ok && newsContainer) {
+                const text = await newsRes.text();
+                const newsData = parseCSV(text);
+                renderNews(newsData);
+            }
+            if (voiceRes.ok && voiceWrapper) {
+                const text = await voiceRes.text();
+                const voiceData = parseCSV(text);
+                renderVoice(voiceData);
+            }
+
+            // Archive rendering
+            if (archiveRes.ok) {
+                const text = await archiveRes.text();
+                const archiveData = parseCSV(text);
+                renderArchive(archiveData);
+            }
+        } catch (e) {
+            console.error("Data load failed:", e);
+        }
+    }
+
+    function renderArchive(data) {
+        const archiveWrapper = document.querySelector('.archive-swiper .swiper-wrapper');
+        if (!archiveWrapper) return;
+
+        // Show only display=TRUE and sort by date DESC
+        const validItems = data.filter(item => item.display && item.display.toUpperCase() === 'TRUE');
+        validItems.sort((a, b) => {
+            const dA = new Date(a.date.replace(/\./g, '/'));
+            const dB = new Date(b.date.replace(/\./g, '/'));
+            return dB - dA;
+        });
+
+        const html = validItems.map(item => {
+            const title = (LANG === 'ja') ? item.title_ja : item.title_en;
+            return `
+                <div class="swiper-slide">
+                    <div class="archive-card">
+                        <img alt="${title}" src="images/${item.image_src}" loading="lazy">
+                        <div class="archive-info">
+                            <div class="archive-date">${item.date}</div>
+                            <div class="archive-name">${title}</div>
+                        </div>
+                    </div>
+                </div>`;
+        }).join("");
+
+        if (html.trim()) {
+            archiveWrapper.innerHTML = html;
+            // Update Swiper instance
+            const swiperEl = document.querySelector('.archive-swiper');
+            if (swiperEl && swiperEl.swiper) {
+                swiperEl.swiper.update();
+            }
+        }
+    }
+
+    // CSV Parser (Handles quotes and commas correctly)
+    function parseCSV(text) {
+        const rows = [];
+        let row = [];
+        let cur = "";
+        let inQuote = false;
+        
+        // Remove BOM if present
+        if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+
+        for (let i = 0; i < text.length; i++) {
+            let c = text[i];
+            if (inQuote) {
+                if (c === '"') {
+                    if (i + 1 < text.length && text[i + 1] === '"') {
+                        cur += '"'; i++;
+                    } else {
+                        inQuote = false;
+                    }
+                } else {
+                    cur += c;
+                }
+            } else {
+                if (c === '"') {
+                    inQuote = true;
+                } else if (c === ',') {
+                    row.push(cur.trim()); cur = "";
+                } else if (c === '\n' || c === '\r') {
+                    row.push(cur.trim()); cur = "";
+                    if (row.length > 0) rows.push(row);
+                    row = [];
+                    if (c === '\r' && text[i + 1] === '\n') i++;
+                } else {
+                    cur += c;
+                }
+            }
+        }
+        if (cur || row.length > 0) { row.push(cur.trim()); rows.push(row); }
+        
+        // Convert to Array of Objects using header row
+        const headers = rows[0];
+        const objects = rows.slice(1).map(r => {
+            let obj = {};
+            headers.forEach((h, idx) => {
+                obj[h] = r[idx];
+            });
+            return obj;
+        });
+        return objects;
+    }
+
+    function renderNews(data) {
+        // Filter enabled
+        const validItems = data.filter(item => item.enabled && item.enabled.toUpperCase() === 'TRUE');
+        
+        const html = validItems.map((item, idx) => {
+            const date = (item.view_date || item.date);
+            const body = item[LANG + '_html'] || "";
+            const linkText = item[LANG + '_link_text'];
+            const linkHref = item[LANG + '_link_href'];
+            
+            const linkHtml = (linkText && linkHref) 
+                ? `<br><a href="${linkHref}" target="_blank" rel="noopener noreferrer">${linkText}</a>`
+                : "";
+
+            return `
+                <div class="news-item fade-up" data-stagger="${idx}">
+                    <span class="news-date">${date}</span>
+                    <div class="news-text">${body}${linkHtml}</div>
+                </div>
+            `;
+        }).join("");
+
+        if (html.trim()) {
+            newsContainer.innerHTML = html;
+            // Activate Stagger Animations for dynamic content
+            const items = newsContainer.querySelectorAll('.news-item');
+            const obs = new IntersectionObserver((entries, o) => {
+                entries.forEach(e => {
+                    if(!e.isIntersecting) return;
+                    const el = e.target;
+                    setTimeout(() => el.classList.add('is-visible'), 120 * (el.dataset.stagger || 0));
+                    o.unobserve(el);
+                });
+            }, { root: null, margin: '0px 0px -10% 0px', threshold: 0.15 });
+            items.forEach(el => obs.observe(el));
+        }
+    }
+
+    function renderVoice(data) {
+    // セレクタをID指定（#voice）に修正してより確実に
+    const voiceWrapper = document.querySelector('#voice .swiper-wrapper');
+    if (!voiceWrapper) return;
+
+    // enabled=TRUEのものだけを表示し、日付順に並び替え
+    const validItems = data.filter(item => item.enabled && item.enabled.toUpperCase() === 'TRUE');
+    validItems.sort((a, b) => {
+        const dA = new Date(a.date.replace(/\./g, '/'));
+        const dB = new Date(b.date.replace(/\./g, '/'));
+        return dB - dA;
+    });
+
+    const html = validItems.map(item => {
+        const body = item[LANG + '_html'] || "";
+
+        // --- 修正：画像なし（テキストのみ）判定ロジック ---
+        const isNoImage = !item.image_src || item.image_src.trim() === "";
+        // 画像がない、または明示的に logo 指定がある場合は「logo」モード
+        const kind = (isNoImage || item.image_kind === "logo") ? "logo" : "photo";
+        const imgClass = (kind === "logo") ? "voice-logo-placeholder" : "voice-photo";
+
+        let imgSrc = item.image_src;
+        if (isNoImage) {
+            // 画像がない場合に表示する鳳聲さん専用のロゴ
+            imgSrc = "images/voice_card_logo_text_black.png";
+        } else if (!imgSrc.startsWith('http') && !imgSrc.startsWith('images/')) {
+            imgSrc = 'images/' + imgSrc;
+        }
+
+        return `
+            <div class="swiper-slide voice-slide">
+                <div class="voice-img-box">
+                    <img src="${imgSrc}" alt="Voice Image" class="${imgClass}" loading="lazy">
+                </div>
+                <div class="voice-content">
+                    <div class="voice-date-text">${(item.view_date || item.date)}</div>
+                    <p class="voice-body">${body}</p>
+                </div>
+            </div>
+        `;
+    }).join("");
+
+    if (html.trim()) {
+        voiceWrapper.innerHTML = html;
+        // Swiperの更新
+        const swiperEl = document.querySelector('.voice-section .swiper-container');
+        if (swiperEl && swiperEl.swiper) {
+            swiperEl.swiper.update();
+            // 常に最新（左端）が見えるようにする
+            swiperEl.swiper.slideToLoop(0, 0);
+        }
+    }
+}
+
+});
+
+// ============================================================
+// First-party analytics (self) -> Cloudflare Worker /event
+// - Sends: pageview, page_leave (dur_ms)
+// - Config via window.SELF_ANALYTICS_SITE / ENDPOINT / NAME
+// ============================================================
+
+function initSelfAnalytics() {
+  const endpoint = (window.SELF_ANALYTICS_ENDPOINT || "https://analytics-worker.dic706.workers.dev/event").toString();
+  const site = (window.SELF_ANALYTICS_SITE || "main").toString().toLowerCase();
+  const name = (window.SELF_ANALYTICS_NAME || "official").toString();
+
+  const started = performance && typeof performance.now === "function" ? performance.now() : Date.now();
+  const path = location.pathname + location.search + location.hash;
+  const ref = document.referrer || "";
+
+  // pageview
+  sendSelfEvent(endpoint, {
+    site,
+    type: "pageview",
+    name,
+    path,
+    ref,
+    ts: Date.now(),
+    data: {
+      title: document.title || "",
+      lang: document.documentElement.getAttribute("lang") || "",
+    },
+  });
+
+  // dwell time (best effort)
+  const sendLeave = () => {
+    const durMs = (performance && typeof performance.now === "function")
+      ? Math.max(0, Math.round(performance.now() - started))
+      : 0;
+    sendSelfEvent(endpoint, {
+      site,
+      type: "page_leave",
+      name,
+      path,
+      ref,
+      ts: Date.now(),
+      data: { dur_ms: durMs },
+    }, true);
+  };
+
+  // visibility/pagehide are the most reliable
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") sendLeave();
+  });
+  window.addEventListener("pagehide", sendLeave);
+}
+
+function sendSelfEvent(endpoint, payload, keepalive = false) {
+  try {
+    const body = JSON.stringify(payload || {});
+
+    // Prefer sendBeacon for unload-safe delivery
+    if (typeof navigator !== "undefined" && typeof navigator.sendBeacon === "function") {
+      const blob = new Blob([body], { type: "application/json" });
+      const ok = navigator.sendBeacon(endpoint, blob);
+      if (ok) return;
+    }
+
+    fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body,
+      keepalive: !!keepalive,
+    }).catch(() => {});
+  } catch (_) {}
+}
+
+
+
+// -----------------------------
+// Subscribe analytics helpers
+// -----------------------------
+function trackSubscribePages() {
+  try {
+    const p = location.pathname.toLowerCase();
+    if (p.includes("submitted") || p.includes("thanks")) {
+      if (typeof sendSelfEvent === "function") {
+        sendSelfEvent("subscribe_complete", { path: p });
+      }
+    }
+  } catch (e) {}
+}
+
+function bindSubscribeForm() {
+  try {
+    const form = document.querySelector("form");
+    if (!form) return;
+    form.addEventListener("submit", () => {
+      if (typeof sendSelfEvent === "function") {
+        sendSelfEvent("subscribe_submit", { path: location.pathname });
+      }
+    });
+  } catch (e) {}
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  trackSubscribePages();
+  bindSubscribeForm();
+});
