@@ -1,395 +1,373 @@
+// script.js — OFFICIAL SITE (UI 그대로 + Data source: API(JSON)へ切替版)
+// - Swiperあり
+// - 言語切替あり（documentElement.lang）
+// - 既存アニメ/演出あり
+//
+// CHANGE SUMMARY (CSV -> JSON API):
+// - fetch(withCacheBuster(CSV_URL)) -> fetch(withCacheBuster(API_URL)).json()
+// - parseCSV は不要（残してもOKだが、ここでは削除）
+//
+// API:
+// - https://hosei-content-api.dic706.workers.dev/posts?type=news
+// - https://hosei-content-api.dic706.workers.dev/posts?type=voice
+// - https://hosei-content-api.dic706.workers.dev/posts?type=archive
+
 document.addEventListener('DOMContentLoaded', function() {
   // --- first-party analytics (self) ---
   try { initSelfAnalytics(); } catch (e) {}
 
+  // ===============================================
+  // 1. UI & Animations (Common)
+  // ===============================================
 
-    // ===============================================
-    // 1. UI & Animations (Common)
-    // ===============================================
+  // --- Hamburger Menu ---
+  const menuBtn = document.getElementById('menuBtn');
+  const navOverlay = document.getElementById('navOverlay');
+  const menuLinks = document.querySelectorAll('.menu-link');
 
-    // --- Hamburger Menu ---
-    const menuBtn = document.getElementById('menuBtn');
-    const navOverlay = document.getElementById('navOverlay');
-    const menuLinks = document.querySelectorAll('.menu-link');
+  if (menuBtn && navOverlay) {
+    menuBtn.addEventListener('click', () => {
+      const isOpen = menuBtn.classList.toggle('is-open');
+      navOverlay.classList.toggle('is-open');
+      menuBtn.setAttribute('aria-expanded', isOpen);
+    });
 
-    if (menuBtn && navOverlay) {
-        menuBtn.addEventListener('click', () => {
-            const isOpen = menuBtn.classList.toggle('is-open');
-            navOverlay.classList.toggle('is-open');
-            menuBtn.setAttribute('aria-expanded', isOpen);
-        });
-
-        // Close when link clicked
-        menuLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                menuLinks.forEach(l => l.classList.remove('is-active'));
-                link.classList.add('is-active');
-                setTimeout(() => {
-                    menuBtn.classList.remove('is-open');
-                    navOverlay.classList.remove('is-open');
-                    menuBtn.setAttribute('aria-expanded', 'false');
-                    setTimeout(() => { link.classList.remove('is-active'); }, 500);
-                }, 600);
-            });
-        });
-
-        // Keyboard Support
-        menuBtn.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                menuBtn.click();
-            }
-        });
-        
-        // Touch Feedback
-        const pressOn = () => menuBtn.classList.add('is-pressing');
-        const pressOff = () => menuBtn.classList.remove('is-pressing');
-        menuBtn.addEventListener('pointerdown', pressOn);
-        menuBtn.addEventListener('pointerup', pressOff);
-        menuBtn.addEventListener('pointerleave', pressOff);
-    }
-
-    // --- Language Menu ---
-    const langToggle = document.getElementById('langToggle');
-    const langMenu = document.getElementById('langMenu');
-
-    if (langToggle && langMenu) {
-        langToggle.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const isOpen = langMenu.classList.toggle('is-open');
-            langToggle.setAttribute('aria-expanded', isOpen);
-        });
-        document.addEventListener('click', (e) => {
-            if (!langToggle.contains(e.target) && !langMenu.contains(e.target)) {
-                langMenu.classList.remove('is-open');
-                langToggle.setAttribute('aria-expanded', 'false');
-            }
-        });
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                if (langMenu.classList.contains('is-open')) {
-                    langMenu.classList.remove('is-open');
-                    langToggle.setAttribute('aria-expanded', 'false');
-                }
-                if (menuBtn && menuBtn.classList.contains('is-open')) {
-                    menuBtn.click();
-                }
-            }
-        });
-    }
-
-    // --- Scroll Effects (Home Only) ---
-    const sunLight = document.getElementById('sunLight');
-    if (sunLight && menuBtn) {
-        window.addEventListener('scroll', function() {
-            if (window.scrollY > 50) {
-                sunLight.classList.add('is-active');
-                menuBtn.classList.add('is-active-scroll');
-            } else {
-                sunLight.classList.remove('is-active');
-                menuBtn.classList.remove('is-active-scroll');
-            }
-        });
-    }
-
-    // --- Intersection Observer (Fade/Slide Animations) ---
-    const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
-    const observer = new IntersectionObserver((entries, obs) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('is-visible');
-                obs.unobserve(entry.target);
-            }
-        });
-    }, observerOptions);
-    document.querySelectorAll('.fade-up, .fade-in, .slide-left').forEach(el => observer.observe(el));
-
-    // --- Header Reveal (Home Only) ---
-    const header = document.querySelector('header.hero-header');
-    if (header) {
+    // Close when link clicked
+    menuLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        menuLinks.forEach(l => l.classList.remove('is-active'));
+        link.classList.add('is-active');
         setTimeout(() => {
-            if (!header.classList.contains('is-visible')) {
-                header.classList.add('is-visible');
-            }
-        }, 1000);
-    }
+          menuBtn.classList.remove('is-open');
+          navOverlay.classList.remove('is-open');
+          menuBtn.setAttribute('aria-expanded', 'false');
+          setTimeout(() => { link.classList.remove('is-active'); }, 500);
+        }, 600);
+      });
+    });
 
-    // --- Profile Animation (Home Only) ---
-    const personEl = document.querySelector('.profile-anim-wrap .person-frame');
-    const notesEl = document.querySelector('.profile-anim-wrap .notes-frame');
-    if (personEl && notesEl) {
-        const personFrames = ['images/profile.jpg', 'images/officialprofile2.png', 'images/officialprofile3.png', 'images/officialprofile2.png'];
-        const notesFrames = ['images/notes_01.png', 'images/notes_02.png', 'images/notes_03.png', 'images/notes_04.png'];
-        const frameDurations = [260, 260, 520, 260];
-        let fi = 0;
-        const tick = () => {
-            personEl.src = personFrames[fi];
-            notesEl.src = notesFrames[fi];
-            const wait = frameDurations[fi];
-            fi = (fi + 1) % personFrames.length;
-            window.setTimeout(tick, wait);
-        };
-        window.setTimeout(tick, 60);
-    }
+    // Keyboard Support
+    menuBtn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        menuBtn.click();
+      }
+    });
 
-    // --- Initialize Swipers ---
-    if (typeof Swiper !== 'undefined') {
-        // Voice Swiper
-        const voiceEl = document.querySelector('.voice-section .swiper-container');
-        if (voiceEl) {
-            new Swiper(voiceEl, {
-                loop: true, centeredSlides: true, slidesPerView: 'auto', spaceBetween: 25, speed: 600,
-                observer: true, observeParents: true,
-                navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
-                on: { init: function() { setTimeout(() => { this.update(); }, 100); } }
-            });
+    // Touch Feedback
+    const pressOn = () => menuBtn.classList.add('is-pressing');
+    const pressOff = () => menuBtn.classList.remove('is-pressing');
+    menuBtn.addEventListener('pointerdown', pressOn);
+    menuBtn.addEventListener('pointerup', pressOff);
+    menuBtn.addEventListener('pointerleave', pressOff);
+  }
+
+  // --- Language Menu ---
+  const langToggle = document.getElementById('langToggle');
+  const langMenu = document.getElementById('langMenu');
+
+  if (langToggle && langMenu) {
+    langToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = langMenu.classList.toggle('is-open');
+      langToggle.setAttribute('aria-expanded', isOpen);
+    });
+    document.addEventListener('click', (e) => {
+      if (!langToggle.contains(e.target) && !langMenu.contains(e.target)) {
+        langMenu.classList.remove('is-open');
+        langToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (langMenu.classList.contains('is-open')) {
+          langMenu.classList.remove('is-open');
+          langToggle.setAttribute('aria-expanded', 'false');
         }
-        // Archive Swiper
-        const archiveEl = document.querySelector('.archive-swiper');
-        if (archiveEl) {
-            new Swiper(archiveEl, {
-                loop: true, centeredSlides: true, slidesPerView: 'auto', spaceBetween: 30, speed: 800
-            });
+        if (menuBtn && menuBtn.classList.contains('is-open')) {
+          menuBtn.click();
         }
+      }
+    });
+  }
+
+  // --- Scroll Effects (Home Only) ---
+  const sunLight = document.getElementById('sunLight');
+  if (sunLight && menuBtn) {
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 50) {
+        sunLight.classList.add('is-active');
+        menuBtn.classList.add('is-active-scroll');
+      } else {
+        sunLight.classList.remove('is-active');
+        menuBtn.classList.remove('is-active-scroll');
+      }
+    });
+  }
+
+  // --- Intersection Observer (Fade/Slide Animations) ---
+  const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+  document.querySelectorAll('.fade-up, .fade-in, .slide-left').forEach(el => observer.observe(el));
+
+  // --- Header Reveal (Home Only) ---
+  const header = document.querySelector('header.hero-header');
+  if (header) {
+    setTimeout(() => {
+      if (!header.classList.contains('is-visible')) {
+        header.classList.add('is-visible');
+      }
+    }, 1000);
+  }
+
+  // --- Profile Animation (Home Only) ---
+  const personEl = document.querySelector('.profile-anim-wrap .person-frame');
+  const notesEl = document.querySelector('.profile-anim-wrap .notes-frame');
+  if (personEl && notesEl) {
+    const personFrames = ['images/profile.jpg', 'images/officialprofile2.png', 'images/officialprofile3.png', 'images/officialprofile2.png'];
+    const notesFrames = ['images/notes_01.png', 'images/notes_02.png', 'images/notes_03.png', 'images/notes_04.png'];
+    const frameDurations = [260, 260, 520, 260];
+    let fi = 0;
+    const tick = () => {
+      personEl.src = personFrames[fi];
+      notesEl.src = notesFrames[fi];
+      const wait = frameDurations[fi];
+      fi = (fi + 1) % personFrames.length;
+      window.setTimeout(tick, wait);
+    };
+    window.setTimeout(tick, 60);
+  }
+
+  // --- Initialize Swipers ---
+  if (typeof Swiper !== 'undefined') {
+    // Voice Swiper
+    const voiceEl = document.querySelector('.voice-section .swiper-container');
+    if (voiceEl) {
+      new Swiper(voiceEl, {
+        loop: true, centeredSlides: true, slidesPerView: 'auto', spaceBetween: 25, speed: 600,
+        observer: true, observeParents: true,
+        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+        on: { init: function() { setTimeout(() => { this.update(); }, 100); } }
+      });
     }
-
-
-    // ===============================================
-    // 2. Data Fetching (CSV from Google Sheets)
-    // ===============================================
-    const NEWS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSkBOovAHzdZWtA0Z-KRe27h5ZzGFi5Bq2G7Bp0Mv4sQ-2C9urIYy8oR9IaMf7xdSR9M_iww2zMbG-/pub?gid=0&single=true&output=csv";
-    const VOICE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSkBOovAHzdZWtA0Z-KRe27h5ZzGFi5Bq2G7Bp0Mv4sQ-2C9urIYy8oR9IaMf7xdSR9M_iww2zMbG-/pub?gid=793239367&single=true&output=csv";
-    const ARCHIVE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQSkBOovAHzdZWtA0Z-KRe27h5ZzGFi5Bq2G7Bp0Mv4sQ-2C9urIYy8oR9IaMf7xdSR9M_iww2zMbG-/pub?gid=260654898&single=true&output=csv";
-
-    
-
-// Cache-buster: avoid iOS/edge caching of Google published CSV
-function withCacheBuster(url) {
-  const sep = url.includes('?') ? '&' : '?';
-  return url + sep + '_ts=' + Date.now();
-}
-// Detect current language from HTML tag
-    const LANG = document.documentElement.lang === 'en' ? 'en' : 'ja';
-
-    const newsContainer = document.querySelector('#news .news-container');
-    const voiceWrapper = document.querySelector('#voice .swiper-wrapper');
-
-    // Only fetch if containers exist (Home page)
-    if (newsContainer || voiceWrapper) {
-        fetchData();
+    // Archive Swiper
+    const archiveEl = document.querySelector('.archive-swiper');
+    if (archiveEl) {
+      new Swiper(archiveEl, {
+        loop: true, centeredSlides: true, slidesPerView: 'auto', spaceBetween: 30, speed: 800
+      });
     }
+  }
 
-    async function fetchData() {
-        try {
-            const [newsRes, voiceRes, archiveRes] = await Promise.all([
-                fetch(withCacheBuster(NEWS_CSV_URL), { cache: 'no-store' }),
-                fetch(withCacheBuster(VOICE_CSV_URL), { cache: 'no-store' }),
-                fetch(withCacheBuster(ARCHIVE_CSV_URL), { cache: 'no-store' })
-            ]);
+  // ===============================================
+  // 2. Data Fetching (JSON from Worker API)
+  // ===============================================
+  const API_BASE = "https://hosei-content-api.dic706.workers.dev";
+  const NEWS_API_URL = `${API_BASE}/posts?type=news`;
+  const VOICE_API_URL = `${API_BASE}/posts?type=voice`;
+  const ARCHIVE_API_URL = `${API_BASE}/posts?type=archive`;
 
-            if (newsRes.ok && newsContainer) {
-                const text = await newsRes.text();
-                const newsData = parseCSV(text);
-                renderNews(newsData);
-            }
-            if (voiceRes.ok && voiceWrapper) {
-                const text = await voiceRes.text();
-                const voiceData = parseCSV(text);
-                renderVoice(voiceData);
-            }
+  // Cache-buster: avoid iOS/edge caching (also helps CF cache layers if any)
+  function withCacheBuster(url) {
+    const sep = url.includes('?') ? '&' : '?';
+    return url + sep + '_ts=' + Date.now();
+  }
 
-            // Archive rendering
-            if (archiveRes.ok) {
-                const text = await archiveRes.text();
-                const archiveData = parseCSV(text);
-                renderArchive(archiveData);
-            }
-        } catch (e) {
-            console.error("Data load failed:", e);
-        }
+  // Detect current language from HTML tag
+  const LANG = document.documentElement.lang === 'en' ? 'en' : 'ja';
+
+  const newsContainer = document.querySelector('#news .news-container');
+  const voiceWrapper = document.querySelector('#voice .swiper-wrapper');
+
+  // Only fetch if containers exist (Home page)
+  if (newsContainer || voiceWrapper) {
+    fetchData();
+  }
+
+  async function fetchJson(url) {
+    const res = await fetch(withCacheBuster(url), { cache: 'no-store' });
+    if (!res.ok) throw new Error(`API fetch failed: ${res.status} ${res.statusText}`);
+    return await res.json();
+  }
+
+  async function fetchData() {
+    try {
+      const [newsData, voiceData, archiveData] = await Promise.all([
+        fetchJson(NEWS_API_URL),
+        fetchJson(VOICE_API_URL),
+        fetchJson(ARCHIVE_API_URL),
+      ]);
+
+      if (newsContainer) renderNews(newsData || []);
+      if (voiceWrapper) renderVoice(voiceData || []);
+      renderArchive(archiveData || []);
+    } catch (e) {
+      console.error("Data load failed:", e);
     }
+  }
 
-    function renderArchive(data) {
-        const archiveWrapper = document.querySelector('.archive-swiper .swiper-wrapper');
-        if (!archiveWrapper) return;
+  function renderArchive(data) {
+    const archiveWrapper = document.querySelector('.archive-swiper .swiper-wrapper');
+    if (!archiveWrapper) return;
 
-        // Show only display=TRUE and sort by date DESC
-        const validItems = data.filter(item => item.display && item.display.toUpperCase() === 'TRUE');
-        validItems.sort((a, b) => {
-            const dA = new Date(a.date.replace(/\./g, '/'));
-            const dB = new Date(b.date.replace(/\./g, '/'));
-            return dB - dA;
-        });
-
-        const html = validItems.map(item => {
-            const title = (LANG === 'ja') ? item.title_ja : item.title_en;
-            return `
-                <div class="swiper-slide">
-                    <div class="archive-card">
-                        <img alt="${title}" src="images/${item.image_src}" loading="lazy">
-                        <div class="archive-info">
-                            <div class="archive-date">${item.date}</div>
-                            <div class="archive-name">${title}</div>
-                        </div>
-                    </div>
-                </div>`;
-        }).join("");
-
-        if (html.trim()) {
-            archiveWrapper.innerHTML = html;
-            // Update Swiper instance
-            const swiperEl = document.querySelector('.archive-swiper');
-            if (swiperEl && swiperEl.swiper) {
-                swiperEl.swiper.update();
-            }
-        }
-    }
-
-    // CSV Parser (Handles quotes and commas correctly)
-    function parseCSV(text) {
-        const rows = [];
-        let row = [];
-        let cur = "";
-        let inQuote = false;
-        
-        // Remove BOM if present
-        if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
-
-        for (let i = 0; i < text.length; i++) {
-            let c = text[i];
-            if (inQuote) {
-                if (c === '"') {
-                    if (i + 1 < text.length && text[i + 1] === '"') {
-                        cur += '"'; i++;
-                    } else {
-                        inQuote = false;
-                    }
-                } else {
-                    cur += c;
-                }
-            } else {
-                if (c === '"') {
-                    inQuote = true;
-                } else if (c === ',') {
-                    row.push(cur.trim()); cur = "";
-                } else if (c === '\n' || c === '\r') {
-                    row.push(cur.trim()); cur = "";
-                    if (row.length > 0) rows.push(row);
-                    row = [];
-                    if (c === '\r' && text[i + 1] === '\n') i++;
-                } else {
-                    cur += c;
-                }
-            }
-        }
-        if (cur || row.length > 0) { row.push(cur.trim()); rows.push(row); }
-        
-        // Convert to Array of Objects using header row
-        const headers = rows[0];
-        const objects = rows.slice(1).map(r => {
-            let obj = {};
-            headers.forEach((h, idx) => {
-                obj[h] = r[idx];
-            });
-            return obj;
-        });
-        return objects;
-    }
-
-    function renderNews(data) {
-        // Filter enabled
-        const validItems = data.filter(item => item.enabled && item.enabled.toUpperCase() === 'TRUE');
-        
-        const html = validItems.map((item, idx) => {
-            const date = (item.view_date || item.date);
-            const body = item[LANG + '_html'] || "";
-            const linkText = item[LANG + '_link_text'];
-            const linkHref = item[LANG + '_link_href'];
-            
-            const linkHtml = (linkText && linkHref) 
-                ? `<br><a href="${linkHref}" target="_blank" rel="noopener noreferrer">${linkText}</a>`
-                : "";
-
-            return `
-                <div class="news-item fade-up" data-stagger="${idx}">
-                    <span class="news-date">${date}</span>
-                    <div class="news-text">${body}${linkHtml}</div>
-                </div>
-            `;
-        }).join("");
-
-        if (html.trim()) {
-            newsContainer.innerHTML = html;
-            // Activate Stagger Animations for dynamic content
-            const items = newsContainer.querySelectorAll('.news-item');
-            const obs = new IntersectionObserver((entries, o) => {
-                entries.forEach(e => {
-                    if(!e.isIntersecting) return;
-                    const el = e.target;
-                    setTimeout(() => el.classList.add('is-visible'), 120 * (el.dataset.stagger || 0));
-                    o.unobserve(el);
-                });
-            }, { root: null, margin: '0px 0px -10% 0px', threshold: 0.15 });
-            items.forEach(el => obs.observe(el));
-        }
-    }
-
-    function renderVoice(data) {
-    // セレクタをID指定（#voice）に修正してより確実に
-    const voiceWrapper = document.querySelector('#voice .swiper-wrapper');
-    if (!voiceWrapper) return;
-
-    // enabled=TRUEのものだけを表示し、日付順に並び替え
-    const validItems = data.filter(item => item.enabled && item.enabled.toUpperCase() === 'TRUE');
+    // display=TRUE only, sort by date DESC
+    const validItems = (data || []).filter(item => (item.display || "").toString().toUpperCase() === 'TRUE');
     validItems.sort((a, b) => {
-        const dA = new Date(a.date.replace(/\./g, '/'));
-        const dB = new Date(b.date.replace(/\./g, '/'));
-        return dB - dA;
+      const dA = new Date((a.date || "").toString().replace(/\./g, '/'));
+      const dB = new Date((b.date || "").toString().replace(/\./g, '/'));
+      return dB - dA;
     });
 
     const html = validItems.map(item => {
-        const body = item[LANG + '_html'] || "";
-
-        // --- 修正：画像なし（テキストのみ）判定ロジック ---
-        const isNoImage = !item.image_src || item.image_src.trim() === "";
-        // 画像がない、または明示的に logo 指定がある場合は「logo」モード
-        const kind = (isNoImage || item.image_kind === "logo") ? "logo" : "photo";
-        const imgClass = (kind === "logo") ? "voice-logo-placeholder" : "voice-photo";
-
-        let imgSrc = item.image_src;
-        if (isNoImage) {
-            // 画像がない場合に表示する鳳聲さん専用のロゴ
-            imgSrc = "images/voice_card_logo_text_black.png";
-        } else if (!imgSrc.startsWith('http') && !imgSrc.startsWith('images/')) {
-            imgSrc = 'images/' + imgSrc;
-        }
-
-        return `
-            <div class="swiper-slide voice-slide">
-                <div class="voice-img-box">
-                    <img src="${imgSrc}" alt="Voice Image" class="${imgClass}" loading="lazy">
-                </div>
-                <div class="voice-content">
-                    <div class="voice-date-text">${(item.view_date || item.date)}</div>
-                    <p class="voice-body">${body}</p>
-                </div>
+      const title = (LANG === 'ja') ? (item.title_ja || "") : (item.title_en || "");
+      const img = normalizeImageSrc(item.image_src, { allowEmpty: true });
+      // archiveは元々 images/<file> 前提。nullなら壊れないよう空に。
+      const imgTag = img ? `<img alt="${escapeHtml(title)}" src="${img}" loading="lazy">` : "";
+      return `
+        <div class="swiper-slide">
+          <div class="archive-card">
+            ${imgTag}
+            <div class="archive-info">
+              <div class="archive-date">${escapeHtml(item.date || "")}</div>
+              <div class="archive-name">${escapeHtml(title)}</div>
             </div>
-        `;
+          </div>
+        </div>`;
     }).join("");
 
     if (html.trim()) {
-        voiceWrapper.innerHTML = html;
-        // Swiperの更新
-        const swiperEl = document.querySelector('.voice-section .swiper-container');
-        if (swiperEl && swiperEl.swiper) {
-            swiperEl.swiper.update();
-            // 常に最新（左端）が見えるようにする
-            swiperEl.swiper.slideToLoop(0, 0);
-        }
+      archiveWrapper.innerHTML = html;
+      const swiperEl = document.querySelector('.archive-swiper');
+      if (swiperEl && swiperEl.swiper) {
+        swiperEl.swiper.update();
+      }
     }
-}
+  }
 
+  function renderNews(data) {
+    const validItems = (data || []).filter(item => (item.enabled || "").toString().toUpperCase() === 'TRUE');
+
+    const html = validItems.map((item, idx) => {
+      const date = (item.view_date || item.date || "");
+      const body = item[LANG + '_html'] || "";
+      const linkText = item[LANG + '_link_text'] || "";
+      const linkHref = item[LANG + '_link_href'] || "";
+
+      const linkHtml = (linkText && linkHref)
+        ? `<br><a href="${escapeAttr(linkHref)}" target="_blank" rel="noopener noreferrer">${escapeHtml(linkText)}</a>`
+        : "";
+
+      return `
+        <div class="news-item fade-up" data-stagger="${idx}">
+          <span class="news-date">${escapeHtml(date)}</span>
+          <div class="news-text">${body}${linkHtml}</div>
+        </div>
+      `;
+    }).join("");
+
+    if (html.trim()) {
+      newsContainer.innerHTML = html;
+
+      // Activate Stagger Animations for dynamic content
+      const items = newsContainer.querySelectorAll('.news-item');
+      const obs = new IntersectionObserver((entries, o) => {
+        entries.forEach(e => {
+          if(!e.isIntersecting) return;
+          const el = e.target;
+          setTimeout(() => el.classList.add('is-visible'), 120 * (el.dataset.stagger || 0));
+          o.unobserve(el);
+        });
+      }, { root: null, margin: '0px 0px -10% 0px', threshold: 0.15 });
+      items.forEach(el => obs.observe(el));
+    }
+  }
+
+  function renderVoice(data) {
+    const voiceWrapper = document.querySelector('#voice .swiper-wrapper');
+    if (!voiceWrapper) return;
+
+    const validItems = (data || []).filter(item => (item.enabled || "").toString().toUpperCase() === 'TRUE');
+    validItems.sort((a, b) => {
+      const dA = new Date((a.date || "").toString().replace(/\./g, '/'));
+      const dB = new Date((b.date || "").toString().replace(/\./g, '/'));
+      return dB - dA;
+    });
+
+    const html = validItems.map(item => {
+      const body = item[LANG + '_html'] || "";
+
+      const isNoImage = !item.image_src || item.image_src.trim() === "";
+      const kind = (isNoImage || item.image_kind === "logo") ? "logo" : "photo";
+      const imgClass = (kind === "logo") ? "voice-logo-placeholder" : "voice-photo";
+
+      let imgSrc = "";
+      if (isNoImage) {
+        imgSrc = "images/voice_card_logo_text_black.png";
+      } else {
+        imgSrc = normalizeImageSrc(item.image_src, { allowEmpty: false }) || "";
+      }
+
+      return `
+        <div class="swiper-slide voice-slide">
+          <div class="voice-img-box">
+            <img src="${escapeAttr(imgSrc)}" alt="Voice Image" class="${imgClass}" loading="lazy">
+          </div>
+          <div class="voice-content">
+            <div class="voice-date-text">${escapeHtml(item.view_date || item.date || "")}</div>
+            <p class="voice-body">${body}</p>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    if (html.trim()) {
+      voiceWrapper.innerHTML = html;
+
+      const swiperEl = document.querySelector('.voice-section .swiper-container');
+      if (swiperEl && swiperEl.swiper) {
+        swiperEl.swiper.update();
+        swiperEl.swiper.slideToLoop(0, 0);
+      }
+    }
+  }
+
+  // ---- helpers ----
+
+  // image_src を「現状維持（GitHub images/）」運用に合わせて正規化
+  // - http(s) はそのまま
+  // - "images/xxx" はそのまま
+  // - "xxx.png" は "images/xxx.png"
+  function normalizeImageSrc(src, { allowEmpty = true } = {}) {
+    const s = (src ?? "").toString().trim();
+    if (!s) return allowEmpty ? "" : "";
+    if (s.startsWith("http://") || s.startsWith("https://")) return s;
+    if (s.startsWith("images/")) return s;
+    // 既存資産は images/<file> 前提
+    return "images/" + s;
+  }
+
+  function escapeHtml(str) {
+    return (str ?? "").toString()
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function escapeAttr(str) {
+    // 属性用（最低限）
+    return (str ?? "").toString().replaceAll('"', "&quot;");
+  }
 });
+
 
 // ============================================================
 // First-party analytics (self) -> Cloudflare Worker /event
@@ -462,7 +440,6 @@ function sendSelfEvent(endpoint, payload, keepalive = false) {
     }).catch(() => {});
   } catch (_) {}
 }
-
 
 
 // -----------------------------
