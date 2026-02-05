@@ -217,7 +217,11 @@ document.addEventListener('DOMContentLoaded', function() {
   const archiveWrapper = document.querySelector('.archive-swiper .swiper-wrapper');
   if (!archiveWrapper) return;
 
-  const validItems = (data || []).filter(item => (item.display || "").toString().toUpperCase() === 'TRUE');
+  // ✅ 互換：display が FALSE のものだけ除外（NULL/空/TRUE は表示）
+  const validItems = (data || []).filter(item => {
+    const d = (item.display ?? "").toString().trim().toUpperCase();
+    return d !== "FALSE" && d !== "0" && d !== "NO";
+  });
 
   // 日付順 (同一ならID順)
   validItems.sort((a, b) => {
@@ -256,6 +260,7 @@ document.addEventListener('DOMContentLoaded', function() {
       ? `<div class="archive-image"><img src="${escapeAttr(imgPath)}" alt="${escapeAttr(plainText)}" loading="lazy"></div>`
       : "";
 
+    // ✅ view_date を優先（無ければ date からフォールバック）
     const vDate = (item.view_date || "") ? item.view_date : toViewDateFallback(item.date || "");
 
     return `
@@ -268,18 +273,19 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>`;
   }).join("");
 
-  if (html.trim()) {
-    archiveWrapper.innerHTML = html;
+  // 0件なら空にしない（誤って消さない安全策）
+  if (!html.trim()) return;
 
-    // ★重要：動的に追加した .fade-up を監視して is-visible を付ける（付かないと非表示のまま）
-    try {
-      archiveWrapper.querySelectorAll('.fade-up, .fade-in, .slide-left').forEach(el => observer.observe(el));
-    } catch (e) {}
+  archiveWrapper.innerHTML = html;
 
-    const swiperEl = document.querySelector('.archive-swiper');
-    if (swiperEl && swiperEl.swiper) {
-      swiperEl.swiper.update();
-    }
+  // ✅ 動的に追加した要素を監視（付かないと非表示のまま）
+  try {
+    archiveWrapper.querySelectorAll('.fade-up, .fade-in, .slide-left').forEach(el => observer.observe(el));
+  } catch (e) {}
+
+  const swiperEl = document.querySelector('.archive-swiper');
+  if (swiperEl && swiperEl.swiper) {
+    swiperEl.swiper.update();
   }
 }
 
