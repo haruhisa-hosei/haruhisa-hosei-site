@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (!archiveWrapper) return;
 
   const validItems = (data || []).filter(item => (item.display || "").toString().toUpperCase() === 'TRUE');
-  
+
   // 日付順 (同一ならID順)
   validItems.sort((a, b) => {
     const dA = (a.date || "").toString();
@@ -230,25 +230,38 @@ document.addEventListener('DOMContentLoaded', function() {
     return iB.localeCompare(iA);
   });
 
+  // client fallback: "2022.07.06" -> "2022.7.6"
+  function toViewDateFallback(dateStr) {
+    const s = (dateStr || "").toString().trim();
+    const m = s.match(/^(\d{4})\.(\d{2})\.(\d{2})$/);
+    if (!m) return s;
+    const y = m[1];
+    const mo = String(parseInt(m[2], 10));
+    const da = String(parseInt(m[3], 10));
+    return `${y}.${mo}.${da}`;
+  }
+
   const html = validItems.map(item => {
     // HTMLタグを含むコンテンツを優先使用
-    const contentHtml = (LANG === 'ja') 
-      ? (item.ja_html || item.title_ja || "") 
+    const contentHtml = (LANG === 'ja')
+      ? (item.ja_html || item.title_ja || "")
       : (item.en_html || item.title_en || item.ja_html || item.title_ja || "");
-      
+
     // alt属性用にタグを除去したテキストを作成
     const plainText = contentHtml.replace(/<[^>]*>?/gm, '').trim();
 
     // 画像処理
     const imgPath = normalizeImageSrc(item.image_src, { allowEmpty: true });
-    const imgTag = imgPath 
-      ? `<div class="archive-image"><img src="${escapeAttr(imgPath)}" alt="${escapeAttr(plainText)}" loading="lazy"></div>` 
+    const imgTag = imgPath
+      ? `<div class="archive-image"><img src="${escapeAttr(imgPath)}" alt="${escapeAttr(plainText)}" loading="lazy"></div>`
       : "";
+
+    const vDate = (item.view_date || "") ? item.view_date : toViewDateFallback(item.date || "");
 
     return `
       <div class="swiper-slide">
         <div class="archive-card fade-up">
-          <div class="archive-date">${escapeHtml(item.date || "")}</div>
+          <div class="archive-date">${escapeHtml(vDate)}</div>
           ${imgTag}
           <div class="archive-comment">${contentHtml}</div>
         </div>
@@ -257,6 +270,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (html.trim()) {
     archiveWrapper.innerHTML = html;
+
+    // ★重要：動的に追加した .fade-up を監視して is-visible を付ける（付かないと非表示のまま）
+    try {
+      archiveWrapper.querySelectorAll('.fade-up, .fade-in, .slide-left').forEach(el => observer.observe(el));
+    } catch (e) {}
+
     const swiperEl = document.querySelector('.archive-swiper');
     if (swiperEl && swiperEl.swiper) {
       swiperEl.swiper.update();
