@@ -156,6 +156,16 @@ document.addEventListener('DOMContentLoaded', function() {
   const newsContainer = document.querySelector('#news .news-container');
   const voiceWrapper  = document.querySelector('#voice .swiper-wrapper');
 
+  // Archive containers (複数候補を見ておく：HTML差異吸収)
+  function getArchiveWrapper() {
+    return (
+      document.querySelector('.archive-swiper .swiper-wrapper') ||
+      document.querySelector('#archive .swiper-wrapper') ||
+      document.getElementById('archiveList') ||
+      document.getElementById('archive-list')
+    );
+  }
+
   // Worker API base (あなたの環境に合わせて変更)
   // 例: https://hosei-content-api.dic706.workers.dev
   const API_BASE = "https://hosei-content-api.dic706.workers.dev";
@@ -165,30 +175,40 @@ document.addEventListener('DOMContentLoaded', function() {
     return url + sep + '_ts=' + Date.now();
   }
 
-  // Only fetch if containers exist (Home page)
-  if (newsContainer || voiceWrapper) {
+  // Only fetch if any containers exist (Home page)
+  if (newsContainer || voiceWrapper || getArchiveWrapper()) {
     fetchData();
   }
 
   async function fetchData() {
     try {
-      const [newsRes, voiceRes, archiveRes] = await Promise.all([
-        fetch(withCacheBuster(`${API_BASE}/posts?type=news`),   { cache: 'no-store' }),
-        fetch(withCacheBuster(`${API_BASE}/posts?type=voice`),  { cache: 'no-store' }),
-        fetch(withCacheBuster(`${API_BASE}/posts?type=archive`),{ cache: 'no-store' })
-      ]);
+      const needNews = !!newsContainer;
+      const needVoice = !!voiceWrapper;
+      const needArchive = !!getArchiveWrapper();
 
-      if (newsRes.ok && newsContainer) {
+      const reqs = [];
+      if (needNews)    reqs.push(fetch(withCacheBuster(`${API_BASE}/api/news`),    { cache: 'no-store' }));
+      else             reqs.push(Promise.resolve(null));
+
+      if (needVoice)   reqs.push(fetch(withCacheBuster(`${API_BASE}/api/voice`),   { cache: 'no-store' }));
+      else             reqs.push(Promise.resolve(null));
+
+      if (needArchive) reqs.push(fetch(withCacheBuster(`${API_BASE}/api/archive`), { cache: 'no-store' }));
+      else             reqs.push(Promise.resolve(null));
+
+      const [newsRes, voiceRes, archiveRes] = await Promise.all(reqs);
+
+      if (newsRes && newsRes.ok && newsContainer) {
         const newsData = await newsRes.json();
         renderNews(newsData);
       }
 
-      if (voiceRes.ok && voiceWrapper) {
+      if (voiceRes && voiceRes.ok && voiceWrapper) {
         const voiceData = await voiceRes.json();
         renderVoice(voiceData);
       }
 
-      if (archiveRes.ok) {
+      if (archiveRes && archiveRes.ok) {
         const archiveData = await archiveRes.json();
         renderArchive(archiveData);
       }
@@ -224,12 +244,12 @@ document.addEventListener('DOMContentLoaded', function() {
   // ARCHIVE
   // ----------------------------
   function renderArchive(data) {
-    const archiveWrapper = document.querySelector('.archive-swiper .swiper-wrapper');
+    const archiveWrapper = getArchiveWrapper();
     if (!archiveWrapper) return;
 
-    // display=TRUE のみ（CSV版の挙動を踏襲）
+    // ★ display列はもう無い：enabled=TRUE のみ
     const validItems = (Array.isArray(data) ? data : [])
-      .filter(item => isTrue(item.display));
+      .filter(item => isTrue(item.enabled));
 
     // date DESC
     validItems.sort((a, b) => parseDotDate(b.date) - parseDotDate(a.date));
@@ -237,9 +257,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const html = validItems.map(item => {
       // D1版は ja_html/en_html がタイトル相当
       const title = (LANG === 'ja') ? safeHtml(item.ja_html) : safeHtml(item.en_html);
-      const dateText = (item.view_date || item.date || ""); // ← view_date優先
+      const dateText = (item.view_date || item.date || "");
       const imgSrc = normalizeImageSrc(item.image_src);
 
+      // Swiper wrapper でない場合でも同じHTMLで出す（崩れないように）
       return `
         <div class="swiper-slide">
           <div class="archive-card">
@@ -252,18 +273,12 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>`;
     }).join("");
 
-    if (html.trim()) {
-      archiveWrapper.innerHTML = html;
+    archiveWrapper.innerHTML = html;
 
-      // Swiper update
-      const swiperEl = document.querySelector('.archive-swiper');
-      if (swiperEl && swiperEl.swiper) {
-        swiperEl.swiper.update();
-      }
-    } else {
-      archiveWrapper.innerHTML = "";
-      const swiperEl = document.querySelector('.archive-swiper');
-      if (swiperEl && swiperEl.swiper) swiperEl.swiper.update();
+    // Swiper update
+    const swiperEl = document.querySelector('.archive-swiper');
+    if (swiperEl && swiperEl.swiper) {
+      swiperEl.swiper.update();
     }
   }
 
@@ -272,9 +287,10 @@ document.addEventListener('DOMContentLoaded', function() {
   // ----------------------------
   function renderNews(data) {
     const validItems = (Array.isArray(data) ? data : [])
-      // enabled=TRUE のみ（CSV版と同じ意図）
+      // enabled=TRUE のみ（従来意図）
       .filter(item => isTrue(item.enabled));
 
+    // 並びはAPI（Worker）が決める（created_at DESC / 直った前提）
     const html = validItems.map((item, idx) => {
       const date = (item.view_date || item.date || "");
       const body = safeHtml(item[LANG + '_html'] || item.ja_html || "");
