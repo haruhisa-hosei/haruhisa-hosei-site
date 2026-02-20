@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>購入完了 | 鳳聲晴久</title>
   <meta name="robots" content="noindex,nofollow" />
+
   <style>
     :root{
       --bg:#ffffff;
@@ -16,92 +17,131 @@
       --radius:14px;
       --pad:18px;
       --max:720px;
-      font-synthesis-weight:none;
-      text-rendering:optimizeLegibility;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
     }
+
     body{
       margin:0;
       background:var(--bg);
       color:var(--fg);
-      font-family: ui-sans-serif, system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Hiragino Sans",
+                   "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
     }
+
     .wrap{
       max-width:var(--max);
       margin:0 auto;
-      padding:42px 18px;
+      padding:48px 20px;
     }
+
     .card{
       border:1px solid var(--line);
       border-radius:var(--radius);
-      padding:28px;
+      padding:32px;
     }
+
     h1{
-      margin:0 0 10px;
+      margin:0 0 16px;
       font-size:22px;
       letter-spacing:0.02em;
     }
-    p{ margin:10px 0; color:var(--muted); line-height:1.75; }
+
+    p{
+      margin:12px 0;
+      color:var(--muted);
+      line-height:1.8;
+    }
+
     .btn{
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      padding:14px 18px;
+      padding:15px 22px;
       border-radius:12px;
       background:var(--btn);
       color:var(--btnfg);
       text-decoration:none;
       font-weight:600;
-      letter-spacing:0.01em;
-      margin-top:14px;
-    }
-    .sub{
+      letter-spacing:0.02em;
       margin-top:18px;
+      transition:opacity .2s ease;
+    }
+
+    .btn:disabled,
+    .btn.hide{
+      opacity:0.4;
+      pointer-events:none;
+    }
+
+    .sub{
+      margin-top:22px;
       font-size:13px;
       color:var(--muted);
     }
-    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
-    .hide{ display:none; }
+
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size:12px;
+      opacity:0.6;
+    }
+
+    .hide{
+      display:none;
+    }
   </style>
 </head>
 
 <body>
   <main class="wrap">
     <section class="card">
-      <h1>購入ありがとうございます</h1>
+      <h1>ご購入ありがとうございます</h1>
       <p id="msg">決済確認中…</p>
 
-      <a id="dl" class="btn hide" href="#" rel="noopener">PDFをダウンロード</a>
+      <a id="dl" class="btn hide" href="#" rel="noopener">
+        PDFをダウンロード
+      </a>
 
       <p class="sub">
-        うまく表示されない場合は、少し待ってから再読み込みしてください。
+        ダウンロードリンクは一定時間後に無効になります。
+        うまく表示されない場合は再読み込みしてください。
       </p>
-      <p class="sub mono" id="hint"></p>
+
+      <p class="mono" id="debug"></p>
     </section>
   </main>
 
   <script>
     (async () => {
-      const params = new URLSearchParams(location.search);
+
+      const params = new URLSearchParams(window.location.search);
       const sessionId = params.get("session_id");
+
       const msg = document.getElementById("msg");
-      const dl = document.getElementById("dl");
-      const hint = document.getElementById("hint");
+      const dl  = document.getElementById("dl");
+      const debug = document.getElementById("debug");
 
       if (!sessionId) {
-        msg.textContent = "session_id が見つかりません。決済完了後にこのページへ戻ってきてください。";
+        msg.textContent = "session_id が見つかりません。決済後にこのページへ戻ってください。";
         return;
       }
 
-      // デバッグ用（必要なければ消してOK）
-      hint.textContent = "session_id: " + sessionId;
+      // 必要ならデバッグ表示（本番では消してもOK）
+      debug.textContent = "session_id: " + sessionId;
 
       try {
-        const res = await fetch(`/api/stripe/success?session_id=${encodeURIComponent(sessionId)}`, {
-          method: "GET",
-          cache: "no-store",
-        });
+
+        const res = await fetch(
+          `/api/stripe/success?session_id=${encodeURIComponent(sessionId)}`,
+          {
+            method: "GET",
+            cache: "no-store"
+          }
+        );
+
+        if (!res.ok) {
+          msg.textContent = "決済確認に失敗しました（" + res.status + "）";
+          return;
+        }
+
         const data = await res.json();
 
         if (!data.ok) {
@@ -110,11 +150,14 @@
         }
 
         msg.textContent = "決済を確認しました。下のボタンからダウンロードしてください。";
+
         dl.href = data.download_url;
         dl.classList.remove("hide");
-      } catch (e) {
-        msg.textContent = "通信に失敗しました。再読み込みしてください。";
+
+      } catch (err) {
+        msg.textContent = "通信エラーが発生しました。再読み込みしてください。";
       }
+
     })();
   </script>
 </body>
