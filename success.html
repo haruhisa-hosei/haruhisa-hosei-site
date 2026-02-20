@@ -78,12 +78,6 @@
       color:var(--muted);
     }
 
-    .mono{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size:12px;
-      opacity:0.6;
-    }
-
     .hide{
       display:none;
     }
@@ -104,8 +98,6 @@
         ダウンロードリンクは一定時間後に無効になります。
         うまく表示されない場合は再読み込みしてください。
       </p>
-
-      <p class="mono" id="debug"></p>
     </section>
   </main>
 
@@ -117,15 +109,11 @@
 
       const msg = document.getElementById("msg");
       const dl  = document.getElementById("dl");
-      const debug = document.getElementById("debug");
 
       if (!sessionId) {
-        msg.textContent = "session_id が見つかりません。決済後にこのページへ戻ってください。";
+        msg.textContent = "決済情報を確認できませんでした。再度お試しください。";
         return;
       }
-
-      // 必要ならデバッグ表示（本番では消してもOK）
-      debug.textContent = "session_id: " + sessionId;
 
       try {
 
@@ -145,7 +133,7 @@
         const data = await res.json();
 
         if (!data.ok) {
-          msg.textContent = "決済確認に失敗しました：" + (data.status || data.error || "unknown");
+          msg.textContent = "決済確認に失敗しました。";
           return;
         }
 
