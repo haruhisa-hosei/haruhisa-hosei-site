@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>購入完了 | 鳳聲晴久</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <style>
+    :root{
+      --bg:#ffffff;
+      --fg:#111;
+      --muted:#666;
+      --line:#e8e8e8;
+      --btn:#111;
+      --btnfg:#fff;
+      --radius:14px;
+      --pad:18px;
+      --max:720px;
+      font-synthesis-weight:none;
+      text-rendering:optimizeLegibility;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--fg);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
+    }
+    .wrap{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:42px 18px;
+    }
+    .card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:28px;
+    }
+    h1{
+      margin:0 0 10px;
+      font-size:22px;
+      letter-spacing:0.02em;
+    }
+    p{ margin:10px 0; color:var(--muted); line-height:1.75; }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:14px 18px;
+      border-radius:12px;
+      background:var(--btn);
+      color:var(--btnfg);
+      text-decoration:none;
+      font-weight:600;
+      letter-spacing:0.01em;
+      margin-top:14px;
+    }
+    .sub{
+      margin-top:18px;
+      font-size:13px;
+      color:var(--muted);
+    }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .hide{ display:none; }
+  </style>
+</head>
+
+<body>
+  <main class="wrap">
+    <section class="card">
+      <h1>購入ありがとうございます</h1>
+      <p id="msg">決済確認中…</p>
+
+      <a id="dl" class="btn hide" href="#" rel="noopener">PDFをダウンロード</a>
+
+      <p class="sub">
+        うまく表示されない場合は、少し待ってから再読み込みしてください。
+      </p>
+      <p class="sub mono" id="hint"></p>
+    </section>
+  </main>
+
+  <script>
+    (async () => {
+      const params = new URLSearchParams(location.search);
+      const sessionId = params.get("session_id");
+      const msg = document.getElementById("msg");
+      const dl = document.getElementById("dl");
+      const hint = document.getElementById("hint");
+
+      if (!sessionId) {
+        msg.textContent = "session_id が見つかりません。決済完了後にこのページへ戻ってきてください。";
+        return;
+      }
+
+      // デバッグ用（必要なければ消してOK）
+      hint.textContent = "session_id: " + sessionId;
+
+      try {
+        const res = await fetch(`/api/stripe/success?session_id=${encodeURIComponent(sessionId)}`, {
+          method: "GET",
+          cache: "no-store",
+        });
+        const data = await res.json();
+
+        if (!data.ok) {
+          msg.textContent = "決済確認に失敗しました：" + (data.status || data.error || "unknown");
+          return;
+        }
+
+        msg.textContent = "決済を確認しました。下のボタンからダウンロードしてください。";
+        dl.href = data.download_url;
+        dl.classList.remove("hide");
+      } catch (e) {
+        msg.textContent = "通信に失敗しました。再読み込みしてください。";
+      }
+    })();
+  </script>
+</body>
+</html>
