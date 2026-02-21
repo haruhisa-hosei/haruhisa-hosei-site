@@ -116,46 +116,55 @@
         </div>
     </section>
 
-    <section class="books-section" id="books">
-        <div class="books-content">
-            <h2 class="section-title fade-up">BOOKS</h2>
-            <p class="books-lead fade-up delay-1">PDFで読める書籍を販売しています。</p>
+<section class="books-section" id="books">
+  <div class="books-content">
+    <h2 class="section-title fade-up">BOOKS</h2>
+    <p class="books-lead fade-up delay-1">PDFで読める書籍を販売しています。</p>
 
-            <div class="swiper books-swiper swiper-container fade-up delay-2">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                        <article class="book-card">
-                            <div class="book-cover">
-                                <img src="images/books/groundedrecord_cover.png" alt="Grounded Record 表紙" loading="lazy">
-                            </div>
+    <div class="swiper-container books-swiper fade-up delay-2">
+      <div class="swiper-wrapper">
 
-                            <div class="book-info">
-<h3 class="book-title">Grounded Record</h3>
-                                <p class="book-sub">永続する構造の設計論</p>
-                                <div class="book-meta">PDF / ¥1,800</div>
-
-                                <!-- Stripe Payment Link（本番/テスト切替時はここを差し替え） -->
-                                <a class="book-buy" href="https://buy.stripe.com/test_fZu00j1t5" target="_blank" rel="noopener">購入する</a>
-
-                                <details class="book-detail">
-                                    <summary>詳細</summary>
-                                    <div class="book-detail-inner">
-                                        <p>決済後、ダウンロードボタンが表示されます（リンクは一定時間で失効）。</p>
-                                        <div class="book-back">
-                                            <img src="images/books/groundedrecord_back.png" alt="Grounded Record 裏表紙" loading="lazy">
-                                        </div>
-                                    </div>
-                                </details>
-                            </div>
-                        </article>
-                    </div>
-                </div>
-
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-button-next"></div>
+        <div class="swiper-slide">
+          <article class="voice-slide book-slide">
+            <div class="voice-img-box book-img-box">
+              <img class="voice-photo book-photo" src="images/books/groundedrecord_cover.png" alt="Grounded Record 表紙" loading="lazy">
             </div>
+
+            <div class="book-content">
+              <h3 class="book-title">Grounded Record</h3>
+              <p class="book-sub">永続する構造の設計論</p>
+
+              <p class="book-date">出版日：2026.2.??</p>
+              <div class="book-divider"></div>
+
+              <p class="book-comment">
+                永続する「構造」を、設計論としてまとめた一冊です。
+              </p>
+
+              <a class="book-buy" href="https://buy.stripe.com/test_00g6pW1lBfA3g6Q6oo" target="_blank" rel="noopener">購入する</a>
+
+              <details class="book-detail">
+                <summary>詳細</summary>
+                <div class="book-detail-inner">
+                  <p>購入後、PDFをダウンロードできます。</p>
+                  <div class="book-back">
+                    <img class="book-back-img" src="images/books/groundedrecord_back.png" alt="Grounded Record 裏表紙" loading="lazy">
+                  </div>
+                </div>
+              </details>
+            </div>
+          </article>
         </div>
-    </section>
+
+      </div>
+
+      <div class="swiper-button-prev" aria-label="Previous"></div>
+      <div class="swiper-button-next" aria-label="Next"></div>
+    </div>
+  </div>
+</section>
+
+
 
     <section class="profile-section" id="profile">
         <div class="profile-card">
@@ -179,6 +188,8 @@
             </div>
         </div>
     </section>
+
+    
 
     <section class="subscribe-preview-section" id="subscribe">
         <h2 class="section-title fade-up">SUBSCRIBE</h2>
