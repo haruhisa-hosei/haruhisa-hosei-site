@@ -667,7 +667,9 @@ body.home .brand-logo{ height:23px; }  /* +25% from 16px */
   display: flex;
   flex-direction: column;
   gap: 8px;
+  color: #111;
 }
+
 
 /* Typography order */
 .book-title{
