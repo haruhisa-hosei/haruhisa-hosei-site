@@ -651,18 +651,21 @@ body.home .brand-logo{ height:23px; }  /* +25% from 16px */
   justify-content: center;
 }
 
-/* Card sizing: same width as Voice, fixed height 800 */
-.voice-slide.book-slide{
-  height: 800px !important;
+/* ✅ Booksだけ広げる + 高さ650px（画像300 / テキスト350） */
+#books .voice-slide.book-slide{
+  width: 92% !important;       /* Booksだけ広く */
+  max-width: 460px !important; /* Voiceより少し広め */
+  height: 650px !important;    /* 総高さ */
 }
 
-/* Image:Text = 4:6 => 320px image + 480px text */
-.voice-img-box.book-img-box{
-  height: 320px !important;
+/* ✅ 画像 300px */
+#books .voice-img-box.book-img-box{
+  height: 300px !important;
 }
 
-/* Text area */
-.book-content{
+/* ✅ テキスト領域 約350px */
+#books .book-content{
+  flex: 0 0 350px !important;
   padding: 20px 30px 30px !important; /* match Voice padding */
   display: flex;
   flex-direction: column;
