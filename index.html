@@ -116,46 +116,13 @@
         </div>
     </section>
 
-<section class="books-section" id="books">
+    <section class="books-section" id="books">
   <div class="books-content">
     <h2 class="section-title fade-up">BOOKS</h2>
-    <p class="books-lead fade-up delay-1">PDFで読める書籍を販売しています。</p>
 
-    <div class="swiper-container books-swiper fade-up delay-2">
-      <div class="swiper-wrapper">
-
-        <div class="swiper-slide">
-          <article class="voice-slide book-slide">
-            <div class="voice-img-box book-img-box">
-              <img class="voice-photo book-photo" src="images/books/groundedrecord_cover.png" alt="Grounded Record 表紙" loading="lazy">
-            </div>
-
-            <div class="book-content">
-              <h3 class="book-title">Grounded Record</h3>
-              <p class="book-sub">永続する構造の設計論</p>
-
-              <p class="book-date">出版日：2026.2.??</p>
-              <div class="book-divider"></div>
-
-              <p class="book-comment">
-                永続する「構造」を、設計論としてまとめた一冊です。
-              </p>
-
-              <a class="book-buy" href="https://buy.stripe.com/test_00g6pW1lBfA3g6Q6oo" target="_blank" rel="noopener">購入する</a>
-
-              <details class="book-detail">
-                <summary>詳細</summary>
-                <div class="book-detail-inner">
-                  <p>購入後、PDFをダウンロードできます。</p>
-                  <div class="book-back">
-                    <img class="book-back-img" src="images/books/groundedrecord_back.png" alt="Grounded Record 裏表紙" loading="lazy">
-                  </div>
-                </div>
-              </details>
-            </div>
-          </article>
-        </div>
-
+    <div class="swiper-container books-swiper fade-up delay-2" aria-label="Books slider">
+      <div class="swiper-wrapper" id="booksWrapper">
+        <!-- JS injects book slides here (from books.json) -->
       </div>
 
       <div class="swiper-button-prev" aria-label="Previous"></div>
@@ -164,9 +131,7 @@
   </div>
 </section>
 
-
-
-    <section class="profile-section" id="profile">
+<section class="profile-section" id="profile">
         <div class="profile-card">
             <h2 class="section-title fade-up">PROFILE</h2>
             <div class="profile-names fade-up delay-1">
@@ -188,9 +153,6 @@
             </div>
         </div>
     </section>
-
-    
-
     <section class="subscribe-preview-section" id="subscribe">
         <h2 class="section-title fade-up">SUBSCRIBE</h2>
         <p class="fade-up delay-1" style="line-height:2.0; font-size:0.95rem;">
