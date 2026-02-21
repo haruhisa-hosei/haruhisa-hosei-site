@@ -141,24 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
 
-    const booksEl = document.querySelector('.books-section .swiper-container.books-swiper');
-    if (booksEl) {
-      const booksSection = booksEl.closest('.books-section');
-      const booksNext = booksSection ? booksSection.querySelector('.swiper-button-next') : null;
-      const booksPrev = booksSection ? booksSection.querySelector('.swiper-button-prev') : null;
-
-      new Swiper(booksEl, {
-        loop: true,
-        centeredSlides: true,
-        slidesPerView: 'auto',
-        spaceBetween: 25,
-        speed: 600,
-        observer: true,
-        observeParents: true,
-        navigation: { nextEl: booksNext, prevEl: booksPrev },
-        on: { init: function() { setTimeout(() => { this.update(); }, 100); } }
-      });
-    }
+    // Books Swiper is initialized after books.json is loaded (see loadBooks()).
     const archiveEl = document.querySelector('.archive-swiper');
     if (archiveEl) {
       new Swiper(archiveEl, {
@@ -167,7 +150,95 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  
   // ===============================================
+  // 1.5 Books (Static JSON)
+  // ===============================================
+  const BOOKS_LANG = document.documentElement.lang === 'en' ? 'en' : 'ja';
+  const booksWrapper = document.querySelector('#books .swiper-wrapper');
+  const booksSwiperEl = document.querySelector('#books .books-swiper');
+
+  async function loadBooks() {
+    if (!booksWrapper) return;
+
+    try {
+      const res = await fetch(withCacheBuster('books.json'), { cache: 'no-store' });
+      if (!res.ok) throw new Error('books.json fetch failed: ' + res.status);
+      const data = await res.json();
+      renderBooks(data);
+
+      // init / update swiper after render
+      if (typeof Swiper !== 'undefined' && booksSwiperEl) {
+        const nextEl = booksSwiperEl.querySelector('.swiper-button-next');
+        const prevEl = booksSwiperEl.querySelector('.swiper-button-prev');
+
+        if (booksSwiperEl.swiper) {
+          booksSwiperEl.swiper.update();
+          booksSwiperEl.swiper.slideTo(0, 0);
+        } else {
+          new Swiper(booksSwiperEl, {
+            loop: (booksWrapper.children.length > 1),
+            centeredSlides: true,
+            slidesPerView: 'auto',
+            spaceBetween: 25,
+            speed: 600,
+            observer: true,
+            observeParents: true,
+            navigation: { nextEl, prevEl },
+            on: { init: function() { setTimeout(() => { this.update(); }, 100); } }
+          });
+        }
+
+        // Hide arrows if only 1 slide
+        const hasMany = booksWrapper.children.length > 1;
+        if (nextEl) nextEl.style.display = hasMany ? '' : 'none';
+        if (prevEl) prevEl.style.display = hasMany ? '' : 'none';
+      }
+    } catch (e) {
+      console.error('Books load failed:', e);
+    }
+  }
+
+  function renderBooks(payload) {
+    const items = (payload && Array.isArray(payload.items)) ? payload.items : [];
+    const valid = items.filter(it => String(it.enabled || '').toUpperCase() === 'TRUE');
+
+    const html = valid.map(it => {
+      const title = (BOOKS_LANG === 'en') ? (it.title_en || it.title_ja || '') : (it.title_ja || it.title_en || '');
+      const subtitle = (BOOKS_LANG === 'en') ? (it.subtitle_en || '') : (it.subtitle_ja || '');
+      const published = it.published || '';
+      const comment = (BOOKS_LANG === 'en') ? (it.comment_en || '') : (it.comment_ja || '');
+      const buyLabel = (BOOKS_LANG === 'en') ? 'Buy' : '購入';
+      const img = normalizeImageSrc(it.cover_image || '', 'images/books/');
+      const buyUrl = it.purchase_url || '#';
+
+      return `
+        <div class="swiper-slide">
+          <article class="voice-slide book-slide">
+            <div class="voice-img-box book-img-box">
+              <img class="voice-photo book-photo" src="${img}" alt="${title}" loading="lazy">
+            </div>
+
+            <div class="book-content">
+              <h3 class="book-title">${safeHtml(title)}</h3>
+              ${subtitle ? `<p class="book-sub">${safeHtml(subtitle)}</p>` : ``}
+              ${published ? `<p class="book-date">${safeHtml(published)}</p>` : ``}
+              <div class="book-strongline" aria-hidden="true"></div>
+              ${comment ? `<p class="book-comment">${safeHtml(comment)}</p>` : ``}
+              ${buyUrl && buyUrl !== '#' ? `<a class="book-buy-link" href="${buyUrl}" target="_blank" rel="noopener">${buyLabel}</a>` : ``}
+            </div>
+          </article>
+        </div>
+      `;
+    }).join('');
+
+    booksWrapper.innerHTML = html;
+  }
+
+  // load Books immediately (does not affect Worker API fetching)
+  loadBooks();
+
+// ===============================================
   // 2. Data Fetching (Worker + D1 JSON)
   // ===============================================
 
