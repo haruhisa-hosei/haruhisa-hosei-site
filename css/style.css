@@ -291,14 +291,8 @@ header.hero-header::before{ content:""; position:absolute; inset:0; background: 
     /* 木目本棚っぽい雰囲気（画像不要のCSS木目） */
     background:
       radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,0.10), rgba(0,0,0,0.25)),
-      repeating-linear-gradient(
-        90deg,
-        rgba(255,255,255,0.06) 0px,
-        rgba(255,255,255,0.06) 10px,
-        rgba(0,0,0,0.04) 10px,
-        rgba(0,0,0,0.04) 22px
-      ),
       linear-gradient(180deg, #3a2415, #23150d);
+
     padding: 90px 20px;
     color: #fff;
     position: relative;
@@ -318,12 +312,16 @@ header.hero-header::before{ content:""; position:absolute; inset:0; background: 
 
 .books-swiper .swiper-slide{ background: transparent; }
 
+.books-swiper{ width:100%; padding-bottom:50px; }
+.books-swiper .swiper-wrapper{ align-items: stretch; }
+.books-swiper .swiper-slide{ width:auto; display:flex; justify-content:center; }
+
 .book-card{
   width:85%;
   max-width:380px;
   height:600px;
   background:#fff;
-  box-shadow:0 8px 18px rgba(0,0,0,0.18);
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
   overflow:hidden;
   border-radius:0;
   border:none;
@@ -331,61 +329,101 @@ header.hero-header::before{ content:""; position:absolute; inset:0; background: 
   flex-direction:column;
 }
 
+/* Image:Text = 4:6 within 600px card (240px : 360px) */
 .book-cover{
-  height:240px; /* 4:6 ratio (image:text) within 600px card */
+  height:240px;
   background:#eee;
   overflow:hidden;
-  border-radius:0;
-  border:none;
 }
 .book-cover img{
   width:100%;
   height:100%;
   object-fit:cover;
   display:block;
-  border-radius:0;
 }
 
-.book-info{ display:flex; flex-direction:column; justify-content:center; min-width:0; }
+.book-info{
+  flex:1;
+  width:100%;
+  text-align:left;
+  padding:20px 30px 30px;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  min-width:0;
+  color:#111;
+}
 
-.book-title{ margin:0; font-size:22px; line-height:1.2; }
-.book-sub{ margin:8px 0 10px; color: rgba(255,255,255,0.82); font-size:14px; }
-.book-meta{ font-size:13px; color: rgba(255,255,255,0.72); margin-bottom: 14px; }
+.book-title{
+  margin:0 0 8px 0;
+  font-size:1.6rem;
+  letter-spacing:0.1em;
+  padding-bottom:8px;
+  border-bottom:2px solid #111;
+  display:inline-block;
+  width:100%;
+  font-family: var(--font-sans);
+  font-weight:700;
+  line-height:1.2;
+}
+
+.book-sub{
+  margin: 0 0 10px 0;
+  color:#111;
+  opacity:0.85;
+  font-size:0.95rem;
+  line-height:1.5;
+}
+
+.book-meta{
+  font-size:0.85rem;
+  color:#666;
+  margin: 0 0 14px 0;
+  font-family: var(--font-sans);
+}
 
 .book-buy{
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px 16px;
-    border-radius: 12px;
-    background: #fff;
-    color: #1a120c;
-    text-decoration: none;
-    font-weight: 800;
-    width: fit-content;
-    transition: transform .18s ease, opacity .18s ease;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:12px 16px;
+  border-radius:999px;
+  background:#111;
+  color:#fff;
+  text-decoration:none;
+  font-weight:700;
+  width:fit-content;
+  transition: transform .18s ease, opacity .18s ease;
+  font-family: var(--font-sans);
+  letter-spacing:0.08em;
 }
 .book-buy:hover{ transform: translateY(-1px); }
 
 .book-detail{
-  flex:1; /* takes remaining ~360px */
-  padding:22px;
-  position:relative;
-  z-index:1;
-  display:flex;
-  flex-direction:column;
-  justify-content:flex-start;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(0,0,0,0.10);
 }
-.book-detail summary{ cursor:pointer; font-size:13px; opacity:0.9; }
-.book-detail-inner{ margin-top: 10px; font-size:13px; color: rgba(255,255,255,0.78); }
+.book-detail summary{
+  cursor:pointer;
+  font-size:0.85rem;
+  color:#111;
+  opacity:0.85;
+  font-family: var(--font-sans);
+}
+.book-detail-inner{
+  margin-top: 10px;
+  font-size:0.85rem;
+  color:#444;
+  line-height:1.7;
+}
 
 .book-back{
-    margin-top: 12px;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.12);
-    background: rgba(255,255,255,0.04);
-    max-width: 320px;
+  margin-top: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.10);
+  background: #f7f7f7;
+  max-width: 320px;
 }
 .book-back img{ width:100%; height:auto; display:block; }
 
