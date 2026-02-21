@@ -292,7 +292,6 @@ header.hero-header::before{ content:""; position:absolute; inset:0; background: 
     background:
       radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,0.10), rgba(0,0,0,0.25)),
       linear-gradient(180deg, #3a2415, #23150d);
-
     padding: 90px 20px;
     color: #fff;
     position: relative;
@@ -312,16 +311,12 @@ header.hero-header::before{ content:""; position:absolute; inset:0; background: 
 
 .books-swiper .swiper-slide{ background: transparent; }
 
-.books-swiper{ width:100%; padding-bottom:50px; }
-.books-swiper .swiper-wrapper{ align-items: stretch; }
-.books-swiper .swiper-slide{ width:auto; display:flex; justify-content:center; }
-
 .book-card{
   width:85%;
   max-width:380px;
   height:600px;
   background:#fff;
-  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+  box-shadow:0 8px 18px rgba(0,0,0,0.18);
   overflow:hidden;
   border-radius:0;
   border:none;
@@ -329,101 +324,61 @@ header.hero-header::before{ content:""; position:absolute; inset:0; background: 
   flex-direction:column;
 }
 
-/* Image:Text = 4:6 within 600px card (240px : 360px) */
 .book-cover{
-  height:240px;
+  height:240px; /* 4:6 ratio (image:text) within 600px card */
   background:#eee;
   overflow:hidden;
+  border-radius:0;
+  border:none;
 }
 .book-cover img{
   width:100%;
   height:100%;
   object-fit:cover;
   display:block;
+  border-radius:0;
 }
 
-.book-info{
-  flex:1;
-  width:100%;
-  text-align:left;
-  padding:20px 30px 30px;
-  display:flex;
-  flex-direction:column;
-  justify-content:flex-start;
-  min-width:0;
-  color:#111;
-}
+.book-info{ display:flex; flex-direction:column; justify-content:center; min-width:0; }
 
-.book-title{
-  margin:0 0 8px 0;
-  font-size:1.6rem;
-  letter-spacing:0.1em;
-  padding-bottom:8px;
-  border-bottom:2px solid #111;
-  display:inline-block;
-  width:100%;
-  font-family: var(--font-sans);
-  font-weight:700;
-  line-height:1.2;
-}
-
-.book-sub{
-  margin: 0 0 10px 0;
-  color:#111;
-  opacity:0.85;
-  font-size:0.95rem;
-  line-height:1.5;
-}
-
-.book-meta{
-  font-size:0.85rem;
-  color:#666;
-  margin: 0 0 14px 0;
-  font-family: var(--font-sans);
-}
+.book-title{ margin:0; font-size:22px; line-height:1.2; }
+.book-sub{ margin:8px 0 10px; color: rgba(255,255,255,0.82); font-size:14px; }
+.book-meta{ font-size:13px; color: rgba(255,255,255,0.72); margin-bottom: 14px; }
 
 .book-buy{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  padding:12px 16px;
-  border-radius:999px;
-  background:#111;
-  color:#fff;
-  text-decoration:none;
-  font-weight:700;
-  width:fit-content;
-  transition: transform .18s ease, opacity .18s ease;
-  font-family: var(--font-sans);
-  letter-spacing:0.08em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: #fff;
+    color: #1a120c;
+    text-decoration: none;
+    font-weight: 800;
+    width: fit-content;
+    transition: transform .18s ease, opacity .18s ease;
 }
 .book-buy:hover{ transform: translateY(-1px); }
 
 .book-detail{
-  margin-top: 18px;
-  padding-top: 14px;
-  border-top: 1px solid rgba(0,0,0,0.10);
+  flex:1; /* takes remaining ~360px */
+  padding:22px;
+  position:relative;
+  z-index:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
 }
-.book-detail summary{
-  cursor:pointer;
-  font-size:0.85rem;
-  color:#111;
-  opacity:0.85;
-  font-family: var(--font-sans);
-}
-.book-detail-inner{
-  margin-top: 10px;
-  font-size:0.85rem;
-  color:#444;
-  line-height:1.7;
-}
+.book-detail summary{ cursor:pointer; font-size:13px; opacity:0.9; }
+.book-detail-inner{ margin-top: 10px; font-size:13px; color: rgba(255,255,255,0.78); }
 
 .book-back{
-  margin-top: 12px;
-  overflow: hidden;
-  border: 1px solid rgba(0,0,0,0.10);
-  background: #f7f7f7;
-  max-width: 320px;
+    margin-top: 12px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+    max-width: 320px;
 }
 .book-back img{ width:100%; height:auto; display:block; }
 
@@ -668,4 +623,104 @@ body.home .brand-logo{ height:23px; }  /* +25% from 16px */
   .lang-btn img{
     height: 40px;           /* mobile size */
   }
+}
+
+
+/* =========================================
+   Books (Voice-like Card)
+   ========================================= */
+.books-swiper { padding: 10px 0 0; }
+.books-swiper .swiper-slide { display: flex; justify-content: center; }
+
+.book-slide { /* inherits .voice-slide sizing */ }
+
+.book-img-box { /* inherits .voice-img-box */ }
+
+.book-content{
+  width: 100%;
+  padding: 22px 30px 28px;
+  flex-grow: 1;
+  text-align: left;
+  color: #111; /* ensure readable on white card */
+}
+.book-title{
+  font-family: var(--font-sans);
+  font-size: 1.8rem;
+  letter-spacing: 0.08em;
+  margin: 0 0 6px 0;
+}
+.book-sub{
+  margin: 0 0 14px 0;
+  color: #444;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+.book-date{
+  margin: 0 0 10px 0;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  color: #111;
+}
+.book-divider{
+  height: 2px;
+  background: #111;
+  width: 100%;
+  margin: 0 0 14px 0;
+}
+.book-comment{
+  margin: 0 0 16px 0;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: #111;
+}
+.book-buy{
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 180px;
+  height: 46px;
+  border-radius: 999px;
+  background: #111;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.book-buy:hover{ opacity: 0.88; }
+
+.book-detail{
+  margin-top: 14px;
+  border-top: 1px solid rgba(0,0,0,0.12);
+  padding-top: 12px;
+}
+.book-detail > summary{
+  cursor: pointer;
+  list-style: none;
+  font-weight: 700;
+  color: #111;
+}
+.book-detail > summary::-webkit-details-marker{ display:none; }
+.book-detail-inner{
+  margin-top: 12px;
+  color: #111;
+  opacity: 0.92;
+  line-height: 1.8;
+}
+.book-back{ margin-top: 12px; }
+.book-back-img{
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid rgba(0,0,0,0.10);
+}
+
+/* Books section typography on dark background */
+.books-section .books-lead{ color: rgba(255,255,255,0.78); }
+
+/* Ensure Books section background is solid (no stripes) */
+.books-section{
+  background:
+    radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,0.10), rgba(0,0,0,0.25)),
+    linear-gradient(180deg, #3a2415, #23150d);
 }
