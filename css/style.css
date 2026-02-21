@@ -319,38 +319,34 @@ header.hero-header::before{ content:""; position:absolute; inset:0; background: 
 .books-swiper .swiper-slide{ background: transparent; }
 
 .book-card{
-    display: grid;
-    grid-template-columns: 180px 1fr;
-    gap: 18px;
-    padding: 18px;
-    border-radius: 16px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.14);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+  width:85%;
+  max-width:380px;
+  height:600px;
+  background:#fff;
+  box-shadow:0 8px 18px rgba(0,0,0,0.18);
+  overflow:hidden;
+  border-radius:0;
+  border:none;
+  display:flex;
+  flex-direction:column;
 }
 
 .book-cover{
-    border-radius: 12px;
-    overflow: hidden;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.12);
+  height:240px; /* 4:6 ratio (image:text) within 600px card */
+  background:#eee;
+  overflow:hidden;
+  border-radius:0;
+  border:none;
 }
-.book-cover img{ width:100%; height:auto; display:block; }
+.book-cover img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  border-radius:0;
+}
 
 .book-info{ display:flex; flex-direction:column; justify-content:center; min-width:0; }
-
-.book-badge{
-    align-self: flex-start;
-    font-size: 12px;
-    font-weight: 700;
-    padding: 6px 10px;
-    border-radius: 999px;
-    background: rgba(201,170,90,0.22);
-    border: 1px solid rgba(201,170,90,0.45);
-    color: #f6e3b0;
-    margin-bottom: 10px;
-}
 
 .book-title{ margin:0; font-size:22px; line-height:1.2; }
 .book-sub{ margin:8px 0 10px; color: rgba(255,255,255,0.82); font-size:14px; }
@@ -371,7 +367,15 @@ header.hero-header::before{ content:""; position:absolute; inset:0; background: 
 }
 .book-buy:hover{ transform: translateY(-1px); }
 
-.book-detail{ margin-top: 12px; color: rgba(255,255,255,0.85); }
+.book-detail{
+  flex:1; /* takes remaining ~360px */
+  padding:22px;
+  position:relative;
+  z-index:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+}
 .book-detail summary{ cursor:pointer; font-size:13px; opacity:0.9; }
 .book-detail-inner{ margin-top: 10px; font-size:13px; color: rgba(255,255,255,0.78); }
 
@@ -389,7 +393,6 @@ header.hero-header::before{ content:""; position:absolute; inset:0; background: 
     .book-card{ grid-template-columns: 1fr; }
     .book-cover{ max-width: 260px; margin: 0 auto; }
     .book-info{ text-align: center; }
-    .book-badge{ align-self: center; }
     .book-buy{ margin: 0 auto; }
     .book-back{ margin-left: auto; margin-right: auto; }
 }
