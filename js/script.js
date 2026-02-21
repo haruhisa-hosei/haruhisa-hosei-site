@@ -130,10 +130,30 @@ document.addEventListener('DOMContentLoaded', function() {
   if (typeof Swiper !== 'undefined') {
     const voiceEl = document.querySelector('.voice-section .swiper-container');
     if (voiceEl) {
+      const voiceSection = voiceEl.closest('.voice-section');
+      const voiceNext = voiceSection ? voiceSection.querySelector('.swiper-button-next') : null;
+      const voicePrev = voiceSection ? voiceSection.querySelector('.swiper-button-prev') : null;
       new Swiper(voiceEl, {
         loop: true, centeredSlides: true, slidesPerView: 'auto', spaceBetween: 25, speed: 600,
         observer: true, observeParents: true,
-        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+        navigation: { nextEl: voiceNext, prevEl: voicePrev },
+        on: { init: function() { setTimeout(() => { this.update(); }, 100); } }
+      });
+    }
+
+    const booksEl = document.querySelector('.books-swiper');
+    if (booksEl) {
+      const nextEl = booksEl.querySelector('.swiper-button-next');
+      const prevEl = booksEl.querySelector('.swiper-button-prev');
+      new Swiper(booksEl, {
+        loop: false,
+        centeredSlides: true,
+        slidesPerView: 1,
+        spaceBetween: 30,
+        speed: 600,
+        observer: true,
+        observeParents: true,
+        navigation: { nextEl, prevEl },
         on: { init: function() { setTimeout(() => { this.update(); }, 100); } }
       });
     }
