@@ -148,8 +148,8 @@ document.addEventListener('DOMContentLoaded', function() {
       new Swiper(booksEl, {
         loop: false,
         centeredSlides: true,
-        slidesPerView: 1,
-        spaceBetween: 30,
+        slidesPerView: 'auto',
+        spaceBetween: 25,
         speed: 600,
         observer: true,
         observeParents: true,
