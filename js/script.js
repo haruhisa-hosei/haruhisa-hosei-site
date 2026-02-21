@@ -141,19 +141,21 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
 
-    const booksEl = document.querySelector('.books-swiper');
+    const booksEl = document.querySelector('.books-section .swiper-container.books-swiper');
     if (booksEl) {
-      const nextEl = booksEl.querySelector('.swiper-button-next');
-      const prevEl = booksEl.querySelector('.swiper-button-prev');
+      const booksSection = booksEl.closest('.books-section');
+      const booksNext = booksSection ? booksSection.querySelector('.swiper-button-next') : null;
+      const booksPrev = booksSection ? booksSection.querySelector('.swiper-button-prev') : null;
+
       new Swiper(booksEl, {
-        loop: false,
+        loop: true,
         centeredSlides: true,
         slidesPerView: 'auto',
         spaceBetween: 25,
         speed: 600,
         observer: true,
         observeParents: true,
-        navigation: { nextEl, prevEl },
+        navigation: { nextEl: booksNext, prevEl: booksPrev },
         on: { init: function() { setTimeout(() => { this.update(); }, 100); } }
       });
     }
