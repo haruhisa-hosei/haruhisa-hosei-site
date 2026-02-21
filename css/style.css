@@ -291,6 +291,13 @@ header.hero-header::before{ content:""; position:absolute; inset:0; background: 
     /* 木目本棚っぽい雰囲気（画像不要のCSS木目） */
     background:
       radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,0.10), rgba(0,0,0,0.25)),
+      repeating-linear-gradient(
+        90deg,
+        rgba(255,255,255,0.06) 0px,
+        rgba(255,255,255,0.06) 10px,
+        rgba(0,0,0,0.04) 10px,
+        rgba(0,0,0,0.04) 22px
+      ),
       linear-gradient(180deg, #3a2415, #23150d);
     padding: 90px 20px;
     color: #fff;
@@ -627,100 +634,86 @@ body.home .brand-logo{ height:23px; }  /* +25% from 16px */
 
 
 /* =========================================
-   Books (Voice-like Card)
+   Books FINAL (Voice unified)
    ========================================= */
-.books-swiper { padding: 10px 0 0; }
-.books-swiper .swiper-slide { display: flex; justify-content: center; }
-
-.book-slide { /* inherits .voice-slide sizing */ }
-
-.book-img-box { /* inherits .voice-img-box */ }
-
-.book-content{
-  width: 100%;
-  padding: 22px 30px 28px;
-  flex-grow: 1;
-  text-align: left;
-  color: #111; /* ensure readable on white card */
+.books-section{
+  background: #23150d !important; /* solid dark brown */
+  background-image: none !important;
 }
+
+.books-lead{ display:none !important; } /* removed in HTML, keep safe */
+
+.book-divider{ display:none !important; } /* legacy full-width divider (not used) */
+
+.books-swiper .swiper-slide{
+  background: transparent !important;
+  display: flex;
+  justify-content: center;
+}
+
+/* Card sizing: same width as Voice, fixed height 800 */
+.voice-slide.book-slide{
+  height: 800px !important;
+}
+
+/* Image:Text = 4:6 => 320px image + 480px text */
+.voice-img-box.book-img-box{
+  height: 320px !important;
+}
+
+/* Text area */
+.book-content{
+  padding: 20px 30px 30px !important; /* match Voice padding */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Typography order */
 .book-title{
+  margin: 0;
+  font-weight: 700; /* bold */
   font-family: var(--font-sans);
-  font-size: 1.8rem;
-  letter-spacing: 0.08em;
-  margin: 0 0 6px 0;
+  font-size: 1.35rem;
+  letter-spacing: 0.06em;
 }
 .book-sub{
-  margin: 0 0 14px 0;
-  color: #444;
+  margin: 0;
   font-size: 0.95rem;
-  line-height: 1.6;
+  line-height: 1.5;
+  color: #111;
+  opacity: 0.85;
 }
 .book-date{
-  margin: 0 0 10px 0;
+  margin: 2px 0 0;
+  font-weight: 700; /* bold */
   font-family: var(--font-sans);
-  font-size: 0.95rem;
-  letter-spacing: 0.08em;
-  color: #111;
+  font-size: 1.0rem;
+  letter-spacing: 0.06em;
 }
-.book-divider{
-  height: 2px;
-  background: #111;
+
+/* Thick black line with side gaps (inside padding) */
+.book-strongline{
   width: 100%;
-  margin: 0 0 14px 0;
+  border-bottom: 2px solid #111;
+  margin: 10px 0 14px;
 }
+
 .book-comment{
-  margin: 0 0 16px 0;
+  margin: 0;
   font-size: 0.95rem;
   line-height: 1.8;
   color: #111;
 }
-.book-buy{
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  width: 180px;
-  height: 46px;
-  border-radius: 999px;
-  background: #111;
-  color: #fff;
-  text-decoration: none;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-}
-.book-buy:hover{ opacity: 0.88; }
 
-.book-detail{
+/* Purchase link as text, placed under comment */
+.book-buy-link{
   margin-top: 14px;
-  border-top: 1px solid rgba(0,0,0,0.12);
-  padding-top: 12px;
-}
-.book-detail > summary{
-  cursor: pointer;
-  list-style: none;
+  font-family: var(--font-sans);
   font-weight: 700;
+  letter-spacing: 0.12em;
+  text-decoration: underline;
   color: #111;
+  width: fit-content;
 }
-.book-detail > summary::-webkit-details-marker{ display:none; }
-.book-detail-inner{
-  margin-top: 12px;
-  color: #111;
-  opacity: 0.92;
-  line-height: 1.8;
-}
-.book-back{ margin-top: 12px; }
-.book-back-img{
-  width: 100%;
-  height: auto;
-  display: block;
-  border: 1px solid rgba(0,0,0,0.10);
-}
-
-/* Books section typography on dark background */
-.books-section .books-lead{ color: rgba(255,255,255,0.78); }
-
-/* Ensure Books section background is solid (no stripes) */
-.books-section{
-  background:
-    radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,0.10), rgba(0,0,0,0.25)),
-    linear-gradient(180deg, #3a2415, #23150d);
-}
+.book-buy-link:hover{ opacity: 0.7; }
