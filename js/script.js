@@ -208,7 +208,9 @@ document.addEventListener('DOMContentLoaded', function() {
       const subtitle = (BOOKS_LANG === 'en') ? (it.subtitle_en || '') : (it.subtitle_ja || '');
       const published = it.published || '';
       const comment = (BOOKS_LANG === 'en') ? (it.comment_en || '') : (it.comment_ja || '');
-      const buyLabel = (BOOKS_LANG === 'en') ? 'Buy' : '購入';
+      const buyLabel = (BOOKS_LANG === 'en')
+  ? 'Buy PDF Download Version'
+  : 'PDFダウンロード版購入';
       const img = normalizeImageSrc(it.cover_image || '', 'images/books/');
       const buyUrl = it.purchase_url || '#';
 
