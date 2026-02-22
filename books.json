@@ -17,7 +17,7 @@
 
       "cover_image": "groundedrecord_cover.png",
 
-      "purchase_url": "https://buy.stripe.com/test_00g6pW1lBfA3g6Q6oo"
+      "purchase_url": "/api/stripe/create-checkout-session?sku=book_grounded_record_pdf_ja"
     }
   ]
 }
