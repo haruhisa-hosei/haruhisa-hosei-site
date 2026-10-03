@@ -525,3 +525,16 @@ function sendSelfEvent(endpoint, payload, keepalive) {
     }).catch(() => {});
   } catch (e) {}
 }
+
+
+// --- Feature section: hide automatically after its end date ---
+(function () {
+  document.querySelectorAll('[data-until]').forEach(function (el) {
+    var until = new Date(el.getAttribute('data-until') + 'T00:00:00+09:00');
+    if (!isNaN(until) && new Date() >= until) {
+      el.classList.add('is-expired');
+      var link = document.querySelector('.menu-link[href="#' + el.id + '"]');
+      if (link) link.remove();
+    }
+  });
+})();
