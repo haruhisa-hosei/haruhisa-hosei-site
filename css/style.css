@@ -740,14 +740,40 @@ body.home .brand-logo{ height:23px; }  /* +25% from 16px */
     letter-spacing: 0.5em; color: var(--feat-sub);
 }
 .feature-kicker::after { content: ""; display: block; width: 28px; height: 1px; background: var(--feat-shu); margin: 18px auto 0; }
-.feature-visual { max-width: 1000px; margin: -16px auto 64px; }
-.feature-visual img {
+.feature-poster {
+    position: relative; max-width: 1080px; margin: -16px auto 72px;
+    container-type: inline-size;
+}
+.poster-img {
     display: block; width: 100%; height: auto;
-    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%), linear-gradient(to bottom, transparent 0, #000 8%, #000 94%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 10%, #000 90%, transparent 100%), linear-gradient(to bottom, transparent 0, #000 8%, #000 94%, transparent 100%);
     -webkit-mask-composite: source-in;
-            mask-image: linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%), linear-gradient(to bottom, transparent 0, #000 8%, #000 94%, transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0, #000 10%, #000 90%, transparent 100%), linear-gradient(to bottom, transparent 0, #000 8%, #000 94%, transparent 100%);
             mask-composite: intersect;
 }
+.poster-head {
+    position: absolute; top: 9%; right: 4%;
+    display: flex; flex-direction: row-reverse; align-items: flex-start; gap: 1.2cqw;
+}
+.poster-title {
+    margin: 0; writing-mode: vertical-rl; font-family: var(--font-serif); font-weight: 400;
+    font-size: 5.2cqw; letter-spacing: 0.3em; line-height: 1; color: var(--feat-ink);
+}
+.poster-series {
+    margin: 0.4cqw 0 0; writing-mode: vertical-rl; font-family: var(--font-serif);
+    font-size: 1.55cqw; letter-spacing: 0.3em; color: var(--feat-shu);
+}
+.poster-info { position: absolute; left: 5%; bottom: 7%; }
+.poster-name { margin: 0; font-family: var(--font-serif); font-size: 2.4cqw; letter-spacing: 0.24em; color: var(--feat-ink); }
+.poster-name span { font-size: 0.55em; letter-spacing: 0.1em; margin-left: 0.3em; color: var(--feat-sub); }
+.poster-date { margin: 1.4cqw 0 0; font-family: var(--font-serif); font-size: 2.6cqw; letter-spacing: 0.3em; color: var(--feat-ink); }
+.poster-date small { font-size: 0.45em; letter-spacing: 0.1em; color: var(--feat-sub); }
+.poster-meta { margin: 0.8cqw 0 0; font-size: 1.15cqw; line-height: 1.9; letter-spacing: 0.08em; color: var(--feat-ink); }
+.feature-poster.is-en .poster-head { flex-direction: column; align-items: flex-start; top: 8%; right: auto; left: 5%; }
+.feature-poster.is-en .poster-title { writing-mode: horizontal-tb; font-size: 3.6cqw; letter-spacing: 0.08em; }
+.feature-poster.is-en .poster-series { writing-mode: horizontal-tb; font-size: 1.3cqw; letter-spacing: 0.2em; margin: 0 0 0.8cqw; order: -1; }
+.feature-poster.is-en .poster-name { font-size: 1.7cqw; letter-spacing: 0.12em; }
+.feature-poster.is-en .poster-date { font-size: 2.3cqw; }
 .feature-card {
     max-width: 1000px; margin: 0 auto;
     display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 72px; align-items: center;
@@ -799,7 +825,17 @@ body.home .brand-logo{ height:23px; }  /* +25% from 16px */
 .feature-sublink:hover { text-decoration-color: var(--feat-shu); }
 @media (max-width: 768px) {
     .feature-section { padding: 80px 16px 90px; }
-    .feature-visual { margin: -20px -16px 40px; }
+    .feature-poster { margin: -20px -16px 44px; }
+    .poster-head { top: 6%; right: 3%; }
+    .poster-title { font-size: 6.4cqw; }
+    .poster-series { font-size: 2.4cqw; }
+    .poster-info { position: static; padding: 4px 20px 0; }
+    .poster-name { font-size: 1.5rem; }
+    .poster-date { font-size: 1.6rem; margin-top: 12px; letter-spacing: 0.22em; }
+    .poster-meta { font-size: 0.95rem; margin-top: 6px; }
+    .feature-poster.is-en .poster-title { font-size: 5cqw; }
+    .feature-poster.is-en .poster-series { font-size: 2.2cqw; }
+    .feature-poster.is-en .poster-name { font-size: 1.3rem; }
     .feature-card { grid-template-columns: 1fr; gap: 44px; }
     .feature-flyer { max-width: 420px; margin: 0 auto; width: 100%; }
     .feature-body { padding-right: 64px; }
